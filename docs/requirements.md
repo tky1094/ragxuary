@@ -1,4 +1,4 @@
-# ragxury 要件定義書
+# ragxuary 要件定義書
 
 > RAGネイティブなドキュメンテーションツール
 
@@ -27,7 +27,7 @@
 
 ### プロダクトビジョン
 
-ragxuryは、技術ドキュメントの作成・公開・検索を一元化し、AIによる自然言語での質問応答を可能にするプラットフォームである。
+ragxuaryは、技術ドキュメントの作成・公開・検索を一元化し、AIによる自然言語での質問応答を可能にするプラットフォームである。
 
 ### 主要な価値提案
 
@@ -694,7 +694,7 @@ services:
 
 ```bash
 # 必須
-DATABASE_URL=postgresql://user:pass@postgres:5432/ragxury
+DATABASE_URL=postgresql://user:pass@postgres:5432/ragxuary
 REDIS_URL=redis://redis:6379
 NEXTAUTH_SECRET=your-secret-key
 NEXTAUTH_URL=https://your-domain.com
