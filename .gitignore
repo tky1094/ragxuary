@@ -191,6 +191,7 @@ temp/
 *.gguf
 *.bin
 models/
+!backend/app/models/
 
 # Vector database local files (if any)
 chroma_db/
