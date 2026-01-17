@@ -147,7 +147,7 @@ ragxuary は、技術ドキュメントの作成・公開・検索を一元化�
 - ブランチ選択
 - ドキュメントルートフォルダ指定（例: `/docs`）
 - Pull（手動 / Webhook 自動同期）
-- コミット・プッシュ（Web 編集から Git へ）
+- 読み取り専用（コンフリクト防止のためブラウザ編集は無効化）
 
 ##### Git 認証方式
 
@@ -283,17 +283,15 @@ ragxuary は、技術ドキュメントの作成・公開・検索を一元化�
 
 ```
 app/
-├── (auth)/
-│   ├── login/page.tsx
-│   ├── register/page.tsx
-├── (dashboard)/
-│   ├── page.tsx                              # /
-│   └── layout.tsx
-├── docs/
-│   └── [projectSlug]/
-│       ├── page.tsx                          # /docs/{projectSlug}
-│       ├── [...docPath]/page.tsx             # /docs/{projectSlug}/{...docPath}
-│       └── search/page.tsx                   # /docs/{projectSlug}/search
+├── (auth)/                                   # 認証関連（Route Group）
+│   ├── login/page.tsx                        # /login
+│   └── register/page.tsx                     # /register
+├── (public)/                                 # 公開ページ（Route Group）
+│   └── docs/
+│       └── [projectSlug]/
+│           ├── page.tsx                      # /docs/{projectSlug}
+│           ├── [...docPath]/page.tsx         # /docs/{projectSlug}/{...docPath}
+│           └── search/page.tsx               # /docs/{projectSlug}/search
 ├── projects/
 │   ├── new/page.tsx                          # /projects/new
 │   └── [projectSlug]/
@@ -301,27 +299,20 @@ app/
 │       │   ├── page.tsx                      # /projects/{projectSlug}/edit
 │       │   └── [...docPath]/page.tsx         # /projects/{projectSlug}/edit/{...docPath}
 │       ├── new/page.tsx                      # /projects/{projectSlug}/new
-│       └── settings/
-│           ├── page.tsx                      # /projects/{projectSlug}/settings
-│           ├── members/page.tsx
-│           ├── git/page.tsx
-│           └── visibility/page.tsx
+│       └── settings/page.tsx                 # /projects/{projectSlug}/settings
 ├── chat/
 │   └── [projectSlug]/
 │       ├── page.tsx                          # /chat/{projectSlug}
-│       └── [conversationId]/page.tsx
+│       └── [conversationId]/page.tsx         # /chat/{projectSlug}/{conversationId}
 ├── admin/
-│   ├── page.tsx
-│   ├── users/
-│   │   ├── page.tsx
-│   │   └── [userId]/page.tsx
-│   ├── groups/
-│   │   ├── page.tsx
-│   │   └── [groupId]/page.tsx
-│   └── settings/page.tsx
+│   ├── page.tsx                              # /admin
+│   ├── users/page.tsx                        # /admin/users
+│   ├── groups/page.tsx                       # /admin/groups
+│   └── settings/page.tsx                     # /admin/settings
 ├── api/
 │   └── auth/
-│       └── [...nextauth]/route.ts
+│       └── [...nextauth]/route.ts            # NextAuth.js API Routes
+├── page.tsx                                  # / (ダッシュボード)
 ├── layout.tsx
 └── globals.css
 ```
@@ -364,17 +355,84 @@ app/
 | created_at   | TIMESTAMP    | 作成日時               |
 | updated_at   | TIMESTAMP    | 更新日時               |
 
+#### documents
+
+| カラム     | 型           | 説明                        |
+| ---------- | ------------ | --------------------------- |
+| id         | UUID         | 主キー                      |
+| project_id | UUID         | プロジェクト ID（外部キー） |
+| path       | VARCHAR(500) | ドキュメントパス            |
+| title      | VARCHAR(200) | タイトル                    |
+| content    | TEXT         | マークダウンコンテンツ      |
+| created_at | TIMESTAMP    | 作成日時                    |
+| updated_at | TIMESTAMP    | 更新日時                    |
+
 #### embeddings
 
-| カラム      | 型           | 説明                        |
-| ----------- | ------------ | --------------------------- |
-| id          | UUID         | 主キー                      |
-| document_id | UUID         | ドキュメント ID（外部キー） |
-| chunk_index | INTEGER      | チャンクインデックス        |
-| chunk_text  | TEXT         | チャンクテキスト            |
-| vector      | VECTOR(1536) | 埋め込みベクトル            |
-| metadata    | JSONB        | メタデータ（見出し階層等）  |
-| created_at  | TIMESTAMP    | 作成日時                    |
+| カラム      | 型        | 説明                                                 |
+| ----------- | --------- | ---------------------------------------------------- |
+| id          | UUID      | 主キー                                               |
+| document_id | UUID      | ドキュメント ID（外部キー）                          |
+| chunk_index | INTEGER   | チャンクインデックス                                 |
+| chunk_text  | TEXT      | チャンクテキスト                                     |
+| vector      | VECTOR    | 埋め込みベクトル（次元数は埋め込みモデル設定に依存） |
+| metadata    | JSONB     | メタデータ（見出し階層等）                           |
+| created_at  | TIMESTAMP | 作成日時                                             |
+
+#### groups
+
+| カラム      | 型           | 説明       |
+| ----------- | ------------ | ---------- |
+| id          | UUID         | 主キー     |
+| name        | VARCHAR(100) | グループ名 |
+| description | TEXT         | 説明       |
+| created_at  | TIMESTAMP    | 作成日時   |
+| updated_at  | TIMESTAMP    | 更新日時   |
+
+#### group_members
+
+| カラム     | 型        | 説明                    |
+| ---------- | --------- | ----------------------- |
+| id         | UUID      | 主キー                  |
+| group_id   | UUID      | グループ ID（外部キー） |
+| user_id    | UUID      | ユーザー ID（外部キー） |
+| created_at | TIMESTAMP | 作成日時                |
+
+#### project_members
+
+| カラム     | 型          | 説明                             |
+| ---------- | ----------- | -------------------------------- |
+| id         | UUID        | 主キー                           |
+| project_id | UUID        | プロジェクト ID（外部キー）      |
+| group_id   | UUID        | グループ ID（外部キー、NULL 可） |
+| user_id    | UUID        | ユーザー ID（外部キー、NULL 可） |
+| role       | VARCHAR(20) | ロール（viewer/editor/admin）    |
+| created_at | TIMESTAMP   | 作成日時                         |
+| updated_at | TIMESTAMP   | 更新日時                         |
+
+※ group_id または user_id のいずれかを指定（排他的）
+
+#### conversations
+
+| カラム     | 型           | 説明                        |
+| ---------- | ------------ | --------------------------- |
+| id         | UUID         | 主キー                      |
+| project_id | UUID         | プロジェクト ID（外部キー） |
+| user_id    | UUID         | ユーザー ID（外部キー）     |
+| title      | VARCHAR(200) | 会話タイトル                |
+| created_at | TIMESTAMP    | 作成日時                    |
+| updated_at | TIMESTAMP    | 更新日時                    |
+
+#### messages
+
+| カラム          | 型          | 説明                              |
+| --------------- | ----------- | --------------------------------- |
+| id              | UUID        | 主キー                            |
+| conversation_id | UUID        | 会話 ID（外部キー）               |
+| role            | VARCHAR(20) | ロール（user/assistant）          |
+| content         | TEXT        | メッセージ内容                    |
+| sources         | JSONB       | 引用元ドキュメント情報（NULL 可） |
+| created_at      | TIMESTAMP   | 作成日時                          |
 
 ---
 
@@ -383,6 +441,7 @@ app/
 ### 認証
 
 ```
+POST   /api/v1/auth/register       # ユーザー新規登録
 POST   /api/v1/auth/login          # ログイン
 POST   /api/v1/auth/logout         # ログアウト
 POST   /api/v1/auth/refresh        # トークンリフレッシュ
@@ -531,6 +590,8 @@ PATCH  /api/v1/admin/settings                       # システム設定更新
 | OpenAI       | text-embedding-3-large | 3072   | 高精度         |
 | Ollama       | nomic-embed-text       | 768    | ローカル実行   |
 | HuggingFace  | multilingual-e5-large  | 1024   | 多言語対応     |
+
+> **注意**: 埋め込みモデルの次元数はモデルごとに異なります。システム設定で選択したモデルに応じて、`embeddings` テーブルのベクトル次元数が決定されます。一度設定したモデルを変更する場合は、既存の埋め込みデータの再生成が必要です。
 
 ### システムプロンプト（例）
 
@@ -695,7 +756,7 @@ LDAP_BASE_DN=dc=example,dc=com
 
 ### Phase 3: エンタープライズ（v0.3.0）
 
-- [ ] LDAP 応
+- [ ] LDAP 対応
 - [ ] ローカル LLM 対応（Ollama）
 - [ ] 監査ログ
 - [ ] API 利用制限
