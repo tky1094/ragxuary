@@ -7,14 +7,17 @@ from fastapi import FastAPI
 
 from app.api.v1.router import api_router
 from app.config import settings
+from app.core.redis import close_redis, get_redis
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan handler for startup and shutdown events."""
     # Startup
+    await get_redis()
     yield
     # Shutdown
+    await close_redis()
 
 
 def create_app() -> FastAPI:
