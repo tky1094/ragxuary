@@ -37,9 +37,11 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      - AUTH_SECRET=change-this-in-production
+      - AUTH_TRUST_HOST=true
+      - BACKEND_URL=http://backend:8000
     depends_on:
-      - postgres
-      - redis
+      - backend
   backend:
     build:
       context: ./backend
