@@ -19,6 +19,7 @@ export interface BackendUser {
   name: string;
   isAdmin: boolean;
   isActive: boolean;
+  preferredLocale: string | null;
 }
 
 async function refreshAccessToken(refreshToken: string): Promise<BackendTokens | null> {
@@ -68,6 +69,7 @@ async function fetchUserInfo(accessToken: string): Promise<BackendUser | null> {
       name: user.name,
       isAdmin: user.is_admin,
       isActive: user.is_active,
+      preferredLocale: user.preferred_locale ?? null,
     };
   } catch {
     return null;
@@ -119,6 +121,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             name: user.name,
             isAdmin: user.isAdmin,
             isActive: user.isActive,
+            preferredLocale: user.preferredLocale,
             accessToken: tokens.access_token,
             refreshToken: tokens.refresh_token,
             accessTokenExpires: Date.now() + 30 * 60 * 1000,
@@ -140,6 +143,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           name: user.name,
           isAdmin: user.isAdmin,
           isActive: user.isActive,
+          preferredLocale: user.preferredLocale,
           accessToken: user.accessToken,
           refreshToken: user.refreshToken,
           accessTokenExpires: user.accessTokenExpires,
@@ -181,6 +185,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         name: token.name as string,
         isAdmin: token.isAdmin as boolean,
         isActive: token.isActive as boolean,
+        preferredLocale: (token.preferredLocale as string | null) ?? null,
       };
 
       session.accessToken = token.accessToken as string;
@@ -189,7 +194,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   pages: {
-    signIn: "/login",
+    signIn: "/ja/login",
   },
   session: {
     strategy: "jwt",

@@ -1,0 +1,120 @@
+{
+  "common": {
+    "loading": "読み込み中...",
+    "error": "エラーが発生しました",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "create": "作成",
+    "back": "戻る",
+    "next": "次へ",
+    "search": "検索",
+    "noResults": "結果が見つかりませんでした",
+    "confirm": "確認",
+    "close": "閉じる"
+  },
+  "navigation": {
+    "home": "ホーム",
+    "dashboard": "ダッシュボード",
+    "projects": "プロジェクト",
+    "docs": "ドキュメント",
+    "chat": "チャット",
+    "admin": "管理",
+    "settings": "設定",
+    "users": "ユーザー管理",
+    "groups": "グループ管理"
+  },
+  "auth": {
+    "login": "ログイン",
+    "logout": "ログアウト",
+    "register": "新規登録",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "confirmPassword": "パスワード（確認）",
+    "name": "名前",
+    "forgotPassword": "パスワードをお忘れですか？",
+    "noAccount": "アカウントをお持ちでないですか？",
+    "hasAccount": "すでにアカウントをお持ちですか？",
+    "signInTitle": "ログイン",
+    "signInDescription": "アカウントにサインインしてください",
+    "signUpTitle": "新規登録",
+    "signUpDescription": "アカウントを作成してください",
+    "invalidCredentials": "メールアドレスまたはパスワードが正しくありません",
+    "accountDisabled": "このアカウントは無効化されています"
+  },
+  "projects": {
+    "title": "プロジェクト",
+    "new": "新規プロジェクト",
+    "name": "プロジェクト名",
+    "description": "説明",
+    "slug": "スラッグ",
+    "visibility": "公開設定",
+    "public": "公開",
+    "private": "非公開",
+    "settings": "プロジェクト設定",
+    "members": "メンバー",
+    "noProjects": "プロジェクトがありません"
+  },
+  "docs": {
+    "title": "ドキュメント",
+    "new": "新規ドキュメント",
+    "edit": "ドキュメント編集",
+    "search": "ドキュメント検索",
+    "tableOfContents": "目次",
+    "lastUpdated": "最終更新",
+    "noDocs": "ドキュメントがありません"
+  },
+  "chat": {
+    "title": "AIチャット",
+    "placeholder": "メッセージを入力...",
+    "send": "送信",
+    "newConversation": "新規会話",
+    "noConversations": "会話がありません",
+    "sources": "参照元",
+    "thinking": "考え中..."
+  },
+  "admin": {
+    "title": "管理画面",
+    "users": {
+      "title": "ユーザー管理",
+      "list": "ユーザー一覧",
+      "create": "ユーザー作成",
+      "edit": "ユーザー編集",
+      "active": "有効",
+      "inactive": "無効",
+      "admin": "管理者",
+      "apiLimit": "API制限"
+    },
+    "groups": {
+      "title": "グループ管理",
+      "list": "グループ一覧",
+      "create": "グループ作成",
+      "edit": "グループ編集",
+      "members": "メンバー"
+    },
+    "settings": {
+      "title": "システム設定",
+      "llm": "LLM設定",
+      "embedding": "埋め込みモデル設定",
+      "rateLimit": "レート制限"
+    }
+  },
+  "errors": {
+    "notFound": "ページが見つかりませんでした",
+    "unauthorized": "認証が必要です",
+    "forbidden": "アクセス権限がありません",
+    "serverError": "サーバーエラーが発生しました",
+    "networkError": "ネットワークエラーが発生しました",
+    "validationError": "入力内容に誤りがあります"
+  },
+  "language": {
+    "select": "言語を選択",
+    "ja": "日本語",
+    "en": "English"
+  },
+  "metadata": {
+    "title": "ragxuary",
+    "description": "RAGネイティブなドキュメンテーションツール"
+  }
+}
