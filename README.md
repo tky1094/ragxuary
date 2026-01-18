@@ -16,6 +16,7 @@ ragxuary は、セルフホスティング可能なドキュメンテーショ�
 - **権限を考慮した RAG** - AI チャットはユーザーの閲覧権限内の情報のみを参照・引用します
 - **Markdown エディタ内蔵** - ブラウザ上でドキュメントを直接作成・編集できます
 - **Git リポジトリ同期** - 既存の Markdown ドキュメントをそのまま活用可能。指定したリポジトリ・フォルダと同期し、プロジェクトとして表示します
+- **多言語対応** - 日本語・英語の UI 切り替えに対応。パスベースのロケール（`/ja/...`, `/en/...`）で SEO にも配慮
 
 ## ドキュメント管理
 
@@ -45,6 +46,9 @@ Git 同期モードでは、コンフリクト防止のためブラウザから�
 | ベクトル DB               | pgvector                              | PostgreSQL に同居でき、インフラ構成がシンプル。小〜中規模のドキュメント管理に適している                                        |
 | キャッシュ/レートリミット | Redis                                 | 外部 LLM API（OpenAI など）利用時のレートリミット・使用量管理に使用。RAG 検索結果のキャッシュによるコスト削減にも活用          |
 | LLM                       | OpenAI / Anthropic / Ollama（選択式） | ローカル LLM による完全クローズド運用と、外部 API による高性能モデル利用の両方に対応                                           |
+| 国際化                    | next-intl                             | Next.js App Router との親和性が高く、RSC にも対応。パスベースのロケール切り替えを実現                                          |
+| テスト（フロントエンド）  | Vitest, React Testing Library, Playwright | 高速な単体テスト、ユーザー視点のコンポーネントテスト、信頼性の高い E2E テストを実現                                        |
+| テスト（バックエンド）    | pytest, pytest-asyncio, httpx         | 非同期 API のテストに対応。カバレッジ計測とテストデータ生成を自動化                                                            |
 | インフラ                  | Docker Compose                        | セルフホスティングを前提とし、単一コマンドでの環境構築を実現                                                                   |
 
 ## セットアップ
@@ -72,6 +76,48 @@ docker compose up -d
 # 起動確認
 docker compose ps
 ```
+
+## 開発
+
+### テストの実行
+
+**バックエンド:**
+
+```bash
+cd backend
+
+# テスト実行
+pytest
+
+# カバレッジ付きで実行
+pytest --cov=app --cov-report=html
+```
+
+**フロントエンド:**
+
+```bash
+cd frontend
+
+# 単体テスト・コンポーネントテスト
+npm run test
+
+# E2E テスト
+npx playwright test
+```
+
+### テスト方針
+
+| 対象                   | 目標カバレッジ | ツール                          |
+| ---------------------- | -------------- | ------------------------------- |
+| バックエンド           | 80%+           | pytest, pytest-asyncio, httpx   |
+| フロントエンド         | 70%+           | Vitest, React Testing Library   |
+| E2E（重要フロー）      | -              | Playwright                      |
+
+詳細なテスト戦略については [docs/requirements.md](docs/requirements.md#テスト戦略) を参照してください。
+
+## ドキュメント
+
+- [要件定義書](docs/requirements.md) - 機能要件、非機能要件、テスト戦略、API 設計など
 
 ## License
 

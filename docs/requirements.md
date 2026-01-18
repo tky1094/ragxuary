@@ -13,13 +13,14 @@
 3. [技術スタック](#技術スタック)
 4. [機能要件](#機能要件)
 5. [非機能要件](#非機能要件)
-6. [URL 設計](#url設計)
-7. [データベース設計](#データベース設計)
-8. [API 設計](#api設計)
-9. [RAG アーキテクチャ](#ragアーキテクチャ)
-10. [認証・認可](#認証認可)
-11. [デプロイメント](#デプロイメント)
-12. [MVP 定義](#mvp定義)
+6. [テスト戦略](#テスト戦略)
+7. [URL 設計](#url設計)
+8. [データベース設計](#データベース設計)
+9. [API 設計](#api設計)
+10. [RAG アーキテクチャ](#ragアーキテクチャ)
+11. [認証・認可](#認証認可)
+12. [デプロイメント](#デプロイメント)
+13. [MVP 定義](#mvp定義)
 
 ---
 
@@ -62,29 +63,39 @@ ragxuary は、技術ドキュメントの作成・公開・検索を一元化�
 
 ### フロントエンド
 
-| 技術           | バージョン | 用途                      |
-| -------------- | ---------- | ------------------------- |
-| Next.js        | 14+        | App Router 使用、RSC 活用 |
-| React          | 18+        | UI ライブラリ             |
-| TypeScript     | 5+         | 型安全性                  |
-| TailwindCSS    | 3+         | スタイリング              |
-| shadcn/ui      | latest     | UI コンポーネント         |
-| NextAuth.js    | 5+         | 認証                      |
-| CodeMirror     | 6+         | マークダウンエディタ      |
-| TanStack Query | 5+         | サーバー状態管理          |
-| Zustand        | 4+         | クライアント状態管理      |
+| 技術                  | バージョン | 用途                      |
+| --------------------- | ---------- | ------------------------- |
+| Next.js               | 14+        | App Router 使用、RSC 活用 |
+| React                 | 18+        | UI ライブラリ             |
+| TypeScript            | 5+         | 型安全性                  |
+| TailwindCSS           | 3+         | スタイリング              |
+| shadcn/ui             | latest     | UI コンポーネント         |
+| NextAuth.js           | 5+         | 認証                      |
+| CodeMirror            | 6+         | マークダウンエディタ      |
+| TanStack Query        | 5+         | サーバー状態管理          |
+| Zustand               | 4+         | クライアント状態管理      |
+| next-intl             | 3+         | 国際化（i18n）            |
+| Vitest                | 3+         | 単体・統合テスト          |
+| React Testing Library | 16+        | コンポーネントテスト      |
+| Playwright            | 1.50+      | E2E テスト                |
+| MSW                   | 2+         | API モック                |
 
 ### バックエンド
 
-| 技術       | バージョン | 用途               |
-| ---------- | ---------- | ------------------ |
-| FastAPI    | 0.110+     | REST API           |
-| Python     | 3.11+      | ランタイム         |
-| SQLAlchemy | 2.0+       | ORM                |
-| Pydantic   | 2.0+       | バリデーション     |
-| GitPython  | 3.1+       | Git 連携           |
-| LangChain  | 0.2+       | RAG フレームワーク |
-| pgvector   | 0.5+       | ベクトル検索       |
+| 技術           | バージョン | 用途                     |
+| -------------- | ---------- | ------------------------ |
+| FastAPI        | 0.110+     | REST API                 |
+| Python         | 3.11+      | ランタイム               |
+| SQLAlchemy     | 2.0+       | ORM                      |
+| Pydantic       | 2.0+       | バリデーション           |
+| GitPython      | 3.1+       | Git 連携                 |
+| LangChain      | 0.2+       | RAG フレームワーク       |
+| pgvector       | 0.5+       | ベクトル検索             |
+| pytest         | 8+         | テストフレームワーク     |
+| pytest-asyncio | 0.25+      | 非同期テスト             |
+| pytest-cov     | 5+         | カバレッジ計測           |
+| httpx          | 0.28+      | API テスト用クライアント |
+| Faker          | 30+        | テストデータ生成         |
 
 ### インフラストラクチャ
 
@@ -123,6 +134,34 @@ ragxuary は、技術ドキュメントの作成・公開・検索を一元化�
 - 検索結果ハイライト
 - 検索クエリサジェスト
 - フィルタリング（日付、作成者）
+
+#### F1.4 国際化（i18n）
+
+##### 対応言語
+
+| 言語   | コード | 厳密度   | 備考           |
+| ------ | ------ | -------- | -------------- |
+| 日本語 | ja     | **MUST** | デフォルト言語 |
+| 英語   | en     | **MUST** | グローバル対応 |
+
+##### 翻訳対象
+
+| 対象                             | 厳密度     | 備考                         |
+| -------------------------------- | ---------- | ---------------------------- |
+| UI テキスト（ボタン、ラベル）    | **MUST**   | 基本的な国際化               |
+| エラーメッセージ                 | **MUST**   | ユーザー体験に直結           |
+| 日付・数値フォーマット           | **SHOULD** | ロケール依存の表示           |
+| RAG チャットのシステムプロンプト | **SHOULD** | 言語に応じた応答             |
+| メール通知テンプレート           | **MAY**    | 将来的な拡張                 |
+| ドキュメントコンテンツ自体       | **対象外** | ユーザーが管理するコンテンツ |
+
+##### 言語切り替え機能
+
+- パスベースのロケール切り替え（`/{locale}/...`）【**MUST**】
+- ヘッダーに言語セレクター配置【**MUST**】
+- ユーザー設定での優先言語保存【**SHOULD**】
+- ブラウザの Accept-Language ヘッダーによる自動検出【**SHOULD**】
+- ロケールなしの URL はブラウザ設定に基づきリダイレクト【**MUST**】
 
 ### F2: エディタ
 
@@ -253,68 +292,290 @@ ragxuary は、技術ドキュメントの作成・公開・検索を一元化�
 - バックアップ・リストア手順
 - 設定の環境変数化
 
+### NFR6: テスト品質
+
+| 項目                     | 目標（SHOULD） | 必須閾値（MUST） |
+| ------------------------ | -------------- | ---------------- |
+| バックエンドカバレッジ   | 80%+           | 70%              |
+| フロントエンドカバレッジ | 70%+           | 60%              |
+| 重要ビジネスロジック     | 90%+           | 80%              |
+| E2E テスト成功率         | 99%+           | 95%              |
+| CI テスト実行時間        | < 10 分        | < 15 分          |
+| フレーキーテスト率       | < 1%           | < 5%             |
+
+---
+
+## テスト戦略
+
+### テストピラミッド
+
+```
+                    ┌─────────┐
+                    │  E2E    │  少数・高コスト
+                    │  Tests  │  重要なユーザーフロー
+                    ├─────────┤
+                  ┌─┴─────────┴─┐
+                  │ Integration │  中程度
+                  │   Tests     │  API・コンポーネント連携
+                  ├─────────────┤
+              ┌───┴─────────────┴───┐
+              │     Unit Tests      │  多数・低コスト
+              │  ビジネスロジック    │  高速実行
+              └─────────────────────┘
+```
+
+### テスト種別と優先度
+
+| テスト種別                         | 厳密度     | 対象                           |
+| ---------------------------------- | ---------- | ------------------------------ |
+| バックエンド単体テスト             | **MUST**   | サービス層、リポジトリ層       |
+| バックエンド統合テスト             | **MUST**   | API エンドポイント             |
+| フロントエンド単体テスト           | **SHOULD** | ユーティリティ、カスタムフック |
+| フロントエンドコンポーネントテスト | **SHOULD** | React コンポーネント           |
+| E2E テスト                         | **SHOULD** | クリティカルなユーザーフロー   |
+
+### バックエンドテスト
+
+#### 単体テスト（Unit Tests）
+
+- **対象**: サービス層、リポジトリ層、ユーティリティ関数
+- **ツール**: pytest, pytest-asyncio
+- **方針**:
+  - モック・スタブを活用して依存関係を分離
+  - 境界値・異常系を網羅
+  - 各テストは独立して実行可能
+
+#### 統合テスト（Integration Tests）
+
+- **対象**: API エンドポイント、データベース連携
+- **ツール**: pytest, httpx (AsyncClient), SQLite (テスト用)
+- **方針**:
+  - 実際の HTTP リクエスト/レスポンスを検証
+  - テストデータベースを使用（本番 DB には接続しない）
+  - トランザクション分離でテスト間の干渉を防止
+
+#### テストディレクトリ構成
+
+```
+backend/tests/
+├── conftest.py           # 共通フィクスチャ
+├── unit/                 # 単体テスト
+│   ├── services/
+│   │   ├── test_user_service.py
+│   │   └── test_project_service.py
+│   ├── repositories/
+│   │   └── test_user_repository.py
+│   └── utils/
+│       └── test_security.py
+├── integration/          # 統合テスト
+│   ├── api/
+│   │   ├── test_auth.py
+│   │   ├── test_projects.py
+│   │   └── test_documents.py
+│   └── test_database.py
+└── fixtures/             # テストデータ
+    └── data.py
+```
+
+### フロントエンドテスト
+
+#### 単体テスト（Unit Tests）
+
+- **対象**: ユーティリティ関数、カスタムフック、状態管理
+- **ツール**: Vitest
+- **方針**:
+  - 純粋関数は入出力のみをテスト
+  - フックは `renderHook` でテスト
+
+#### コンポーネントテスト（Component Tests）
+
+- **対象**: React コンポーネント
+- **ツール**: Vitest + React Testing Library
+- **方針**:
+  - ユーザー視点でのテスト（実装詳細ではなく振る舞いをテスト）
+  - アクセシビリティを考慮したセレクタ使用
+  - スナップショットテストは最小限に
+
+#### E2E テスト（End-to-End Tests）
+
+- **対象**: クリティカルなユーザーフロー
+- **ツール**: Playwright
+- **方針**:
+  - 重要なビジネスシナリオのみ
+  - 安定性を優先（フレーキーなテストは修正または削除）
+  - テスト環境で実行（本番環境では実行しない）
+
+#### テストディレクトリ構成
+
+```
+frontend/
+├── __tests__/            # 単体テスト・コンポーネントテスト
+│   ├── components/
+│   │   ├── ui/
+│   │   │   └── Button.test.tsx
+│   │   └── ...
+│   ├── hooks/
+│   │   └── useAuth.test.ts
+│   └── lib/
+│       └── utils.test.ts
+├── e2e/                  # E2E テスト
+│   ├── auth.spec.ts
+│   ├── projects.spec.ts
+│   └── chat.spec.ts
+├── vitest.config.ts
+├── vitest.setup.ts
+└── playwright.config.ts
+```
+
+### RAG チャットのテスト
+
+- ベクトル検索の類似度検索精度検証
+- チャンク分割の境界値テスト
+- LLM レスポンスのモックを使用した応答形式検証
+- ストリーミングレスポンスのテスト
+- 引用元の正確性検証
+
+### CI/CD でのテスト自動化
+
+| 項目                   | 厳密度     | 詳細                         |
+| ---------------------- | ---------- | ---------------------------- |
+| PR 時の自動テスト実行  | **MUST**   | テストが通らないとマージ不可 |
+| カバレッジレポート生成 | **MUST**   | Codecov 等への連携           |
+| カバレッジ閾値チェック | **SHOULD** | 閾値を下回ると警告/失敗      |
+| E2E テスト（CI）       | **SHOULD** | main ブランチへのマージ時    |
+| テスト実行時間制限     | **SHOULD** | 10 分以内                    |
+
+#### GitHub Actions 構成例
+
+```yaml
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+      redis:
+        image: redis:7
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+      - name: Run tests with coverage
+        run: pytest --cov=app --cov-report=xml
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+
+  frontend-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm ci
+      - name: Run unit tests
+        run: npm run test
+      - name: Run E2E tests
+        run: npx playwright test
+```
+
+### テスト環境
+
+| 環境     | 用途                       | データベース           |
+| -------- | -------------------------- | ---------------------- |
+| ローカル | 開発時の手動・自動テスト   | SQLite (in-memory)     |
+| CI       | PR・プッシュ時の自動テスト | PostgreSQL (container) |
+| Staging  | E2E テスト・手動検証       | PostgreSQL (dedicated) |
+
 ---
 
 ## URL 設計
 
 ### ルート構成
 
-| パス                                        | 説明                 | 認証           |
-| ------------------------------------------- | -------------------- | -------------- |
-| `/`                                         | ダッシュボード       | 要             |
-| `/login`                                    | ログイン             | 不要           |
-| `/register`                                 | 新規登録             | 不要           |
-| `/docs/{projectSlug}`                       | ドキュメントトップ   | 公開設定依存   |
-| `/docs/{projectSlug}/{...docPath}`          | ドキュメントページ   | 公開設定依存   |
-| `/docs/{projectSlug}/search`                | プロジェクト内検索   | 公開設定依存   |
-| `/projects/new`                             | 新規プロジェクト作成 | 要             |
-| `/projects/{projectSlug}/edit`              | エディタトップ       | 要（編集権限） |
-| `/projects/{projectSlug}/edit/{...docPath}` | ドキュメント編集     | 要（編集権限） |
-| `/projects/{projectSlug}/new`               | 新規ドキュメント作成 | 要（編集権限） |
-| `/projects/{projectSlug}/settings`          | プロジェクト設定     | 要（管理権限） |
-| `/chat/{projectSlug}`                       | RAG チャット         | 要             |
-| `/chat/{projectSlug}/{conversationId}`      | チャット履歴         | 要             |
-| `/admin`                                    | 管理画面トップ       | 要（管理者）   |
-| `/admin/users`                              | ユーザー管理         | 要（管理者）   |
-| `/admin/groups`                             | グループ管理         | 要（管理者）   |
-| `/admin/settings`                           | システム設定         | 要（管理者）   |
+> **注**: `{locale}` は `ja` または `en`。ロケールなしの URL はブラウザ設定に基づきリダイレクト。
+
+| パス                                                 | 説明                 | 認証           |
+| ---------------------------------------------------- | -------------------- | -------------- |
+| `/{locale}`                                          | ダッシュボード       | 要             |
+| `/{locale}/login`                                    | ログイン             | 不要           |
+| `/{locale}/register`                                 | 新規登録             | 不要           |
+| `/{locale}/docs/{projectSlug}`                       | ドキュメントトップ   | 公開設定依存   |
+| `/{locale}/docs/{projectSlug}/{...docPath}`          | ドキュメントページ   | 公開設定依存   |
+| `/{locale}/docs/{projectSlug}/search`                | プロジェクト内検索   | 公開設定依存   |
+| `/{locale}/projects/new`                             | 新規プロジェクト作成 | 要             |
+| `/{locale}/projects/{projectSlug}/edit`              | エディタトップ       | 要（編集権限） |
+| `/{locale}/projects/{projectSlug}/edit/{...docPath}` | ドキュメント編集     | 要（編集権限） |
+| `/{locale}/projects/{projectSlug}/new`               | 新規ドキュメント作成 | 要（編集権限） |
+| `/{locale}/projects/{projectSlug}/settings`          | プロジェクト設定     | 要（管理権限） |
+| `/{locale}/chat/{projectSlug}`                       | RAG チャット         | 要             |
+| `/{locale}/chat/{projectSlug}/{conversationId}`      | チャット履歴         | 要             |
+| `/{locale}/admin`                                    | 管理画面トップ       | 要（管理者）   |
+| `/{locale}/admin/users`                              | ユーザー管理         | 要（管理者）   |
+| `/{locale}/admin/groups`                             | グループ管理         | 要（管理者）   |
+| `/{locale}/admin/settings`                           | システム設定         | 要（管理者）   |
 
 ### Next.js App Router 構成
 
 ```
 app/
-├── (auth)/                                   # 認証関連（Route Group）
-│   ├── login/page.tsx                        # /login
-│   └── register/page.tsx                     # /register
-├── (public)/                                 # 公開ページ（Route Group）
-│   └── docs/
-│       └── [projectSlug]/
-│           ├── page.tsx                      # /docs/{projectSlug}
-│           ├── [...docPath]/page.tsx         # /docs/{projectSlug}/{...docPath}
-│           └── search/page.tsx               # /docs/{projectSlug}/search
-├── projects/
-│   ├── new/page.tsx                          # /projects/new
-│   └── [projectSlug]/
-│       ├── edit/
-│       │   ├── page.tsx                      # /projects/{projectSlug}/edit
-│       │   └── [...docPath]/page.tsx         # /projects/{projectSlug}/edit/{...docPath}
-│       ├── new/page.tsx                      # /projects/{projectSlug}/new
-│       └── settings/page.tsx                 # /projects/{projectSlug}/settings
-├── chat/
-│   └── [projectSlug]/
-│       ├── page.tsx                          # /chat/{projectSlug}
-│       └── [conversationId]/page.tsx         # /chat/{projectSlug}/{conversationId}
-├── admin/
-│   ├── page.tsx                              # /admin
-│   ├── users/page.tsx                        # /admin/users
-│   ├── groups/page.tsx                       # /admin/groups
-│   └── settings/page.tsx                     # /admin/settings
+├── [locale]/                                 # ロケール対応ルート
+│   ├── (auth)/                               # 認証関連（Route Group）
+│   │   ├── login/page.tsx                    # /{locale}/login
+│   │   └── register/page.tsx                 # /{locale}/register
+│   ├── (public)/                             # 公開ページ（Route Group）
+│   │   └── docs/
+│   │       └── [projectSlug]/
+│   │           ├── page.tsx                  # /{locale}/docs/{projectSlug}
+│   │           ├── [...docPath]/page.tsx     # /{locale}/docs/{projectSlug}/{...docPath}
+│   │           └── search/page.tsx           # /{locale}/docs/{projectSlug}/search
+│   ├── projects/
+│   │   ├── new/page.tsx                      # /{locale}/projects/new
+│   │   └── [projectSlug]/
+│   │       ├── edit/
+│   │       │   ├── page.tsx                  # /{locale}/projects/{projectSlug}/edit
+│   │       │   └── [...docPath]/page.tsx     # /{locale}/projects/{projectSlug}/edit/{...docPath}
+│   │       ├── new/page.tsx                  # /{locale}/projects/{projectSlug}/new
+│   │       └── settings/page.tsx             # /{locale}/projects/{projectSlug}/settings
+│   ├── chat/
+│   │   └── [projectSlug]/
+│   │       ├── page.tsx                      # /{locale}/chat/{projectSlug}
+│   │       └── [conversationId]/page.tsx     # /{locale}/chat/{projectSlug}/{conversationId}
+│   ├── admin/
+│   │   ├── page.tsx                          # /{locale}/admin
+│   │   ├── users/page.tsx                    # /{locale}/admin/users
+│   │   ├── groups/page.tsx                   # /{locale}/admin/groups
+│   │   └── settings/page.tsx                 # /{locale}/admin/settings
+│   ├── page.tsx                              # /{locale} (ダッシュボード)
+│   └── layout.tsx                            # ロケール用レイアウト
 ├── api/
 │   └── auth/
 │       └── [...nextauth]/route.ts            # NextAuth.js API Routes
-├── page.tsx                                  # / (ダッシュボード)
-├── layout.tsx
-└── globals.css
+├── layout.tsx                                # ルートレイアウト
+├── globals.css
+└── not-found.tsx                             # 404 ページ
+messages/                                     # 翻訳ファイル（app外）
+├── ja.json                                   # 日本語翻訳
+└── en.json                                   # 英語翻訳
+i18n/                                         # i18n設定（app外）
+├── config.ts                                 # ロケール設定
+└── request.ts                                # next-intl設定
+middleware.ts                                 # ロケールリダイレクト用
 ```
 
 ---
@@ -325,18 +586,19 @@ app/
 
 #### users
 
-| カラム        | 型           | 説明                                         |
-| ------------- | ------------ | -------------------------------------------- |
-| id            | UUID         | 主キー                                       |
-| email         | VARCHAR(255) | メールアドレス（一意）                       |
-| name          | VARCHAR(100) | 表示名                                       |
-| password_hash | VARCHAR(255) | パスワードハッシュ（NULL 許容：OAuth 用）    |
-| auth_provider | VARCHAR(50)  | 認証プロバイダー（local/ldap/google/github） |
-| is_active     | BOOLEAN      | 有効フラグ                                   |
-| is_admin      | BOOLEAN      | 管理者フラグ                                 |
-| api_limit     | INTEGER      | API 呼び出し制限（NULL=無制限）              |
-| created_at    | TIMESTAMP    | 作成日時                                     |
-| updated_at    | TIMESTAMP    | 更新日時                                     |
+| カラム           | 型           | 説明                                         |
+| ---------------- | ------------ | -------------------------------------------- |
+| id               | UUID         | 主キー                                       |
+| email            | VARCHAR(255) | メールアドレス（一意）                       |
+| name             | VARCHAR(100) | 表示名                                       |
+| password_hash    | VARCHAR(255) | パスワードハッシュ（NULL 許容：OAuth 用）    |
+| auth_provider    | VARCHAR(50)  | 認証プロバイダー（local/ldap/google/github） |
+| is_active        | BOOLEAN      | 有効フラグ                                   |
+| is_admin         | BOOLEAN      | 管理者フラグ                                 |
+| api_limit        | INTEGER      | API 呼び出し制限（NULL=無制限）              |
+| preferred_locale | VARCHAR(10)  | 優先言語（ja/en、NULL=ブラウザ設定に従う）   |
+| created_at       | TIMESTAMP    | 作成日時                                     |
+| updated_at       | TIMESTAMP    | 更新日時                                     |
 
 #### projects
 
@@ -739,6 +1001,11 @@ LDAP_BASE_DN=dc=example,dc=com
 - [ ] ドキュメント閲覧
 - [ ] 基本的な RAG チャット（OpenAI）
 - [ ] Docker Compose デプロイ
+- [ ] **UI 国際化対応（日本語/英語）**
+- [ ] **テスト基盤構築**
+  - [ ] バックエンド：単体テスト・統合テスト
+  - [ ] フロントエンド：単体テスト
+  - [ ] CI パイプライン（GitHub Actions）
 
 **除外:**
 
@@ -753,6 +1020,7 @@ LDAP_BASE_DN=dc=example,dc=com
 - [ ] OAuth 認証（Google, GitHub）
 - [ ] グループ・権限管理
 - [ ] 全文検索
+- [ ] **フロントエンド E2E テスト**
 
 ### Phase 3: エンタープライズ（v0.3.0）
 
@@ -763,7 +1031,7 @@ LDAP_BASE_DN=dc=example,dc=com
 
 ### Phase 4: 高度な機能（v1.0.0）
 
-- [ ] マルチ言語対応
+- [ ] 追加言語対応（中国語、韓国語等）
 - [ ] アナリティクス
 - [ ] カスタムドメイン
 - [ ] プラグインシステム
