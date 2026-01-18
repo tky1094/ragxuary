@@ -27,6 +27,7 @@ class UserUpdate(BaseModel):
     password: str | None = None
     is_active: bool | None = None
     api_limit: int | None = None
+    preferred_locale: str | None = None
 
 
 class UserRead(UserBase):
@@ -39,5 +40,6 @@ class UserRead(UserBase):
     is_active: bool
     is_admin: bool
     api_limit: int | None
+    preferred_locale: str | None
     created_at: datetime
     updated_at: datetime

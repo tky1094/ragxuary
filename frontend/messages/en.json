@@ -1,0 +1,120 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "back": "Back",
+    "next": "Next",
+    "search": "Search",
+    "noResults": "No results found",
+    "confirm": "Confirm",
+    "close": "Close"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "projects": "Projects",
+    "docs": "Documentation",
+    "chat": "Chat",
+    "admin": "Admin",
+    "settings": "Settings",
+    "users": "User Management",
+    "groups": "Group Management"
+  },
+  "auth": {
+    "login": "Log in",
+    "logout": "Log out",
+    "register": "Sign up",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "name": "Name",
+    "forgotPassword": "Forgot your password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signInTitle": "Sign In",
+    "signInDescription": "Sign in to your account",
+    "signUpTitle": "Sign Up",
+    "signUpDescription": "Create your account",
+    "invalidCredentials": "Invalid email or password",
+    "accountDisabled": "This account has been disabled"
+  },
+  "projects": {
+    "title": "Projects",
+    "new": "New Project",
+    "name": "Project Name",
+    "description": "Description",
+    "slug": "Slug",
+    "visibility": "Visibility",
+    "public": "Public",
+    "private": "Private",
+    "settings": "Project Settings",
+    "members": "Members",
+    "noProjects": "No projects found"
+  },
+  "docs": {
+    "title": "Documentation",
+    "new": "New Document",
+    "edit": "Edit Document",
+    "search": "Search Documents",
+    "tableOfContents": "Table of Contents",
+    "lastUpdated": "Last Updated",
+    "noDocs": "No documents found"
+  },
+  "chat": {
+    "title": "AI Chat",
+    "placeholder": "Type a message...",
+    "send": "Send",
+    "newConversation": "New Conversation",
+    "noConversations": "No conversations",
+    "sources": "Sources",
+    "thinking": "Thinking..."
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "users": {
+      "title": "User Management",
+      "list": "User List",
+      "create": "Create User",
+      "edit": "Edit User",
+      "active": "Active",
+      "inactive": "Inactive",
+      "admin": "Admin",
+      "apiLimit": "API Limit"
+    },
+    "groups": {
+      "title": "Group Management",
+      "list": "Group List",
+      "create": "Create Group",
+      "edit": "Edit Group",
+      "members": "Members"
+    },
+    "settings": {
+      "title": "System Settings",
+      "llm": "LLM Settings",
+      "embedding": "Embedding Model Settings",
+      "rateLimit": "Rate Limit"
+    }
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "unauthorized": "Authentication required",
+    "forbidden": "Access denied",
+    "serverError": "Server error occurred",
+    "networkError": "Network error occurred",
+    "validationError": "Validation error"
+  },
+  "language": {
+    "select": "Select language",
+    "ja": "日本語",
+    "en": "English"
+  },
+  "metadata": {
+    "title": "ragxuary",
+    "description": "RAG-native documentation tool"
+  }
+}

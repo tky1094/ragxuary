@@ -8,6 +8,7 @@ declare module "next-auth" {
     name: string;
     isAdmin: boolean;
     isActive: boolean;
+    preferredLocale: string | null;
     accessToken: string;
     refreshToken: string;
     accessTokenExpires: number;
@@ -20,6 +21,7 @@ declare module "next-auth" {
       name: string;
       isAdmin: boolean;
       isActive: boolean;
+      preferredLocale: string | null;
     };
     accessToken: string;
     error?: string;
@@ -33,6 +35,7 @@ declare module "next-auth/jwt" {
     name: string;
     isAdmin: boolean;
     isActive: boolean;
+    preferredLocale: string | null;
     accessToken: string;
     refreshToken: string;
     accessTokenExpires: number;
