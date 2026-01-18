@@ -41,7 +41,10 @@
     "signUpTitle": "Sign Up",
     "signUpDescription": "Create your account",
     "invalidCredentials": "Invalid email or password",
-    "accountDisabled": "This account has been disabled"
+    "accountDisabled": "This account has been disabled",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address",
+    "passwordRequired": "Password is required"
   },
   "projects": {
     "title": "Projects",

@@ -41,7 +41,10 @@
     "signUpTitle": "新規登録",
     "signUpDescription": "アカウントを作成してください",
     "invalidCredentials": "メールアドレスまたはパスワードが正しくありません",
-    "accountDisabled": "このアカウントは無効化されています"
+    "accountDisabled": "このアカウントは無効化されています",
+    "emailRequired": "メールアドレスを入力してください",
+    "emailInvalid": "有効なメールアドレスを入力してください",
+    "passwordRequired": "パスワードを入力してください"
   },
   "projects": {
     "title": "プロジェクト",

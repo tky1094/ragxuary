@@ -1,6 +1,6 @@
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import { z } from "zod";
+import NextAuth from 'next-auth';
+import Credentials from 'next-auth/providers/credentials';
+import { z } from 'zod';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -22,15 +22,20 @@ export interface BackendUser {
   preferredLocale: string | null;
 }
 
-async function refreshAccessToken(refreshToken: string): Promise<BackendTokens | null> {
+async function refreshAccessToken(
+  refreshToken: string
+): Promise<BackendTokens | null> {
   try {
-    const response = await fetch(`${process.env.BACKEND_URL}/api/v1/auth/refresh`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ refresh_token: refreshToken }),
-    });
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/api/v1/auth/refresh`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refresh_token: refreshToken }),
+      }
+    );
 
     if (!response.ok) {
       return null;
@@ -79,10 +84,10 @@ async function fetchUserInfo(accessToken: string): Promise<BackendUser | null> {
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
-      name: "credentials",
+      name: 'credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         const parsed = loginSchema.safeParse(credentials);
@@ -94,13 +99,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         try {
           // Call backend login API
-          const response = await fetch(`${process.env.BACKEND_URL}/api/v1/auth/login`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-          });
+          const response = await fetch(
+            `${process.env.BACKEND_URL}/api/v1/auth/login`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ email, password }),
+            }
+          );
 
           if (!response.ok) {
             return null;
@@ -156,12 +164,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
 
       // Access token has expired, refresh it
-      const refreshedTokens = await refreshAccessToken(token.refreshToken as string);
+      const refreshedTokens = await refreshAccessToken(
+        token.refreshToken as string
+      );
       if (!refreshedTokens) {
         // Refresh token is invalid, user needs to sign in again
         return {
           ...token,
-          error: "RefreshAccessTokenError",
+          error: 'RefreshAccessTokenError',
         };
       }
 
@@ -194,9 +204,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   pages: {
-    signIn: "/ja/login",
+    signIn: '/ja/login',
   },
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
   },
 });
