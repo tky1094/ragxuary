@@ -44,7 +44,16 @@
     "accountDisabled": "This account has been disabled",
     "emailRequired": "Email is required",
     "emailInvalid": "Please enter a valid email address",
-    "passwordRequired": "Password is required"
+    "passwordRequired": "Password is required",
+    "nameRequired": "Name is required",
+    "nameTooLong": "Name must be 100 characters or less",
+    "passwordMinLength": "Password must be at least 8 characters",
+    "passwordNeedsLetter": "Password must contain at least one letter",
+    "passwordNeedsNumber": "Password must contain at least one number",
+    "confirmPasswordRequired": "Please confirm your password",
+    "passwordsMustMatch": "Passwords do not match",
+    "emailAlreadyRegistered": "This email is already registered",
+    "registrationFailed": "Registration failed. Please try again"
   },
   "projects": {
     "title": "Projects",
