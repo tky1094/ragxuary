@@ -1,32 +1,36 @@
-import react from "@vitejs/plugin-react";
-import { resolve } from "path";
-import { defineConfig } from "vitest/config";
+import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: "jsdom",
+    environment: 'jsdom',
     globals: true,
-    setupFiles: ["./vitest.setup.ts"],
-    include: ["**/__tests__/**/*.{test,spec}.{ts,tsx}"],
-    exclude: ["node_modules", ".next"],
+    setupFiles: ['./vitest.setup.ts'],
+    include: ['**/__tests__/**/*.{test,spec}.{ts,tsx}'],
+    exclude: ['node_modules', '.next'],
     coverage: {
-      provider: "v8",
-      reporter: ["text", "json", "html", "lcov"],
-      include: ["app/**/*.{ts,tsx}", "components/**/*.{ts,tsx}", "lib/**/*.{ts,tsx}"],
+      provider: 'v8',
+      reporter: ['text', 'json', 'html', 'lcov'],
+      include: [
+        'app/**/*.{ts,tsx}',
+        'components/**/*.{ts,tsx}',
+        'lib/**/*.{ts,tsx}',
+      ],
       exclude: [
-        "**/*.d.ts",
-        "**/__tests__/**",
-        "**/types/**",
-        "app/api/**",
-        "app/**/layout.tsx",
-        "app/**/page.tsx",
+        '**/*.d.ts',
+        '**/__tests__/**',
+        '**/types/**',
+        'app/api/**',
+        'app/**/layout.tsx',
+        'app/**/page.tsx',
       ],
     },
   },
   resolve: {
     alias: {
-      "@": resolve(__dirname, "./"),
+      '@': resolve(__dirname, './'),
     },
   },
 });
