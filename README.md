@@ -113,11 +113,12 @@ npx playwright test
 | フロントエンド         | 70%+           | Vitest, React Testing Library   |
 | E2E（重要フロー）      | -              | Playwright                      |
 
-詳細なテスト戦略については [docs/requirements.md](docs/requirements.md#テスト戦略) を参照してください。
+詳細なテスト戦略については [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md#テスト戦略) を参照してください。
 
 ## ドキュメント
 
-- [要件定義書](docs/requirements.md) - 機能要件、非機能要件、テスト戦略、API 設計など
+- [要件定義書](docs/REQUIREMENTS.md) - 機能要件、非機能要件、テスト戦略、API 設計など
+- [開発フロー](docs/DEVELOPMENT.md) - 開発手順、テスト実行、マイグレーション手順など
 
 ## License
 
