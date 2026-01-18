@@ -44,7 +44,16 @@
     "accountDisabled": "このアカウントは無効化されています",
     "emailRequired": "メールアドレスを入力してください",
     "emailInvalid": "有効なメールアドレスを入力してください",
-    "passwordRequired": "パスワードを入力してください"
+    "passwordRequired": "パスワードを入力してください",
+    "nameRequired": "名前を入力してください",
+    "nameTooLong": "名前は100文字以内で入力してください",
+    "passwordMinLength": "パスワードは8文字以上で入力してください",
+    "passwordNeedsLetter": "パスワードには英字を含めてください",
+    "passwordNeedsNumber": "パスワードには数字を含めてください",
+    "confirmPasswordRequired": "確認用パスワードを入力してください",
+    "passwordsMustMatch": "パスワードが一致しません",
+    "emailAlreadyRegistered": "このメールアドレスは既に登録されています",
+    "registrationFailed": "登録に失敗しました。もう一度お試しください"
   },
   "projects": {
     "title": "プロジェクト",
