@@ -32,11 +32,11 @@ FRONTEND_CHECK_RESULT=""
 echo -e "${YELLOW}📦 Step 1: バックエンドテスト${NC}"
 echo "----------------------------------------"
 cd backend
-if [ -d ".venv" ]; then
-    source .venv/bin/activate
-fi
 
-if pytest --cov=app --cov-report=term-missing 2>&1; then
+# 依存関係をインストール
+uv sync --frozen --extra dev
+
+if uv run pytest --cov=app --cov-report=term-missing 2>&1; then
     BACKEND_TEST_RESULT="${GREEN}✅ 成功${NC}"
     echo -e "${GREEN}✅ バックエンドテスト成功${NC}"
 else
