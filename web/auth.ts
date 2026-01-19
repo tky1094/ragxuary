@@ -9,7 +9,7 @@ import {
   type TokenResponse,
   type UserRead,
 } from '@/client';
-import { serverClient } from '@/lib/api/client';
+import { getServerClient } from '@/lib/api/client';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -36,7 +36,7 @@ async function refreshAccessToken(
 ): Promise<BackendTokens | null> {
   try {
     const { data, error } = await refreshApiV1AuthRefreshPost({
-      client: serverClient,
+      client: getServerClient(),
       body: { refresh_token: refreshToken },
     });
 
@@ -60,7 +60,7 @@ async function refreshAccessToken(
 async function fetchUserInfo(accessToken: string): Promise<BackendUser | null> {
   try {
     const { data, error } = await getCurrentUserInfoApiV1AuthMeGet({
-      client: serverClient,
+      client: getServerClient(),
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -104,7 +104,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         try {
           // Call backend login API using hey-api client
           const { data, error } = await loginApiV1AuthLoginPost({
-            client: serverClient,
+            client: getServerClient(),
             body: { email, password },
           });
 

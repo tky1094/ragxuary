@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { NextResponse } from 'next/server';
 
 import { registerApiV1AuthRegisterPost, type TokenResponse } from '@/client';
-import { serverClient } from '@/lib/api/client';
+import { getServerClient } from '@/lib/api/client';
 
 interface RegisterRequestBody {
   email: string;
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     const body: RegisterRequestBody = await request.json();
 
     const { data, error } = await registerApiV1AuthRegisterPost({
-      client: serverClient,
+      client: getServerClient(),
       body: {
         email: body.email,
         name: body.name,
