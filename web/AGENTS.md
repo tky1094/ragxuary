@@ -352,6 +352,56 @@ export function MyComponent() {
 
 ---
 
+## API Client (hey-api)
+
+### Overview
+
+Backend API client is auto-generated from OpenAPI schema using `@hey-api/openapi-ts`.
+
+```
+web/client/
+├── sdk.gen.ts              # API functions
+├── types.gen.ts            # TypeScript types
+├── zod.gen.ts              # Zod schemas
+├── @tanstack/
+│   └── react-query.gen.ts  # React Query hooks
+└── client/
+    └── client.gen.ts       # Axios client wrapper
+```
+
+### Usage
+
+```tsx
+// Server-side (API routes, Server Components)
+import { loginApiV1AuthLoginPost } from '@/client';
+import { getServerClient } from '@/lib/api/client';
+
+const { data, error } = await loginApiV1AuthLoginPost({
+  client: getServerClient(),
+  body: { email, password },
+});
+
+// Client-side (with React Query)
+import { useLoginApiV1AuthLoginPost } from '@/client/@tanstack/react-query.gen';
+
+const mutation = useLoginApiV1AuthLoginPost();
+mutation.mutate({ body: { email, password } });
+```
+
+### Regenerating Client
+
+```bash
+# From project root
+./scripts/generate-client.sh
+
+# Or from web directory
+npm run openapi-ts
+```
+
+> **Note:** CI automatically creates a PR when API schema changes in `api/app/`.
+
+---
+
 ## Path Aliases
 
 ```tsx

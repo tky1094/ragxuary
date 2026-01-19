@@ -1,0 +1,55 @@
+name: Pre-commit
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  pre-commit:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "api/uv.lock"
+
+      - name: Install Python dependencies
+        run: uv sync --frozen --extra dev
+        working-directory: api
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install Node.js dependencies
+        run: npm ci
+        working-directory: web
+
+      - name: Python lint (ruff check)
+        run: uv run ruff check .
+        working-directory: api
+
+      - name: Python format check (ruff format)
+        run: uv run ruff format --check .
+        working-directory: api
+
+      - name: TypeScript lint (eslint)
+        run: npm run lint
+        working-directory: web
+
+      - name: TypeScript format check (prettier)
+        run: npm run format:check
+        working-directory: web
