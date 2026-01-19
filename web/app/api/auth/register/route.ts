@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { NextResponse } from 'next/server';
 
 import { registerApiV1AuthRegisterPost, type TokenResponse } from '@/client';
-import { getServerClient } from '@/lib/api/client';
+import { getServerClient } from '@/shared/lib/api/client';
 
 interface RegisterRequestBody {
   email: string;

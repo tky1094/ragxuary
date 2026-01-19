@@ -1,6 +1,6 @@
 import { setRequestLocale } from 'next-intl/server';
 
-import { RegisterForm } from '@/components/auth/RegisterForm';
+import { RegisterForm } from '@/features/auth/components/RegisterForm';
 
 interface RegisterPageProps {
   params: Promise<{ locale: string }>;

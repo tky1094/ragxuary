@@ -9,7 +9,7 @@ import {
   type TokenResponse,
   type UserRead,
 } from '@/client';
-import { getServerClient } from '@/lib/api/client';
+import { getServerClient } from '@/shared/lib/api/client';
 
 const loginSchema = z.object({
   email: z.string().email(),

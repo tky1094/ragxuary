@@ -1,6 +1,6 @@
 # Frontend AGENTS.md
 
-Next.js frontend development conventions.
+Next.js frontend development conventions using **Feature-Driven Architecture**.
 
 ---
 
@@ -21,11 +21,11 @@ Next.js frontend development conventions.
 
 ---
 
-## Directory Structure
+## Directory Structure (Feature-Driven Architecture)
 
 ```
 web/
-├── app/
+├── app/                             # Next.js App Router (routing only)
 │   ├── [locale]/                    # Internationalization routes (ja/en)
 │   │   ├── (auth)/                  # Auth pages (Route Group)
 │   │   │   ├── login/page.tsx
@@ -40,29 +40,96 @@ web/
 │   ├── api/                         # API Routes
 │   │   └── auth/[...nextauth]/
 │   └── layout.tsx                   # Root layout
-├── components/
-│   ├── ui/                          # shadcn/ui components
-│   │   └── button.tsx
-│   └── LanguageSwitcher.tsx         # Shared components
-├── lib/
-│   └── utils.ts                     # Utilities
-├── i18n/
-│   ├── config.ts                    # Locale configuration
-│   ├── request.ts                   # next-intl configuration
-│   └── routing.ts                   # Routing configuration
-├── messages/
-│   ├── ja.json                      # Japanese translations
-│   └── en.json                      # English translations
-├── types/
-│   └── next-auth.d.ts               # Type definition extensions
-├── __tests__/                       # Tests
+│
+├── features/                        # Feature modules
+│   └── auth/                        # Authentication feature
+│       ├── components/              # Feature-specific components
+│       │   ├── LoginForm.tsx
+│       │   ├── RegisterForm.tsx
+│       │   └── index.ts
+│       ├── lib/                     # Feature-specific utilities
+│       │   └── validations.ts
+│       ├── __tests__/               # Feature tests
+│       │   ├── LoginForm.test.tsx
+│       │   └── RegisterForm.test.tsx
+│       └── index.ts                 # Public API (barrel export)
+│
+├── shared/                          # Shared code across features
 │   ├── components/
-│   ├── hooks/
+│   │   ├── ui/                      # shadcn/ui components
+│   │   │   ├── button.tsx
+│   │   │   ├── card.tsx
+│   │   │   ├── __tests__/
+│   │   │   │   └── Button.test.tsx
+│   │   │   └── index.ts
+│   │   ├── LanguageSwitcher.tsx
+│   │   └── index.ts
 │   └── lib/
+│       ├── api/
+│       │   └── client.ts            # API client configuration
+│       ├── utils.ts                 # Utilities (cn, etc.)
+│       ├── __tests__/
+│       │   └── utils.test.ts
+│       └── index.ts
+│
+├── client/                          # Auto-generated API client (hey-api)
+├── i18n/                            # Internationalization config
+├── messages/                        # Translation files
+├── types/                           # Global type definitions
 ├── middleware.ts                    # Locale redirect
 ├── auth.ts                          # NextAuth configuration
 └── package.json
 ```
+
+---
+
+## Feature-Driven Architecture
+
+### Import Rules
+
+| From         | To           | Allowed |
+| ------------ | ------------ | ------- |
+| `app/`       | `features/*` | ✅      |
+| `app/`       | `shared/*`   | ✅      |
+| `features/*` | `shared/*`   | ✅      |
+| `features/*` | `client/`    | ✅      |
+| `features/A` | `features/B` | ❌      |
+| `shared/`    | `features/*` | ❌      |
+
+> **Important:** Features must be independent. If two features need shared code, move it to `shared/`.
+
+### Feature Structure
+
+Each feature should follow this structure:
+
+```
+features/{feature-name}/
+├── components/        # UI components for this feature
+│   └── index.ts       # Barrel export
+├── hooks/             # Custom hooks (optional)
+├── lib/               # Utilities, validations (optional)
+├── types/             # Type definitions (optional)
+├── __tests__/         # Tests for this feature
+└── index.ts           # Public API (barrel export)
+```
+
+### Adding a New Feature
+
+1. Create `features/{feature-name}/` directory
+2. Export only public API from `index.ts`
+3. Import from feature root: `import { Component } from '@/features/auth'`
+4. Do NOT import internal files: `import { x } from '@/features/auth/lib/internal'` ❌
+
+### Where Should Code Go?
+
+| Code Type                 | Location                    |
+| ------------------------- | --------------------------- |
+| Used by single feature    | `features/{name}/`          |
+| Used by multiple features | `shared/`                   |
+| shadcn/ui components      | `shared/components/ui/`     |
+| Global utilities (cn)     | `shared/lib/`               |
+| API client configuration  | `shared/lib/api/`           |
+| Layout components         | `shared/components/layout/` |
 
 ---
 
@@ -80,18 +147,19 @@ web/
 
 ### Component Placement
 
-| Type              | Location                  |
-| ----------------- | ------------------------- |
-| shadcn/ui         | `components/ui/`          |
-| Shared components | `components/`             |
-| Page-specific     | Respective page directory |
+| Type                 | Location                      |
+| -------------------- | ----------------------------- |
+| shadcn/ui            | `shared/components/ui/`       |
+| Shared components    | `shared/components/`          |
+| Feature-specific     | `features/{name}/components/` |
+| Page-specific (rare) | Respective page directory     |
 
 ### Styling
 
 ```tsx
 // Use TailwindCSS utility classes
 // Combine classes with cn()
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/utils';
 
 interface ButtonProps {
   className?: string;
@@ -261,15 +329,25 @@ npm run format
 
 ### Directory Structure
 
+Tests are co-located with the code they test:
+
 ```
-__tests__/
+features/auth/
 ├── components/
-│   └── ui/
-│       └── Button.test.tsx
-├── hooks/
-│   └── useAuth.test.ts
+│   └── LoginForm.tsx
+├── __tests__/
+│   └── LoginForm.test.tsx      # Feature tests
+└── index.ts
+
+shared/
+├── components/ui/
+│   ├── button.tsx
+│   └── __tests__/
+│       └── Button.test.tsx     # Shared component tests
 └── lib/
-    └── utils.test.ts
+    ├── utils.ts
+    └── __tests__/
+        └── utils.test.ts       # Utility tests
 ```
 
 ### Test Patterns
@@ -277,7 +355,7 @@ __tests__/
 ```tsx
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/shared/components/ui/button';
 
 describe('Button', () => {
   it('renders children correctly', () => {
@@ -333,8 +411,13 @@ npx shadcn@latest add input
 ### Usage Example
 
 ```tsx
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/shared/components/ui/button';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from '@/shared/components/ui/card';
 
 export function MyComponent() {
   return (
@@ -374,7 +457,7 @@ web/client/
 ```tsx
 // Server-side (API routes, Server Components)
 import { loginApiV1AuthLoginPost } from '@/client';
-import { getServerClient } from '@/lib/api/client';
+import { getServerClient } from '@/shared/lib/api/client';
 
 const { data, error } = await loginApiV1AuthLoginPost({
   client: getServerClient(),
@@ -408,8 +491,17 @@ npm run openapi-ts
 // Configured in tsconfig.json
 // @ → web/
 
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+// Shared components
+import { Button } from '@/shared/components/ui/button';
+import { cn } from '@/shared/lib/utils';
+
+// Feature components (prefer barrel export)
+import { LoginForm } from '@/features/auth';
+
+// Or direct import if needed
+import { LoginForm } from '@/features/auth/components/LoginForm';
+
+// External libraries
 import { useTranslations } from 'next-intl';
 ```
 
