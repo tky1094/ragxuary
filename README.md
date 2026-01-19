@@ -115,6 +115,38 @@ npx playwright test
 
 詳細なテスト戦略については [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md#テスト戦略) を参照してください。
 
+### API クライアント生成
+
+バックエンドの OpenAPI スキーマから TypeScript クライアントを自動生成しています。
+
+```bash
+# API クライアントの再生成
+./scripts/generate-client.sh
+```
+
+生成されたクライアントは `web/client/` に配置され、型安全な API 呼び出しが可能です。
+
+> **Note:** `api/app/` 配下のファイルが変更されると、CI が自動でクライアントを再生成する PR を作成します。
+
+### Pre-commit フック
+
+コード品質を保つため、pre-commit フックを設定できます。
+
+```bash
+# pre-commit のインストール
+pip install pre-commit
+
+# フックのインストール
+pre-commit install
+
+# 全ファイルに対して手動実行（オプション）
+pre-commit run --all-files
+```
+
+設定済みのチェック:
+- **Python**: ruff (リント・フォーマット)
+- **TypeScript**: prettier, eslint
+
 ## ドキュメント
 
 - [要件定義書](docs/REQUIREMENTS.md) - 機能要件、非機能要件、テスト戦略、API 設計など

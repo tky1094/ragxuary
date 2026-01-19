@@ -11,6 +11,7 @@
 3. [開発フロー](#開発フロー)
 4. [確認フロー](#確認フロー)
 5. [コマンドリファレンス](#コマンドリファレンス)
+6. [API クライアント再生成](#api-クライアント再生成)
 
 ---
 
@@ -183,6 +184,9 @@ npm run lint
 npm run format:check
 ```
 
+> **Tip:** pre-commit フックを設定すると、コミット時に自動でこれらのチェックを実行できます。
+> 詳細は [README.md](../README.md#pre-commit-フック) を参照してください。
+
 ### Step 4: Docker Compose での動作確認
 
 #### 4.1 サービスのビルドと起動
@@ -203,8 +207,8 @@ docker compose ps
 
 ```
 NAME       STATUS
-backend    Up (healthy)
-frontend   Up
+api        Up (healthy)
+web        Up
 postgres   Up (healthy)
 redis      Up (healthy)
 ```
@@ -355,6 +359,38 @@ fi
 
 echo "=== 確認フロー完了 ✅ ==="
 ```
+
+---
+
+## API クライアント再生成
+
+バックエンドの API スキーマを変更した場合、フロントエンドのクライアントコードを再生成する必要があります。
+
+### 手動再生成
+
+```bash
+# プロジェクトルートから実行
+./scripts/generate-client.sh
+```
+
+このスクリプトは以下を実行します：
+
+1. バックエンドから OpenAPI スキーマを抽出
+2. `@hey-api/openapi-ts` でクライアントコードを生成
+3. `web/client/` に出力
+
+### CI による自動再生成
+
+`api/app/` 配下のファイルが `main` ブランチにマージされると、CI が自動でクライアントを再生成し、差分がある場合は PR を作成します。
+
+### 生成されるファイル
+
+| ファイル | 内容 |
+|---------|------|
+| `sdk.gen.ts` | API 呼び出し関数 |
+| `types.gen.ts` | TypeScript 型定義 |
+| `zod.gen.ts` | Zod バリデーションスキーマ |
+| `@tanstack/react-query.gen.ts` | React Query フック |
 
 ---
 
