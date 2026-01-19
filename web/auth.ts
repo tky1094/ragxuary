@@ -2,6 +2,15 @@ import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
 
+import {
+  loginApiV1AuthLoginPost,
+  refreshApiV1AuthRefreshPost,
+  getCurrentUserInfoApiV1AuthMeGet,
+  type TokenResponse,
+  type UserRead,
+} from '@/client';
+import { serverClient } from '@/lib/api/client';
+
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1),
@@ -26,22 +35,16 @@ async function refreshAccessToken(
   refreshToken: string
 ): Promise<BackendTokens | null> {
   try {
-    const response = await fetch(
-      `${process.env.BACKEND_URL}/api/v1/auth/refresh`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ refresh_token: refreshToken }),
-      }
-    );
+    const { data, error } = await refreshApiV1AuthRefreshPost({
+      client: serverClient,
+      body: { refresh_token: refreshToken },
+    });
 
-    if (!response.ok) {
+    if (error || !data) {
       return null;
     }
 
-    const tokens = await response.json();
+    const tokens = data as TokenResponse;
 
     return {
       accessToken: tokens.access_token,
@@ -56,17 +59,18 @@ async function refreshAccessToken(
 
 async function fetchUserInfo(accessToken: string): Promise<BackendUser | null> {
   try {
-    const response = await fetch(`${process.env.BACKEND_URL}/api/v1/auth/me`, {
+    const { data, error } = await getCurrentUserInfoApiV1AuthMeGet({
+      client: serverClient,
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
 
-    if (!response.ok) {
+    if (error || !data) {
       return null;
     }
 
-    const user = await response.json();
+    const user = data as UserRead;
 
     return {
       id: user.id,
@@ -98,23 +102,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const { email, password } = parsed.data;
 
         try {
-          // Call backend login API
-          const response = await fetch(
-            `${process.env.BACKEND_URL}/api/v1/auth/login`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ email, password }),
-            }
-          );
+          // Call backend login API using hey-api client
+          const { data, error } = await loginApiV1AuthLoginPost({
+            client: serverClient,
+            body: { email, password },
+          });
 
-          if (!response.ok) {
+          if (error || !data) {
             return null;
           }
 
-          const tokens = await response.json();
+          const tokens = data as TokenResponse;
 
           // Fetch user info
           const user = await fetchUserInfo(tokens.access_token);
