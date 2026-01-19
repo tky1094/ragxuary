@@ -84,7 +84,7 @@ docker compose ps
 **バックエンド:**
 
 ```bash
-cd backend
+cd api
 
 # テスト実行
 pytest
@@ -96,7 +96,7 @@ pytest --cov=app --cov-report=html
 **フロントエンド:**
 
 ```bash
-cd frontend
+cd web
 
 # 単体テスト・コンポーネントテスト
 npm run test

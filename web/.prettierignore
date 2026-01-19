@@ -1,0 +1,6 @@
+node_modules
+.next
+dist
+client
+openapi.json
+coverage

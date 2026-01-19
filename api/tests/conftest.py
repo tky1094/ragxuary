@@ -56,6 +56,7 @@ async def test_session(test_engine) -> AsyncGenerator[AsyncSession, None]:
 @pytest_asyncio.fixture
 async def client(test_session: AsyncSession) -> AsyncGenerator[AsyncClient, None]:
     """Create a test HTTP client with overridden dependencies."""
+
     # Override the database dependency
     async def override_get_db() -> AsyncGenerator[AsyncSession, None]:
         yield test_session

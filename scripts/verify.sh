@@ -31,7 +31,7 @@ FRONTEND_CHECK_RESULT=""
 # Step 1: バックエンドテスト
 echo -e "${YELLOW}📦 Step 1: バックエンドテスト${NC}"
 echo "----------------------------------------"
-cd backend
+cd api
 
 # 依存関係をインストール
 uv sync --frozen --extra dev
@@ -49,7 +49,7 @@ echo ""
 # Step 2: フロントエンドテスト
 echo -e "${YELLOW}📦 Step 2: フロントエンドテスト${NC}"
 echo "----------------------------------------"
-cd frontend
+cd web
 
 if npm run test:run 2>&1; then
     FRONTEND_TEST_RESULT="${GREEN}✅ 成功${NC}"
@@ -90,7 +90,7 @@ echo ""
 # Step 4: マイグレーション
 echo -e "${YELLOW}📊 Step 4: マイグレーション実行${NC}"
 echo "----------------------------------------"
-docker compose exec -T backend alembic upgrade head
+docker compose exec -T api alembic upgrade head
 echo ""
 
 # Step 5: ヘルスチェック

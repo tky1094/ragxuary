@@ -7,7 +7,14 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   eslintConfigPrettier,
-  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts']),
+  globalIgnores([
+    '.next/**',
+    'out/**',
+    'build/**',
+    'next-env.d.ts',
+    'client/**', // auto-generated OpenAPI client
+    'coverage/**', // test coverage reports
+  ]),
   // テストファイル用の設定
   {
     files: [
