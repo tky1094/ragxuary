@@ -47,10 +47,10 @@ pnpm-debug.log*
 # ----------------------------------------
 # Next.js
 # ----------------------------------------
-frontend/.next/
-frontend/out/
-frontend/.swc/
-frontend/next-env.d.ts
+web/.next/
+web/out/
+web/.swc/
+web/next-env.d.ts
 
 # ----------------------------------------
 # React / Build outputs
@@ -74,7 +74,7 @@ downloads/
 eggs/
 .eggs/
 lib/
-!frontend/lib/
+!web/lib/
 lib64/
 parts/
 sdist/
@@ -123,12 +123,12 @@ dmypy.json
 .env*.local
 
 # Backend specific
-backend/.env
-backend/.env.*
+api/.env
+api/.env.*
 
 # Frontend specific
-frontend/.env
-frontend/.env.*
+web/.env
+web/.env.*
 
 # ----------------------------------------
 # Docker
@@ -191,7 +191,7 @@ temp/
 *.gguf
 *.bin
 models/
-!backend/app/models/
+!api/app/models/
 
 # Vector database local files (if any)
 chroma_db/
