@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 
-import { LoginForm } from '@/components/auth/LoginForm';
+import { LoginForm } from '@/features/auth/components/LoginForm';
 
 const mockPush = vi.fn();
 const mockSignIn = vi.fn();

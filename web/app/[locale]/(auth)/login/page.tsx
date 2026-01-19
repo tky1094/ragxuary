@@ -1,6 +1,6 @@
 import { setRequestLocale } from 'next-intl/server';
 
-import { LoginForm } from '@/components/auth/LoginForm';
+import { LoginForm } from '@/features/auth/components/LoginForm';
 
 interface LoginPageProps {
   params: Promise<{ locale: string }>;
