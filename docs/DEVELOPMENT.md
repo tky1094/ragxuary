@@ -112,7 +112,7 @@ Issue の完了を宣言する前に、以下の確認フローを **必ず** �
 #### バックエンド
 
 ```bash
-cd backend
+cd api
 source .venv/bin/activate  # 仮想環境を有効化
 pip install -e ".[dev]"
 ```
@@ -120,7 +120,7 @@ pip install -e ".[dev]"
 #### フロントエンド
 
 ```bash
-cd frontend
+cd web
 npm install
 ```
 
@@ -129,7 +129,7 @@ npm install
 #### バックエンドテスト
 
 ```bash
-cd backend
+cd api
 source .venv/bin/activate
 pytest --cov=app --cov-report=term-missing
 ```
@@ -143,7 +143,7 @@ pytest --cov=app --cov-report=term-missing
 #### フロントエンドテスト
 
 ```bash
-cd frontend
+cd web
 npm run test:run
 ```
 
@@ -155,7 +155,7 @@ npm run test:run
 #### フロントエンドカバレッジ
 
 ```bash
-cd frontend
+cd web
 npm run test:coverage
 ```
 
@@ -169,7 +169,7 @@ npm run test:coverage
 #### バックエンド
 
 ```bash
-cd backend
+cd api
 source .venv/bin/activate
 ruff check .
 ruff format --check .
@@ -178,7 +178,7 @@ ruff format --check .
 #### フロントエンド
 
 ```bash
-cd frontend
+cd web
 npm run lint
 npm run format:check
 ```
@@ -212,7 +212,7 @@ redis      Up (healthy)
 #### 4.3 マイグレーションの実行
 
 ```bash
-docker compose exec backend alembic upgrade head
+docker compose exec api alembic upgrade head
 ```
 
 #### 4.4 API の動作確認
@@ -295,11 +295,11 @@ curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/ja/register
 | -------------------- | -------------------------------------------------- |
 | Issue 一覧           | `gh issue list`                                    |
 | Issue 詳細           | `gh issue view <number>`                           |
-| バックエンドテスト   | `cd backend && pytest --cov=app`                   |
-| フロントエンドテスト | `cd frontend && npm run test:run`                  |
+| バックエンドテスト   | `cd api && pytest --cov=app`                   |
+| フロントエンドテスト | `cd web && npm run test:run`                  |
 | Docker ビルド        | `docker compose up -d --build`                     |
 | Docker 状態確認      | `docker compose ps`                                |
-| マイグレーション     | `docker compose exec backend alembic upgrade head` |
+| マイグレーション     | `docker compose exec api alembic upgrade head` |
 | ヘルスチェック       | `curl http://localhost:8000/api/v1/health`         |
 
 ### 一括確認スクリプト
@@ -316,14 +316,14 @@ echo "=== 確認フロー開始 ==="
 
 # バックエンドテスト
 echo "📦 バックエンドテスト..."
-cd backend
+cd api
 source .venv/bin/activate
 pytest --cov=app --cov-report=term-missing
 cd ..
 
 # フロントエンドテスト
 echo "📦 フロントエンドテスト..."
-cd frontend
+cd web
 npm run test:run
 cd ..
 
@@ -337,7 +337,7 @@ sleep 10
 
 # マイグレーション
 echo "📊 マイグレーション実行..."
-docker compose exec backend alembic upgrade head
+docker compose exec api alembic upgrade head
 
 # ヘルスチェック
 echo "🏥 ヘルスチェック..."
@@ -365,7 +365,7 @@ echo "=== 確認フロー完了 ✅ ==="
 **package-lock.json の同期エラー:**
 
 ```bash
-cd frontend
+cd web
 rm -rf node_modules package-lock.json
 npm install
 ```
@@ -386,10 +386,10 @@ docker compose build --no-cache
 
 ```bash
 # マイグレーション履歴を確認
-docker compose exec backend alembic history
+docker compose exec api alembic history
 
 # 特定のリビジョンにダウングレード
-docker compose exec backend alembic downgrade <revision>
+docker compose exec api alembic downgrade <revision>
 ```
 
 ---

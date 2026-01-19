@@ -28,9 +28,9 @@ See the `AGENTS.md` in each directory for details.
 
 ```
 ragxuary/
-├── frontend/              # Next.js frontend
+├── web/                   # Next.js frontend
 │   └── AGENTS.md          # Frontend conventions
-├── backend/               # FastAPI backend
+├── api/                   # FastAPI backend
 │   └── AGENTS.md          # Backend conventions
 ├── docs/
 │   ├── REQUIREMENTS.md    # Requirements specification
@@ -90,7 +90,7 @@ docker compose ps
 ### Migration
 
 ```bash
-docker compose exec backend alembic upgrade head
+docker compose exec api alembic upgrade head
 ```
 
 ### Verification
@@ -119,27 +119,27 @@ After code changes, run the following:
 
 ```bash
 # Backend
-cd backend && source .venv/bin/activate && pytest --cov=app
+cd api && source .venv/bin/activate && pytest --cov=app
 
 # Frontend
-cd frontend && npm run test:run
+cd web && npm run test:run
 ```
 
 ### 2. Lint Check
 
 ```bash
 # Backend
-cd backend && ruff check . && ruff format --check .
+cd api && ruff check . && ruff format --check .
 
 # Frontend
-cd frontend && npm run lint && npm run format:check
+cd web && npm run lint && npm run format:check
 ```
 
 ### 3. Docker Compose Verification (for major changes)
 
 ```bash
 docker compose up -d --build
-docker compose exec backend alembic upgrade head
+docker compose exec api alembic upgrade head
 curl http://localhost:8000/api/v1/health
 ```
 

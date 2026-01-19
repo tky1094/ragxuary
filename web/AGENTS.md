@@ -24,7 +24,7 @@ Next.js frontend development conventions.
 ## Directory Structure
 
 ```
-frontend/
+web/
 ├── app/
 │   ├── [locale]/                    # Internationalization routes (ja/en)
 │   │   ├── (auth)/                  # Auth pages (Route Group)
@@ -356,7 +356,7 @@ export function MyComponent() {
 
 ```tsx
 // Configured in tsconfig.json
-// @ → frontend/
+// @ → web/
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';

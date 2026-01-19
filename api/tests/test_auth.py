@@ -17,7 +17,9 @@ class TestRegister:
         test_user_data: dict[str, Any],
     ) -> None:
         """Test successful user registration."""
-        with patch("app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock):
+        with patch(
+            "app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock
+        ):
             response = await client.post(
                 "/api/v1/auth/register",
                 json=test_user_data,
@@ -35,7 +37,9 @@ class TestRegister:
         test_user_data: dict[str, Any],
     ) -> None:
         """Test registration with duplicate email."""
-        with patch("app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock):
+        with patch(
+            "app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock
+        ):
             # Register first user
             await client.post(
                 "/api/v1/auth/register",
@@ -126,7 +130,9 @@ class TestLogin:
         test_user_data: dict[str, Any],
     ) -> None:
         """Test successful login."""
-        with patch("app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock):
+        with patch(
+            "app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock
+        ):
             # Register user first
             await client.post(
                 "/api/v1/auth/register",
@@ -154,7 +160,9 @@ class TestLogin:
         test_user_data: dict[str, Any],
     ) -> None:
         """Test login with wrong password."""
-        with patch("app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock):
+        with patch(
+            "app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock
+        ):
             # Register user first
             await client.post(
                 "/api/v1/auth/register",
@@ -200,7 +208,9 @@ class TestLogout:
         test_user_data: dict[str, Any],
     ) -> None:
         """Test successful logout."""
-        with patch("app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock) as mock_blacklist:
+        with patch(
+            "app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock
+        ) as mock_blacklist:
             # Register and get token
             register_response = await client.post(
                 "/api/v1/auth/register",
@@ -239,8 +249,14 @@ class TestRefresh:
         test_user_data: dict[str, Any],
     ) -> None:
         """Test successful token refresh."""
-        with patch("app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock):
-            with patch("app.api.v1.endpoints.auth.is_token_blacklisted", new_callable=AsyncMock, return_value=False):
+        with patch(
+            "app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock
+        ):
+            with patch(
+                "app.api.v1.endpoints.auth.is_token_blacklisted",
+                new_callable=AsyncMock,
+                return_value=False,
+            ):
                 # Register and get tokens
                 register_response = await client.post(
                     "/api/v1/auth/register",
@@ -265,7 +281,11 @@ class TestRefresh:
         client: AsyncClient,
     ) -> None:
         """Test refresh with invalid token."""
-        with patch("app.api.v1.endpoints.auth.is_token_blacklisted", new_callable=AsyncMock, return_value=False):
+        with patch(
+            "app.api.v1.endpoints.auth.is_token_blacklisted",
+            new_callable=AsyncMock,
+            return_value=False,
+        ):
             response = await client.post(
                 "/api/v1/auth/refresh",
                 json={"refresh_token": "invalid_token"},
@@ -279,7 +299,9 @@ class TestRefresh:
         test_user_data: dict[str, Any],
     ) -> None:
         """Test refresh with blacklisted token."""
-        with patch("app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock):
+        with patch(
+            "app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock
+        ):
             # Register and get tokens
             register_response = await client.post(
                 "/api/v1/auth/register",
@@ -288,7 +310,11 @@ class TestRefresh:
             refresh_token = register_response.json()["refresh_token"]
 
         # Mock blacklisted token
-        with patch("app.api.v1.endpoints.auth.is_token_blacklisted", new_callable=AsyncMock, return_value=True):
+        with patch(
+            "app.api.v1.endpoints.auth.is_token_blacklisted",
+            new_callable=AsyncMock,
+            return_value=True,
+        ):
             response = await client.post(
                 "/api/v1/auth/refresh",
                 json={"refresh_token": refresh_token},
@@ -307,8 +333,14 @@ class TestGetCurrentUser:
         test_user_data: dict[str, Any],
     ) -> None:
         """Test getting current user info."""
-        with patch("app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock):
-            with patch("app.api.deps.is_token_blacklisted", new_callable=AsyncMock, return_value=False):
+        with patch(
+            "app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock
+        ):
+            with patch(
+                "app.api.deps.is_token_blacklisted",
+                new_callable=AsyncMock,
+                return_value=False,
+            ):
                 # Register and get token
                 register_response = await client.post(
                     "/api/v1/auth/register",
@@ -344,7 +376,11 @@ class TestGetCurrentUser:
         client: AsyncClient,
     ) -> None:
         """Test getting current user with invalid token."""
-        with patch("app.api.deps.is_token_blacklisted", new_callable=AsyncMock, return_value=False):
+        with patch(
+            "app.api.deps.is_token_blacklisted",
+            new_callable=AsyncMock,
+            return_value=False,
+        ):
             response = await client.get(
                 "/api/v1/auth/me",
                 headers={"Authorization": "Bearer invalid_token"},
@@ -358,7 +394,9 @@ class TestGetCurrentUser:
         test_user_data: dict[str, Any],
     ) -> None:
         """Test getting current user with blacklisted token."""
-        with patch("app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock):
+        with patch(
+            "app.api.v1.endpoints.auth.add_token_to_blacklist", new_callable=AsyncMock
+        ):
             # Register and get token
             register_response = await client.post(
                 "/api/v1/auth/register",
@@ -367,7 +405,11 @@ class TestGetCurrentUser:
             access_token = register_response.json()["access_token"]
 
         # Mock blacklisted token
-        with patch("app.api.deps.is_token_blacklisted", new_callable=AsyncMock, return_value=True):
+        with patch(
+            "app.api.deps.is_token_blacklisted",
+            new_callable=AsyncMock,
+            return_value=True,
+        ):
             response = await client.get(
                 "/api/v1/auth/me",
                 headers={"Authorization": f"Bearer {access_token}"},

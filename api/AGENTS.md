@@ -24,7 +24,7 @@ FastAPI backend development conventions.
 ## Directory Structure
 
 ```
-backend/
+api/
 ├── app/
 │   ├── api/
 │   │   ├── deps.py              # Dependency injection

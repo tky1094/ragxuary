@@ -28,25 +28,25 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-  frontend:
+  web:
     build:
-      context: ./frontend
+      context: ./web
       dockerfile: Dockerfile
-    container_name: frontend
+    container_name: web
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
       - AUTH_SECRET=change-this-in-production
       - AUTH_TRUST_HOST=true
-      - BACKEND_URL=http://backend:8000
+      - BACKEND_URL=http://api:8000
     depends_on:
-      - backend
-  backend:
+      - api
+  api:
     build:
-      context: ./backend
+      context: ./api
       dockerfile: Dockerfile
-    container_name: backend
+    container_name: api
     ports:
       - "8000:8000"
     environment:
