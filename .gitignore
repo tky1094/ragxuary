@@ -1,5 +1,7 @@
 # ========================================
-# ragxuary - .gitignore
+# ragxuary - Root .gitignore
+# Shared entries only (OS, IDE, security)
+# See web/.gitignore and api/.gitignore for specific entries
 # ========================================
 
 # ----------------------------------------
@@ -21,98 +23,10 @@ Thumbs.db
 *.swp
 *.swo
 *.swn
-*.bak
 *~
 .project
 .classpath
 .settings/
-
-# ----------------------------------------
-# Node.js / npm / pnpm / yarn
-# ----------------------------------------
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-.pnpm-store/
-.npm/
-.yarn/
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
-
-# ----------------------------------------
-# Next.js
-# ----------------------------------------
-web/.next/
-web/out/
-web/.swc/
-web/next-env.d.ts
-
-# ----------------------------------------
-# React / Build outputs
-# ----------------------------------------
-build/
-dist/
-*.tsbuildinfo
-
-# ----------------------------------------
-# Python
-# ----------------------------------------
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-!web/lib/
-!web/shared/lib/
-!web/features/*/lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Python virtual environments
-.venv/
-venv/
-ENV/
-env/
-.env.venv/
-
-# Pytest
-.pytest_cache/
-pytest.ini
-.coverage
-htmlcov/
-.tox/
-.nox/
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Ruff
-.ruff_cache/
-
-# Jupyter Notebook
-.ipynb_checkpoints
 
 # ----------------------------------------
 # Environment variables
@@ -124,18 +38,9 @@ dmypy.json
 .env.production.local
 .env*.local
 
-# Backend specific
-api/.env
-api/.env.*
-
-# Frontend specific
-web/.env
-web/.env.*
-
 # ----------------------------------------
 # Docker
 # ----------------------------------------
-# Docker volumes data (if stored locally)
 docker-data/
 postgres-data/
 redis-data/
@@ -145,18 +50,6 @@ redis-data/
 # ----------------------------------------
 logs/
 *.log
-npm-debug.log*
-yarn-debug.log*
-pnpm-debug.log*
-
-# ----------------------------------------
-# Testing / Coverage
-# ----------------------------------------
-coverage/
-.nyc_output/
-*.lcov
-.coverage
-htmlcov/
 
 # ----------------------------------------
 # Git credentials / SSH keys (security)
@@ -195,14 +88,18 @@ temp/
 models/
 !api/app/models/
 
-# Vector database local files (if any)
+# Vector database local files
 chroma_db/
 faiss_index/
 
 # ----------------------------------------
-# Miscellaneous
+# Claude Code (personal settings)
 # ----------------------------------------
-*.local
-.turbo/
+.claude/CLAUDE.md
+
+# ----------------------------------------
+# Deployment / Hosting
+# ----------------------------------------
 .vercel/
 .netlify/
+.turbo/
