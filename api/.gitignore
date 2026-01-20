@@ -1,0 +1,75 @@
+# ========================================
+# ragxuary/api - Backend .gitignore
+# Python / FastAPI specific entries
+# ========================================
+
+# ----------------------------------------
+# Python bytecode
+# ----------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ----------------------------------------
+# Distribution / Packaging
+# ----------------------------------------
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ----------------------------------------
+# Virtual environments
+# ----------------------------------------
+.venv/
+venv/
+ENV/
+env/
+.env.venv/
+
+# ----------------------------------------
+# Testing / Coverage
+# ----------------------------------------
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# ----------------------------------------
+# Type checking
+# ----------------------------------------
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ----------------------------------------
+# Linting / Formatting
+# ----------------------------------------
+.ruff_cache/
+
+# ----------------------------------------
+# Jupyter Notebook
+# ----------------------------------------
+.ipynb_checkpoints/
+
+# ----------------------------------------
+# Environment (backend specific)
+# ----------------------------------------
+.env
+.env.*
