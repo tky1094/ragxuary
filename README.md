@@ -86,11 +86,8 @@ docker compose ps
 ```bash
 cd api
 
-# テスト実行
-pytest
-
-# カバレッジ付きで実行
-pytest --cov=app --cov-report=html
+# テスト実行（カバレッジ付き）
+pytest --cov=app --cov-report=term-missing
 ```
 
 **フロントエンド:**
@@ -99,7 +96,7 @@ pytest --cov=app --cov-report=html
 cd web
 
 # 単体テスト・コンポーネントテスト
-npm run test
+npm run test:run
 
 # E2E テスト
 npx playwright test
@@ -107,13 +104,11 @@ npx playwright test
 
 ### テスト方針
 
-| 対象                   | 目標カバレッジ | ツール                          |
-| ---------------------- | -------------- | ------------------------------- |
-| バックエンド           | 80%+           | pytest, pytest-asyncio, httpx   |
-| フロントエンド         | 70%+           | Vitest, React Testing Library   |
-| E2E（重要フロー）      | -              | Playwright                      |
-
-詳細なテスト戦略については [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md#テスト戦略) を参照してください。
+| 対象           | 目標（SHOULD） | 必須（MUST） | ツール                        |
+| -------------- | -------------- | ------------ | ----------------------------- |
+| バックエンド   | 80%+           | 70%          | pytest, pytest-asyncio, httpx |
+| フロントエンド | 70%+           | 60%          | Vitest, React Testing Library |
+| E2E            | -              | -            | Playwright                    |
 
 ### API クライアント生成
 
@@ -149,8 +144,7 @@ pre-commit run --all-files
 
 ## ドキュメント
 
-- [要件定義書](docs/REQUIREMENTS.md) - 機能要件、非機能要件、テスト戦略、API 設計など
-- [開発フロー](docs/DEVELOPMENT.md) - 開発手順、テスト実行、マイグレーション手順など
+- [要件定義書](docs/REQUIREMENTS.md) - 機能要件、非機能要件、API 設計など
 
 ## License
 
