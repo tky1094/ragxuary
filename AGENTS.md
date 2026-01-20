@@ -33,10 +33,34 @@ ragxuary/
 ├── api/                   # FastAPI backend
 │   └── AGENTS.md          # Backend conventions
 ├── docs/
-│   ├── REQUIREMENTS.md    # Requirements specification
-│   └── DEVELOPMENT.md     # Development workflow
+│   └── REQUIREMENTS.md    # Requirements specification
+├── scripts/
+│   └── generate-client.sh # API client generation
 └── docker-compose.yml
 ```
+
+---
+
+## Issue-Driven Development
+
+All development follows a GitHub Issue-driven workflow:
+
+```
+Issue → Branch → Implement → Test → Verification → Merge → Close Issue
+```
+
+### Issue Guidelines
+
+- Use labels: `frontend`, `backend`, `infra`, `documentation`, `bug`, `enhancement`
+- Include task checklist and acceptance criteria
+- Reference related issues
+
+### Development Flow
+
+1. Check issue: `gh issue view <number>`
+2. Create branch: `git checkout -b feature/<issue_number>-<short_description>`
+3. Implement with small commits (include issue number)
+4. Run verification flow before PR
 
 ---
 
@@ -111,21 +135,32 @@ docker compose down -v
 
 ---
 
-## Verification Flow (Overall)
+## Verification Flow
 
-After code changes, run the following:
+Before declaring an issue complete, run the following verification flow:
 
-### 1. Run Tests
+### Step 1: Update Dependencies
 
 ```bash
 # Backend
-cd api && source .venv/bin/activate && pytest --cov=app
+cd api && source .venv/bin/activate && pip install -e ".[dev]"
 
 # Frontend
-cd web && npm run test:run
+cd web && npm install
 ```
 
-### 2. Lint Check
+### Step 2: Run Tests
+
+```bash
+# Backend (target: 70% MUST, 80% SHOULD)
+cd api && source .venv/bin/activate && pytest --cov=app --cov-report=term-missing
+
+# Frontend (target: 60% MUST, 70% SHOULD)
+cd web && npm run test:run
+cd web && npm run test:coverage  # For coverage report
+```
+
+### Step 3: Lint Check
 
 ```bash
 # Backend
@@ -135,15 +170,90 @@ cd api && ruff check . && ruff format --check .
 cd web && npm run lint && npm run format:check
 ```
 
-### 3. Docker Compose Verification (for major changes)
+### Step 4: Docker Compose Verification (for major changes)
 
 ```bash
+docker compose down -v
 docker compose up -d --build
 docker compose exec api alembic upgrade head
-curl http://localhost:8000/api/v1/health
+curl -s http://localhost:8000/api/v1/health | jq .
+curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/ja/login  # Should return 200
 ```
 
-See the `AGENTS.md` in each directory for details.
+### Verification Checklist
+
+```markdown
+### Tests
+- [ ] Backend tests pass
+- [ ] Frontend tests pass
+- [ ] Coverage meets targets
+
+### Lint
+- [ ] Backend lint passes
+- [ ] Frontend lint passes
+
+### Docker Compose (if applicable)
+- [ ] Build succeeds
+- [ ] All services healthy
+- [ ] Migrations succeed
+- [ ] Health check passes
+- [ ] Frontend pages accessible
+
+### Issue
+- [ ] All tasks completed
+- [ ] Acceptance criteria met
+```
+
+---
+
+## API Client Regeneration
+
+When backend API schema changes, regenerate the frontend client:
+
+```bash
+# From project root
+./scripts/generate-client.sh
+```
+
+This script:
+1. Extracts OpenAPI schema from backend
+2. Generates client code using `@hey-api/openapi-ts`
+3. Outputs to `web/client/`
+
+**Generated files:**
+| File | Content |
+|------|---------|
+| `sdk.gen.ts` | API call functions |
+| `types.gen.ts` | TypeScript types |
+| `zod.gen.ts` | Zod validation schemas |
+| `@tanstack/react-query.gen.ts` | React Query hooks |
+
+> **Note:** CI automatically creates a PR when API schema changes in `api/app/` are merged to main.
+
+---
+
+## Test Coverage Targets
+
+| Area | SHOULD | MUST |
+|------|--------|------|
+| Backend | 80%+ | 70% |
+| Frontend | 70%+ | 60% |
+| Critical business logic | 90%+ | 80% |
+
+---
+
+## Quick Command Reference
+
+| Operation | Command |
+|-----------|---------|
+| Issue list | `gh issue list` |
+| Issue detail | `gh issue view <number>` |
+| Backend test | `cd api && pytest --cov=app` |
+| Frontend test | `cd web && npm run test:run` |
+| Docker build | `docker compose up -d --build` |
+| Docker status | `docker compose ps` |
+| Migration | `docker compose exec api alembic upgrade head` |
+| Health check | `curl http://localhost:8000/api/v1/health` |
 
 ---
 
@@ -166,4 +276,3 @@ See the `AGENTS.md` in each directory for details.
 ## Reference Documentation
 
 - [Requirements Specification](docs/REQUIREMENTS.md) - Functional requirements, API design, DB design
-- [Development Workflow](docs/DEVELOPMENT.md) - Issue-driven development, verification flow

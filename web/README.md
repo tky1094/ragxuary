@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ragxuary Frontend
 
-## Getting Started
+Next.js frontend for ragxuary - a RAG-native documentation tool.
 
-First, run the development server:
+## Quick Start
+
+### Prerequisites
+
+- Node.js 20+
+- npm
+
+### Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Install dependencies
+npm install
+
+# Create environment file
+cp .env.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Start development server
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The app will be available at http://localhost:3000
 
-## Learn More
+### Testing
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# Run tests in watch mode
+npm run test
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Run tests once
+npm run test:run
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Run tests with coverage
+npm run test:coverage
 
-## Deploy on Vercel
+# Run E2E tests
+npx playwright test
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Building
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+# Build for production
+npm run build
+
+# Start production server
+npm run start
+```
+
+### Linting
+
+```bash
+# Check for issues
+npm run lint
+npm run format:check
+
+# Auto-fix issues
+npm run format
+```
+
+## Tech Stack
+
+- **Framework**: Next.js 14+ (App Router)
+- **Language**: TypeScript
+- **Styling**: TailwindCSS + shadcn/ui
+- **State Management**: TanStack Query + Zustand
+- **Testing**: Vitest + React Testing Library + Playwright
+- **i18n**: next-intl
+
+## Project Structure
+
+```
+web/
+├── app/           # Next.js App Router (pages and layouts)
+├── features/      # Feature modules (auth, projects, etc.)
+├── shared/        # Shared components and utilities
+├── client/        # Auto-generated API client
+├── messages/      # Translation files (ja.json, en.json)
+└── i18n/          # Internationalization config
+```
+
+## API Client
+
+The API client is auto-generated from the backend OpenAPI schema:
+
+```bash
+# Regenerate client (from project root)
+./scripts/generate-client.sh
+
+# Or from web directory
+npm run openapi-ts
+```
+
+## Detailed Documentation
+
+For detailed coding conventions, architecture decisions, and development guidelines, see [AGENTS.md](./AGENTS.md).

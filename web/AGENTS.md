@@ -42,7 +42,7 @@ web/
 │   └── layout.tsx                   # Root layout
 │
 ├── features/                        # Feature modules
-│   └── auth/                        # Authentication feature
+│   └── auth/                        # Authentication feature (example)
 │       ├── components/              # Feature-specific components
 │       │   ├── LoginForm.tsx
 │       │   ├── RegisterForm.tsx
@@ -53,6 +53,7 @@ web/
 │       │   ├── LoginForm.test.tsx
 │       │   └── RegisterForm.test.tsx
 │       └── index.ts                 # Public API (barrel export)
+│       # Note: Features may also contain hooks/, stores/, types/ as needed
 │
 ├── shared/                          # Shared code across features
 │   ├── components/
@@ -100,18 +101,21 @@ web/
 
 ### Feature Structure
 
-Each feature should follow this structure:
+Each feature can contain the following directories (all optional except `index.ts`):
 
 ```
 features/{feature-name}/
 ├── components/        # UI components for this feature
 │   └── index.ts       # Barrel export
-├── hooks/             # Custom hooks (optional)
-├── lib/               # Utilities, validations (optional)
-├── types/             # Type definitions (optional)
+├── hooks/             # Custom hooks
+├── stores/            # Zustand stores for feature-specific state
+├── lib/               # Utilities, validations, helpers
+├── types/             # Type definitions
 ├── __tests__/         # Tests for this feature
-└── index.ts           # Public API (barrel export)
+└── index.ts           # Public API (barrel export) - REQUIRED
 ```
+
+> **Note:** Only create directories that are needed. For example, the `auth` feature currently has only `components/`, `lib/`, and `__tests__/`.
 
 ### Adding a New Feature
 
