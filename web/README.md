@@ -7,13 +7,16 @@ Next.js frontend for ragxuary - a RAG-native documentation tool.
 ### Prerequisites
 
 - Node.js 20+
-- npm
+- pnpm 9+ (via corepack)
 
 ### Setup
 
 ```bash
+# Enable corepack (if not already enabled)
+corepack enable
+
 # Install dependencies
-npm install
+pnpm install
 
 # Create environment file
 cp .env.example .env.local
@@ -23,7 +26,7 @@ cp .env.example .env.local
 
 ```bash
 # Start development server
-npm run dev
+pnpm run dev
 ```
 
 The app will be available at http://localhost:3000
@@ -32,37 +35,44 @@ The app will be available at http://localhost:3000
 
 ```bash
 # Run tests in watch mode
-npm run test
+pnpm run test
 
 # Run tests once
-npm run test:run
+pnpm run test:run
 
 # Run tests with coverage
-npm run test:coverage
+pnpm run test:coverage
 
 # Run E2E tests
-npx playwright test
+pnpm exec playwright test
 ```
 
 ### Building
 
 ```bash
 # Build for production
-npm run build
+pnpm run build
 
 # Start production server
-npm run start
+pnpm run start
 ```
 
-### Linting
+### Linting and Formatting
 
 ```bash
-# Check for issues
-npm run lint
-npm run format:check
+# Check for issues (lint + format)
+pnpm run check
 
 # Auto-fix issues
-npm run format
+pnpm run check:fix
+
+# Lint only
+pnpm run lint
+pnpm run lint:fix
+
+# Format only
+pnpm run format
+pnpm run format:check
 ```
 
 ## Tech Stack
@@ -70,6 +80,8 @@ npm run format
 - **Framework**: Next.js 14+ (App Router)
 - **Language**: TypeScript
 - **Styling**: TailwindCSS + shadcn/ui
+- **Package Manager**: pnpm
+- **Linter/Formatter**: Biome
 - **State Management**: TanStack Query + Zustand
 - **Testing**: Vitest + React Testing Library + Playwright
 - **i18n**: next-intl
@@ -95,7 +107,7 @@ The API client is auto-generated from the backend OpenAPI schema:
 ./scripts/generate-client.sh
 
 # Or from web directory
-npm run openapi-ts
+pnpm run openapi-ts
 ```
 
 ## Detailed Documentation

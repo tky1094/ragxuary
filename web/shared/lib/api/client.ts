@@ -1,7 +1,7 @@
 /**
  * API Client configuration for hey-api generated client
  */
-import { createClient, createConfig, type Client } from '@/client/client';
+import { type Client, createClient, createConfig } from '@/client/client';
 
 // Server-side client with full BACKEND_URL (lazy initialization)
 let _serverClient: Client | null = null;

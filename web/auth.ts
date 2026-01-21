@@ -3,9 +3,9 @@ import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
 
 import {
+  getCurrentUserInfoApiV1AuthMeGet,
   loginApiV1AuthLoginPost,
   refreshApiV1AuthRefreshPost,
-  getCurrentUserInfoApiV1AuthMeGet,
   type TokenResponse,
   type UserRead,
 } from '@/client';

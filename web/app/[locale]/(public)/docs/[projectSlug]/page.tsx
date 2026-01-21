@@ -22,7 +22,7 @@ function ProjectDocsContent({ projectSlug }: { projectSlug: string }) {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold">
+      <h1 className="font-bold text-3xl">
         {projectSlug} {t('docs.title')}
       </h1>
       <p className="mt-4 text-gray-600">{t('docs.noDocs')}</p>

@@ -17,7 +17,7 @@ function DocsContent() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold">{t('docs.title')}</h1>
+      <h1 className="font-bold text-3xl">{t('docs.title')}</h1>
       <p className="mt-4 text-gray-600">{t('projects.noProjects')}</p>
       {/* TODO: プロジェクト一覧を実装 */}
     </div>

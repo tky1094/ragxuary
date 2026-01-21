@@ -7,6 +7,7 @@ Thank you for your interest in contributing to ragxuary! This guide will help yo
 ### Prerequisites
 
 - Node.js 20+
+- pnpm 9+ (via corepack)
 - Python 3.11+
 - Docker and Docker Compose
 - Git
@@ -37,7 +38,8 @@ Thank you for your interest in contributing to ragxuary! This guide will help yo
 4. **Set up the frontend**
    ```bash
    cd web
-   npm install
+   corepack enable
+   pnpm install
    ```
 
 5. **Create environment files**
@@ -92,8 +94,8 @@ pytest --cov=app --cov-report=term-missing
 **Frontend:**
 ```bash
 cd web
-npm run test:run
-npm run test:coverage  # For coverage report
+pnpm run test:run
+pnpm run test:coverage  # For coverage report
 ```
 
 ### 5. Run Linters
@@ -112,11 +114,10 @@ ruff format .
 **Frontend:**
 ```bash
 cd web
-npm run lint
-npm run format:check
+pnpm run check
 
 # Auto-fix
-npm run format
+pnpm run check:fix
 ```
 
 ### 6. Create a Pull Request
@@ -179,7 +180,7 @@ cd api && pytest --cov=app --cov-report=term-missing
 
 **Frontend:**
 ```bash
-cd web && npm run test:run
+cd web && pnpm run test:run
 ```
 
 ### Docker Compose Verification

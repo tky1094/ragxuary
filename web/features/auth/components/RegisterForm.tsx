@@ -1,19 +1,17 @@
 'use client';
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
-
-import { Link, useRouter } from '@/i18n/routing';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import {
   createRegisterSchema,
   type RegisterFormData,
 } from '@/features/auth/lib/validations';
+import { Link, useRouter } from '@/i18n/routing';
 import { Button } from '@/shared/components/ui/button';
-import { Input } from '@/shared/components/ui/input';
 import {
   Card,
   CardContent,
@@ -30,6 +28,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/shared/components/ui/form';
+import { Input } from '@/shared/components/ui/input';
 
 export function RegisterForm() {
   const t = useTranslations('auth');
@@ -227,7 +226,7 @@ export function RegisterForm() {
               )}
             />
             {error && (
-              <p className="text-destructive text-center text-sm">{error}</p>
+              <p className="text-center text-destructive text-sm">{error}</p>
             )}
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (

@@ -1,13 +1,14 @@
 # ベースイメージ
 FROM node:20-alpine AS base
+RUN corepack enable
 
 # 依存関係インストール用ステージ
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 # ビルドステージ
 FROM base AS builder
@@ -17,7 +18,7 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN npm run build
+RUN pnpm run build
 
 # 本番実行ステージ
 FROM base AS runner

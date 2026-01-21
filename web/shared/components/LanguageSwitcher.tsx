@@ -1,9 +1,9 @@
 'use client';
 
-import { useLocale, useTranslations } from 'next-intl';
-import { usePathname, useRouter } from '@/i18n/routing';
-import { locales, localeNames, type Locale } from '@/i18n/config';
 import { Globe } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
+import { type Locale, localeNames, locales } from '@/i18n/config';
+import { usePathname, useRouter } from '@/i18n/routing';
 
 export function LanguageSwitcher() {
   const t = useTranslations('language');
@@ -22,7 +22,7 @@ export function LanguageSwitcher() {
         <select
           value={locale}
           onChange={(e) => handleLocaleChange(e.target.value as Locale)}
-          className="appearance-none bg-transparent pr-6 text-sm font-medium text-gray-700 hover:text-gray-900 focus:outline-none dark:text-gray-300 dark:hover:text-gray-100"
+          className="appearance-none bg-transparent pr-6 font-medium text-gray-700 text-sm hover:text-gray-900 focus:outline-none dark:text-gray-300 dark:hover:text-gray-100"
           aria-label={t('select')}
         >
           {locales.map((loc) => (
@@ -36,6 +36,7 @@ export function LanguageSwitcher() {
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
+          aria-hidden="true"
         >
           <path
             strokeLinecap="round"

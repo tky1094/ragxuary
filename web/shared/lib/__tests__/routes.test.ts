@@ -1,13 +1,13 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
-  matchesRoute,
-  isPublicRoute,
-  isProtectedRoute,
-  isAdminRoute,
-  isPublicDocsRoute,
-  PUBLIC_ROUTES,
-  PROTECTED_ROUTES,
   ADMIN_ROUTES,
+  isAdminRoute,
+  isProtectedRoute,
+  isPublicDocsRoute,
+  isPublicRoute,
+  matchesRoute,
+  PROTECTED_ROUTES,
+  PUBLIC_ROUTES,
 } from '../routes';
 
 describe('routes configuration', () => {
