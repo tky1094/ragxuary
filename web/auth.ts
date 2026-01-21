@@ -2,13 +2,7 @@ import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
 
-import {
-  getCurrentUserInfoApiV1AuthMeGet,
-  loginApiV1AuthLoginPost,
-  refreshApiV1AuthRefreshPost,
-  type TokenResponse,
-  type UserRead,
-} from '@/client';
+import { Auth, type TokenResponse, type UserRead } from '@/client';
 import { getServerClient } from '@/shared/lib/api/client';
 
 const loginSchema = z.object({
@@ -35,7 +29,7 @@ async function refreshAccessToken(
   refreshToken: string
 ): Promise<BackendTokens | null> {
   try {
-    const { data, error } = await refreshApiV1AuthRefreshPost({
+    const { data, error } = await Auth.refresh({
       client: getServerClient(),
       body: { refresh_token: refreshToken },
     });
@@ -59,7 +53,7 @@ async function refreshAccessToken(
 
 async function fetchUserInfo(accessToken: string): Promise<BackendUser | null> {
   try {
-    const { data, error } = await getCurrentUserInfoApiV1AuthMeGet({
+    const { data, error } = await Auth.getCurrentUserInfo({
       client: getServerClient(),
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -103,7 +97,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         try {
           // Call backend login API using hey-api client
-          const { data, error } = await loginApiV1AuthLoginPost({
+          const { data, error } = await Auth.login({
             client: getServerClient(),
             body: { email, password },
           });

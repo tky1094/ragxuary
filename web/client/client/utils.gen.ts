@@ -8,12 +8,7 @@ import {
   serializePrimitiveParam,
 } from '../core/pathSerializer.gen';
 import { getUrl } from '../core/utils.gen';
-import type {
-  Client,
-  ClientOptions,
-  Config,
-  RequestOptions,
-} from './types.gen';
+import type { Client, ClientOptions, Config, RequestOptions } from './types.gen';
 
 export const createQuerySerializer = <T = unknown>({
   parameters = {},
@@ -70,7 +65,7 @@ const checkForExistence = (
   options: Pick<RequestOptions, 'auth' | 'query'> & {
     headers: Record<any, unknown>;
   },
-  name?: string
+  name?: string,
 ): boolean => {
   if (!name) {
     return false;
@@ -185,7 +180,7 @@ export const mergeHeaders = (
     for (const [key, value] of iterator) {
       if (
         axiosHeadersKeywords.includes(
-          key as (typeof axiosHeadersKeywords)[number]
+          key as (typeof axiosHeadersKeywords)[number],
         ) &&
         typeof value === 'object'
       ) {
@@ -212,7 +207,7 @@ export const mergeHeaders = (
 };
 
 export const createConfig = <T extends ClientOptions = ClientOptions>(
-  override: Config<Omit<ClientOptions, keyof T> & T> = {}
+  override: Config<Omit<ClientOptions, keyof T> & T> = {},
 ): Config<Omit<ClientOptions, keyof T> & T> => ({
   ...override,
 });

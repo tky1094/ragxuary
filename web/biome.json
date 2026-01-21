@@ -68,7 +68,8 @@
       "!**/coverage",
       "!**/node_modules",
       "!**/pnpm-lock.yaml",
-      "!**/*.css"
+      "!**/*.css",
+      "!openapi.json"
     ]
   }
 }

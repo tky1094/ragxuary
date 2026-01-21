@@ -20,8 +20,7 @@ import type {
 } from '../core/types.gen';
 
 export interface Config<T extends ClientOptions = ClientOptions>
-  extends
-    Omit<CreateAxiosDefaults, 'auth' | 'baseURL' | 'headers' | 'method'>,
+  extends Omit<CreateAxiosDefaults, 'auth' | 'baseURL' | 'headers' | 'method'>,
     CoreConfig {
   /**
    * Axios implementation. You can use this option to provide either an
@@ -64,9 +63,7 @@ export interface RequestOptions<
   TData = unknown,
   ThrowOnError extends boolean = boolean,
   Url extends string = string,
->
-  extends
-    Config<{
+> extends Config<{
       throwOnError: ThrowOnError;
     }>,
     Pick<
@@ -126,7 +123,7 @@ type MethodFn = <
   TError = unknown,
   ThrowOnError extends boolean = false,
 >(
-  options: Omit<RequestOptions<TData, ThrowOnError>, 'method'>
+  options: Omit<RequestOptions<TData, ThrowOnError>, 'method'>,
 ) => RequestResult<TData, TError, ThrowOnError>;
 
 type SseFn = <
@@ -134,7 +131,7 @@ type SseFn = <
   TError = unknown,
   ThrowOnError extends boolean = false,
 >(
-  options: Omit<RequestOptions<TData, ThrowOnError>, 'method'>
+  options: Omit<RequestOptions<TData, ThrowOnError>, 'method'>,
 ) => Promise<ServerSentEventsResult<TData, TError>>;
 
 type RequestFn = <
@@ -143,7 +140,7 @@ type RequestFn = <
   ThrowOnError extends boolean = false,
 >(
   options: Omit<RequestOptions<TData, ThrowOnError>, 'method'> &
-    Pick<Required<RequestOptions<TData, ThrowOnError>>, 'method'>
+    Pick<Required<RequestOptions<TData, ThrowOnError>>, 'method'>,
 ) => RequestResult<TData, TError, ThrowOnError>;
 
 type BuildUrlFn = <
@@ -154,7 +151,7 @@ type BuildUrlFn = <
     url: string;
   },
 >(
-  options: TData & Options<TData>
+  options: TData & Options<TData>,
 ) => string;
 
 export type Client = CoreClient<
@@ -176,7 +173,7 @@ export type Client = CoreClient<
  * to ensure your client always has the correct values.
  */
 export type CreateClientConfig<T extends ClientOptions = ClientOptions> = (
-  override?: Config<ClientOptions & T>
+  override?: Config<ClientOptions & T>,
 ) => Config<Required<ClientOptions> & T>;
 
 export interface TDataShape {

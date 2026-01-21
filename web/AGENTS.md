@@ -457,9 +457,8 @@ Backend API client is auto-generated from OpenAPI schema using `@hey-api/openapi
 
 ```
 web/client/
-├── sdk.gen.ts              # API functions
+├── sdk.gen.ts              # API service classes
 ├── types.gen.ts            # TypeScript types
-├── zod.gen.ts              # Zod schemas
 ├── @tanstack/
 │   └── react-query.gen.ts  # React Query hooks
 └── client/
@@ -470,18 +469,19 @@ web/client/
 
 ```tsx
 // Server-side (API routes, Server Components)
-import { loginApiV1AuthLoginPost } from '@/client';
+import { AuthService } from '@/client';
 import { getServerClient } from '@/shared/lib/api/client';
 
-const { data, error } = await loginApiV1AuthLoginPost({
+const { data, error } = await AuthService.login({
   client: getServerClient(),
   body: { email, password },
 });
 
 // Client-side (with React Query)
-import { useLoginApiV1AuthLoginPost } from '@/client/@tanstack/react-query.gen';
+import { authLoginOptions } from '@/client/@tanstack/react-query.gen';
+import { useMutation } from '@tanstack/react-query';
 
-const mutation = useLoginApiV1AuthLoginPost();
+const mutation = useMutation(authLoginOptions());
 mutation.mutate({ body: { email, password } });
 ```
 

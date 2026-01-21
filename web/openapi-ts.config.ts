@@ -6,9 +6,11 @@ export default defineConfig({
     path: './client',
   },
   plugins: [
-    '@hey-api/sdk',
+    {
+      name: '@hey-api/sdk',
+      operations: { strategy: 'byTags' },
+    },
     '@hey-api/client-axios',
-    'zod',
     '@tanstack/react-query',
   ],
 });
