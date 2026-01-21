@@ -2,205 +2,154 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type {
-  GetCurrentUserInfoApiV1AuthMeGetData,
-  GetCurrentUserInfoApiV1AuthMeGetResponses,
-  HealthCheckApiV1HealthGetData,
-  HealthCheckApiV1HealthGetResponses,
-  LoginApiV1AuthLoginPostData,
-  LoginApiV1AuthLoginPostErrors,
-  LoginApiV1AuthLoginPostResponses,
-  LogoutApiV1AuthLogoutPostData,
-  LogoutApiV1AuthLogoutPostResponses,
-  RefreshApiV1AuthRefreshPostData,
-  RefreshApiV1AuthRefreshPostErrors,
-  RefreshApiV1AuthRefreshPostResponses,
-  RegisterApiV1AuthRegisterPostData,
-  RegisterApiV1AuthRegisterPostErrors,
-  RegisterApiV1AuthRegisterPostResponses,
-} from './types.gen';
+import type { GetCurrentUserInfoData, GetCurrentUserInfoResponses, HealthCheckData, HealthCheckResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, RefreshData, RefreshErrors, RefreshResponses, RegisterData, RegisterErrors, RegisterResponses } from './types.gen';
 
-export type Options<
-  TData extends TDataShape = TDataShape,
-  ThrowOnError extends boolean = boolean,
-> = Options2<TData, ThrowOnError> & {
-  /**
-   * You can provide a client instance returned by `createClient()` instead of
-   * individual options. This might be also useful if you want to implement a
-   * custom client.
-   */
-  client?: Client;
-  /**
-   * You can pass arbitrary values through the `meta` object. This can be
-   * used to access values that aren't defined as part of the SDK function.
-   */
-  meta?: Record<string, unknown>;
+export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
+    /**
+     * You can provide a client instance returned by `createClient()` instead of
+     * individual options. This might be also useful if you want to implement a
+     * custom client.
+     */
+    client?: Client;
+    /**
+     * You can pass arbitrary values through the `meta` object. This can be
+     * used to access values that aren't defined as part of the SDK function.
+     */
+    meta?: Record<string, unknown>;
 };
 
-/**
- * Health Check
- *
- * Health check endpoint.
- *
- * Returns the health status of the application and database connection.
- */
-export const healthCheckApiV1HealthGet = <ThrowOnError extends boolean = false>(
-  options?: Options<HealthCheckApiV1HealthGetData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<
-    HealthCheckApiV1HealthGetResponses,
-    unknown,
-    ThrowOnError
-  >({
-    responseType: 'json',
-    url: '/api/v1/health',
-    ...options,
-  });
+export class Health {
+    /**
+     * Health Check
+     *
+     * Health check endpoint.
+     *
+     * Returns the health status of the application and database connection.
+     */
+    public static healthCheck<ThrowOnError extends boolean = false>(options?: Options<HealthCheckData, ThrowOnError>) {
+        return (options?.client ?? client).get<HealthCheckResponses, unknown, ThrowOnError>({
+            responseType: 'json',
+            url: '/api/v1/health',
+            ...options
+        });
+    }
+}
 
-/**
- * Register
- *
- * Register a new user.
- *
- * Args:
- * request: Registration request containing email, name, and password.
- * db: Database session.
- *
- * Returns:
- * Access and refresh tokens.
- *
- * Raises:
- * HTTPException: If email is already registered.
- */
-export const registerApiV1AuthRegisterPost = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<RegisterApiV1AuthRegisterPostData, ThrowOnError>
-) =>
-  (options.client ?? client).post<
-    RegisterApiV1AuthRegisterPostResponses,
-    RegisterApiV1AuthRegisterPostErrors,
-    ThrowOnError
-  >({
-    responseType: 'json',
-    url: '/api/v1/auth/register',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
-
-/**
- * Login
- *
- * Login with email and password.
- *
- * Args:
- * request: Login request containing email and password.
- * db: Database session.
- *
- * Returns:
- * Access and refresh tokens.
- *
- * Raises:
- * HTTPException: If credentials are invalid.
- */
-export const loginApiV1AuthLoginPost = <ThrowOnError extends boolean = false>(
-  options: Options<LoginApiV1AuthLoginPostData, ThrowOnError>
-) =>
-  (options.client ?? client).post<
-    LoginApiV1AuthLoginPostResponses,
-    LoginApiV1AuthLoginPostErrors,
-    ThrowOnError
-  >({
-    responseType: 'json',
-    url: '/api/v1/auth/login',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
-
-/**
- * Logout
- *
- * Logout and invalidate the current access token.
- *
- * Args:
- * credentials: HTTP Bearer credentials containing the JWT token.
- */
-export const logoutApiV1AuthLogoutPost = <ThrowOnError extends boolean = false>(
-  options?: Options<LogoutApiV1AuthLogoutPostData, ThrowOnError>
-) =>
-  (options?.client ?? client).post<
-    LogoutApiV1AuthLogoutPostResponses,
-    unknown,
-    ThrowOnError
-  >({
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/v1/auth/logout',
-    ...options,
-  });
-
-/**
- * Refresh
- *
- * Refresh access token using a refresh token.
- *
- * Args:
- * request: Refresh token request.
- * db: Database session.
- *
- * Returns:
- * New access and refresh tokens.
- *
- * Raises:
- * HTTPException: If refresh token is invalid.
- */
-export const refreshApiV1AuthRefreshPost = <
-  ThrowOnError extends boolean = false,
->(
-  options: Options<RefreshApiV1AuthRefreshPostData, ThrowOnError>
-) =>
-  (options.client ?? client).post<
-    RefreshApiV1AuthRefreshPostResponses,
-    RefreshApiV1AuthRefreshPostErrors,
-    ThrowOnError
-  >({
-    responseType: 'json',
-    url: '/api/v1/auth/refresh',
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
-
-/**
- * Get Current User Info
- *
- * Get current user information.
- *
- * Args:
- * current_user: The authenticated user.
- *
- * Returns:
- * User information.
- */
-export const getCurrentUserInfoApiV1AuthMeGet = <
-  ThrowOnError extends boolean = false,
->(
-  options?: Options<GetCurrentUserInfoApiV1AuthMeGetData, ThrowOnError>
-) =>
-  (options?.client ?? client).get<
-    GetCurrentUserInfoApiV1AuthMeGetResponses,
-    unknown,
-    ThrowOnError
-  >({
-    responseType: 'json',
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/api/v1/auth/me',
-    ...options,
-  });
+export class Auth {
+    /**
+     * Register
+     *
+     * Register a new user.
+     *
+     * Args:
+     * request: Registration request containing email, name, and password.
+     * db: Database session.
+     *
+     * Returns:
+     * Access and refresh tokens.
+     *
+     * Raises:
+     * HTTPException: If email is already registered.
+     */
+    public static register<ThrowOnError extends boolean = false>(options: Options<RegisterData, ThrowOnError>) {
+        return (options.client ?? client).post<RegisterResponses, RegisterErrors, ThrowOnError>({
+            responseType: 'json',
+            url: '/api/v1/auth/register',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Login
+     *
+     * Login with email and password.
+     *
+     * Args:
+     * request: Login request containing email and password.
+     * db: Database session.
+     *
+     * Returns:
+     * Access and refresh tokens.
+     *
+     * Raises:
+     * HTTPException: If credentials are invalid.
+     */
+    public static login<ThrowOnError extends boolean = false>(options: Options<LoginData, ThrowOnError>) {
+        return (options.client ?? client).post<LoginResponses, LoginErrors, ThrowOnError>({
+            responseType: 'json',
+            url: '/api/v1/auth/login',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Logout
+     *
+     * Logout and invalidate the current access token.
+     *
+     * Args:
+     * credentials: HTTP Bearer credentials containing the JWT token.
+     */
+    public static logout<ThrowOnError extends boolean = false>(options?: Options<LogoutData, ThrowOnError>) {
+        return (options?.client ?? client).post<LogoutResponses, unknown, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/auth/logout',
+            ...options
+        });
+    }
+    
+    /**
+     * Refresh
+     *
+     * Refresh access token using a refresh token.
+     *
+     * Args:
+     * request: Refresh token request.
+     * db: Database session.
+     *
+     * Returns:
+     * New access and refresh tokens.
+     *
+     * Raises:
+     * HTTPException: If refresh token is invalid.
+     */
+    public static refresh<ThrowOnError extends boolean = false>(options: Options<RefreshData, ThrowOnError>) {
+        return (options.client ?? client).post<RefreshResponses, RefreshErrors, ThrowOnError>({
+            responseType: 'json',
+            url: '/api/v1/auth/refresh',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Get Current User Info
+     *
+     * Get current user information.
+     *
+     * Args:
+     * current_user: The authenticated user.
+     *
+     * Returns:
+     * User information.
+     */
+    public static getCurrentUserInfo<ThrowOnError extends boolean = false>(options?: Options<GetCurrentUserInfoData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetCurrentUserInfoResponses, unknown, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/auth/me',
+            ...options
+        });
+    }
+}

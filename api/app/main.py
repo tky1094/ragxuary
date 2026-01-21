@@ -7,6 +7,7 @@ from fastapi import FastAPI
 
 from app.api.v1.router import api_router
 from app.config import settings
+from app.core.openapi import generate_simple_operation_id
 from app.core.redis import close_redis, get_redis
 
 
@@ -30,6 +31,7 @@ def create_app() -> FastAPI:
         docs_url="/api/docs",
         redoc_url="/api/redoc",
         openapi_url="/api/openapi.json",
+        generate_unique_id_function=generate_simple_operation_id,
     )
 
     # Include API v1 router
