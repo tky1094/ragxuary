@@ -14,7 +14,7 @@ ragxuary is a RAG-native documentation tool.
 
 | Area | Technology |
 |------|------------|
-| Frontend | Next.js 14+, TypeScript, TailwindCSS, shadcn/ui |
+| Frontend | Next.js 16+, TypeScript, TailwindCSS, shadcn/ui |
 | Package Manager | pnpm 9+ (via corepack) |
 | Linter/Formatter | Biome |
 | Backend | FastAPI, Python 3.11+, SQLAlchemy 2.0+ |
@@ -145,7 +145,7 @@ Before declaring an issue complete, run the following verification flow:
 
 ```bash
 # Backend
-cd api && source .venv/bin/activate && pip install -e ".[dev]"
+cd api && source .venv/bin/activate && uv pip install -e ".[dev]"
 
 # Frontend
 cd web && pnpm install

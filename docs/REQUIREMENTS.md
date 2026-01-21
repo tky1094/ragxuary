@@ -120,16 +120,16 @@ flowchart TB
 
 | 技術                  | バージョン | 用途                      |
 | --------------------- | ---------- | ------------------------- |
-| Next.js               | 14+        | App Router 使用、RSC 活用 |
-| React                 | 18+        | UI ライブラリ             |
+| Next.js               | 16+        | App Router 使用、RSC 活用 |
+| React                 | 19+        | UI ライブラリ             |
 | TypeScript            | 5+         | 型安全性                  |
-| TailwindCSS           | 3+         | スタイリング              |
+| TailwindCSS           | 4+         | スタイリング              |
 | shadcn/ui             | latest     | UI コンポーネント         |
 | NextAuth.js           | 5+         | 認証                      |
 | CodeMirror            | 6+         | マークダウンエディタ      |
 | TanStack Query        | 5+         | サーバー状態管理          |
 | Zustand               | 4+         | クライアント状態管理      |
-| next-intl             | 3+         | 国際化（i18n）            |
+| next-intl             | 4+         | 国際化（i18n）            |
 | Vitest                | 3+         | 単体・統合テスト          |
 | React Testing Library | 16+        | コンポーネントテスト      |
 | Playwright            | 1.50+      | E2E テスト                |

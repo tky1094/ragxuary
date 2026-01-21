@@ -4,7 +4,7 @@ set -e
 set -x
 
 cd api
-.venv/bin/python -c "import app.main; import json; print(json.dumps(app.main.app.openapi()))" > ../openapi.json
+uv run python -c "import app.main; import json; print(json.dumps(app.main.app.openapi()))" > ../openapi.json
 cd ..
 mv openapi.json web/
 cd web

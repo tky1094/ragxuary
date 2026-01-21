@@ -31,7 +31,7 @@ Thank you for your interest in contributing to ragxuary! This guide will help yo
    cd api
    python -m venv .venv
    source .venv/bin/activate
-   pip install -e ".[dev]"
+   uv pip install -e ".[dev]"
    alembic upgrade head
    ```
 
