@@ -8,15 +8,15 @@ Next.js frontend development conventions using **Feature-Driven Architecture**.
 
 | Technology            | Version | Purpose              |
 | --------------------- | ------- | -------------------- |
-| Next.js               | 14+     | App Router, RSC      |
-| React                 | 18+     | UI                   |
+| Next.js               | 16+     | App Router, RSC      |
+| React                 | 19+     | UI                   |
 | TypeScript            | 5+      | Type safety          |
-| TailwindCSS           | 3+      | Styling              |
+| TailwindCSS           | 4+      | Styling              |
 | shadcn/ui             | latest  | UI components        |
 | pnpm                  | 9+      | Package manager      |
 | Biome                 | 2+      | Linter/Formatter     |
 | NextAuth.js           | 5+      | Authentication       |
-| next-intl             | 3+      | Internationalization |
+| next-intl             | 4+      | Internationalization |
 | Vitest                | 3+      | Unit testing         |
 | React Testing Library | 16+     | Component testing    |
 | Playwright            | 1.50+   | E2E testing          |

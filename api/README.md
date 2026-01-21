@@ -18,7 +18,7 @@ python -m venv .venv
 source .venv/bin/activate
 
 # Install dependencies
-pip install -e ".[dev]"
+uv pip install -e ".[dev]"
 
 # Create environment file
 cp .env.example .env
