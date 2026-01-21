@@ -35,10 +35,10 @@ function ConversationContent({
   return (
     <div className="flex h-screen flex-col">
       <header className="border-b p-4">
-        <h1 className="text-xl font-bold">
+        <h1 className="font-bold text-xl">
           {projectSlug} {t('title')}
         </h1>
-        <p className="text-sm text-gray-500">ID: {conversationId}</p>
+        <p className="text-gray-500 text-sm">ID: {conversationId}</p>
       </header>
       <main className="flex-1 overflow-auto p-4">
         {/* TODO: チャットメッセージ表示を実装 */}

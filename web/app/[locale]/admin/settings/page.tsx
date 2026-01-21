@@ -19,7 +19,7 @@ function AdminSettingsContent() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold">{t('title')}</h1>
+      <h1 className="font-bold text-3xl">{t('title')}</h1>
       <p className="mt-4 text-gray-600">{t('title')}</p>
       {/* TODO: システム設定フォームを実装 */}
     </div>

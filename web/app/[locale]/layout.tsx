@@ -1,8 +1,8 @@
+import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
-import { notFound } from 'next/navigation';
-import { routing } from '@/i18n/routing';
 import type { Locale } from '@/i18n/config';
+import { routing } from '@/i18n/routing';
 
 interface LocaleLayoutProps {
   children: React.ReactNode;

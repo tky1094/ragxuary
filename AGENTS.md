@@ -15,6 +15,8 @@ ragxuary is a RAG-native documentation tool.
 | Area | Technology |
 |------|------------|
 | Frontend | Next.js 14+, TypeScript, TailwindCSS, shadcn/ui |
+| Package Manager | pnpm 9+ (via corepack) |
+| Linter/Formatter | Biome |
 | Backend | FastAPI, Python 3.11+, SQLAlchemy 2.0+ |
 | Database | PostgreSQL 16+ (pgvector) |
 | Cache | Redis 7+ |
@@ -146,7 +148,7 @@ Before declaring an issue complete, run the following verification flow:
 cd api && source .venv/bin/activate && pip install -e ".[dev]"
 
 # Frontend
-cd web && npm install
+cd web && pnpm install
 ```
 
 ### Step 2: Run Tests
@@ -156,8 +158,8 @@ cd web && npm install
 cd api && source .venv/bin/activate && pytest --cov=app --cov-report=term-missing
 
 # Frontend (target: 60% MUST, 70% SHOULD)
-cd web && npm run test:run
-cd web && npm run test:coverage  # For coverage report
+cd web && pnpm run test:run
+cd web && pnpm run test:coverage  # For coverage report
 ```
 
 ### Step 3: Lint Check
@@ -167,7 +169,7 @@ cd web && npm run test:coverage  # For coverage report
 cd api && ruff check . && ruff format --check .
 
 # Frontend
-cd web && npm run lint && npm run format:check
+cd web && pnpm run check
 ```
 
 ### Step 4: Docker Compose Verification (for major changes)
@@ -249,7 +251,8 @@ This script:
 | Issue list | `gh issue list` |
 | Issue detail | `gh issue view <number>` |
 | Backend test | `cd api && pytest --cov=app` |
-| Frontend test | `cd web && npm run test:run` |
+| Frontend test | `cd web && pnpm run test:run` |
+| Frontend check | `cd web && pnpm run check` |
 | Docker build | `docker compose up -d --build` |
 | Docker status | `docker compose ps` |
 | Migration | `docker compose exec api alembic upgrade head` |

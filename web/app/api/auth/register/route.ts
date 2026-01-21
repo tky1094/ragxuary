@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import { NextResponse } from 'next/server';
 
 import { registerApiV1AuthRegisterPost, type TokenResponse } from '@/client';

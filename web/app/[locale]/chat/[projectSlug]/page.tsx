@@ -21,7 +21,7 @@ function ChatContent({ projectSlug }: { projectSlug: string }) {
   return (
     <div className="flex h-screen flex-col">
       <header className="border-b p-4">
-        <h1 className="text-xl font-bold">
+        <h1 className="font-bold text-xl">
           {projectSlug} {t('title')}
         </h1>
       </header>

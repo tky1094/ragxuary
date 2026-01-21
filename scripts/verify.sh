@@ -51,7 +51,7 @@ echo -e "${YELLOW}📦 Step 2: フロントエンドテスト${NC}"
 echo "----------------------------------------"
 cd web
 
-if npm run test:run 2>&1; then
+if pnpm run test:run 2>&1; then
     FRONTEND_TEST_RESULT="${GREEN}✅ 成功${NC}"
     echo -e "${GREEN}✅ フロントエンドテスト成功${NC}"
 else

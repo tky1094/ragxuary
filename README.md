@@ -96,10 +96,10 @@ pytest --cov=app --cov-report=term-missing
 cd web
 
 # 単体テスト・コンポーネントテスト
-npm run test:run
+pnpm run test:run
 
 # E2E テスト
-npx playwright test
+pnpm exec playwright test
 ```
 
 ### テスト方針
@@ -140,7 +140,7 @@ pre-commit run --all-files
 
 設定済みのチェック:
 - **Python**: ruff (リント・フォーマット)
-- **TypeScript**: prettier, eslint
+- **TypeScript**: Biome (リント・フォーマット)
 
 ## ドキュメント
 

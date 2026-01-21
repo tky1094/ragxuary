@@ -13,6 +13,8 @@ Next.js frontend development conventions using **Feature-Driven Architecture**.
 | TypeScript            | 5+      | Type safety          |
 | TailwindCSS           | 3+      | Styling              |
 | shadcn/ui             | latest  | UI components        |
+| pnpm                  | 9+      | Package manager      |
+| Biome                 | 2+      | Linter/Formatter     |
 | NextAuth.js           | 5+      | Authentication       |
 | next-intl             | 3+      | Internationalization |
 | Vitest                | 3+      | Unit testing         |
@@ -276,48 +278,56 @@ export function LoginForm() {
 ### Setup
 
 ```bash
-# Install dependencies
-npm install
+# Install dependencies (requires pnpm via corepack)
+corepack enable
+pnpm install
 ```
 
 ### Development Server
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 ### Build
 
 ```bash
-npm run build
-npm run start
+pnpm run build
+pnpm run start
 ```
 
 ### Testing
 
 ```bash
 # Watch mode
-npm run test
+pnpm run test
 
 # Single run
-npm run test:run
+pnpm run test:run
 
 # Coverage
-npm run test:coverage
+pnpm run test:coverage
 
 # E2E tests
-npx playwright test
+pnpm exec playwright test
 ```
 
-### Lint
+### Lint and Format
 
 ```bash
-# Check
-npm run lint
-npm run format:check
+# Check (lint + format)
+pnpm run check
 
 # Auto-fix
-npm run format
+pnpm run check:fix
+
+# Lint only
+pnpm run lint
+pnpm run lint:fix
+
+# Format only
+pnpm run format
+pnpm run format:check
 ```
 
 ---
@@ -403,13 +413,13 @@ describe('useCounter', () => {
 ### Adding New Components
 
 ```bash
-npx shadcn@latest add <component-name>
+pnpm dlx shadcn@latest add <component-name>
 
 # Examples
-npx shadcn@latest add button
-npx shadcn@latest add card
-npx shadcn@latest add dialog
-npx shadcn@latest add input
+pnpm dlx shadcn@latest add button
+pnpm dlx shadcn@latest add card
+pnpm dlx shadcn@latest add dialog
+pnpm dlx shadcn@latest add input
 ```
 
 ### Usage Example
@@ -482,7 +492,7 @@ mutation.mutate({ body: { email, password } });
 ./scripts/generate-client.sh
 
 # Or from web directory
-npm run openapi-ts
+pnpm run openapi-ts
 ```
 
 > **Note:** CI automatically creates a PR when API schema changes in `api/app/`.

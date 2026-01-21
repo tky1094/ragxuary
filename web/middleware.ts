@@ -1,14 +1,14 @@
+import { type NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
-import { NextRequest, NextResponse } from 'next/server';
-import { routing } from './i18n/routing';
 import { auth } from './auth';
+import { defaultLocale, locales } from './i18n/config';
+import { routing } from './i18n/routing';
 import {
-  isPublicRoute,
-  isProtectedRoute,
   isAdminRoute,
+  isProtectedRoute,
   isPublicDocsRoute,
+  isPublicRoute,
 } from './shared/lib/routes';
-import { locales, defaultLocale } from './i18n/config';
 
 const intlMiddleware = createMiddleware(routing);
 

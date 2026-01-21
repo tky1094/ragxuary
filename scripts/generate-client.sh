@@ -8,4 +8,4 @@ python -c "import app.main; import json; print(json.dumps(app.main.app.openapi()
 cd ..
 mv openapi.json web/
 cd web
-npm run openapi-ts
+pnpm run openapi-ts
