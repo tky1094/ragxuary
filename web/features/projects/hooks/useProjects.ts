@@ -36,15 +36,21 @@ export function useProjectList(skip = 0, limit = 100) {
  * Hook for fetching a single project by slug
  */
 export function useProject(slug: string) {
-  const { client, isAuthenticated } = useApiClient();
+  const { client, isAuthenticated, isLoading: isAuthLoading } = useApiClient();
 
-  return useQuery({
+  const query = useQuery({
     ...getProjectOptions({
       client,
       path: { slug },
     }),
     enabled: isAuthenticated && !!slug,
   });
+
+  return {
+    ...query,
+    // Treat authentication checking or data fetching as loading
+    isLoading: isAuthLoading || query.isPending,
+  };
 }
 
 /**
@@ -58,8 +64,9 @@ export function useCreateProject() {
     ...createProjectMutation({ client }),
     onSuccess: () => {
       // Invalidate the projects list to refetch
+      // Pass client to ensure baseURL in queryKey matches
       queryClient.invalidateQueries({
-        queryKey: listProjectsQueryKey(),
+        queryKey: listProjectsQueryKey({ client }),
       });
     },
   });
@@ -75,8 +82,9 @@ export function useUpdateProject() {
   return useMutation({
     ...updateProjectMutation({ client }),
     onSuccess: () => {
+      // Pass client to ensure baseURL in queryKey matches
       queryClient.invalidateQueries({
-        queryKey: listProjectsQueryKey(),
+        queryKey: listProjectsQueryKey({ client }),
       });
     },
   });
@@ -92,8 +100,9 @@ export function useDeleteProject() {
   return useMutation({
     ...deleteProjectMutation({ client }),
     onSuccess: () => {
+      // Pass client to ensure baseURL in queryKey matches
       queryClient.invalidateQueries({
-        queryKey: listProjectsQueryKey(),
+        queryKey: listProjectsQueryKey({ client }),
       });
     },
   });

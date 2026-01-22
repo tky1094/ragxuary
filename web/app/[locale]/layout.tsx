@@ -7,6 +7,7 @@ import {
   QueryClientProvider,
   SessionProvider,
 } from '@/shared/components/providers';
+import { Toaster } from '@/shared/components/ui/sonner';
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -38,7 +39,10 @@ export default async function LocaleLayout({
   return (
     <NextIntlClientProvider messages={messages}>
       <SessionProvider>
-        <QueryClientProvider>{children}</QueryClientProvider>
+        <QueryClientProvider>
+          {children}
+          <Toaster richColors position="top-right" />
+        </QueryClientProvider>
       </SessionProvider>
     </NextIntlClientProvider>
   );
