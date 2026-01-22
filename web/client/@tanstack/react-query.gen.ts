@@ -4,8 +4,8 @@ import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanst
 import type { AxiosError } from 'axios';
 
 import { client } from '../client.gen';
-import { Auth, Health, type Options } from '../sdk.gen';
-import type { GetCurrentUserInfoData, GetCurrentUserInfoResponse, HealthCheckData, HealthCheckResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, RefreshData, RefreshError, RefreshResponse, RegisterData, RegisterError, RegisterResponse } from '../types.gen';
+import { Auth, Health, type Options, Projects } from '../sdk.gen';
+import type { CreateProjectData, CreateProjectError, CreateProjectResponse, DeleteProjectData, DeleteProjectError, DeleteProjectResponse, GetCurrentUserInfoData, GetCurrentUserInfoResponse, GetProjectData, GetProjectError, GetProjectResponse, HealthCheckData, HealthCheckResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, RefreshData, RefreshError, RefreshResponse, RegisterData, RegisterError, RegisterResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseURL' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -69,7 +69,7 @@ export const healthCheckOptions = (options?: Options<HealthCheckData>) => queryO
  *
  * Args:
  * request: Registration request containing email, name, and password.
- * db: Database session.
+ * auth_service: Authentication service.
  *
  * Returns:
  * Access and refresh tokens.
@@ -98,13 +98,13 @@ export const registerMutation = (options?: Partial<Options<RegisterData>>): UseM
  *
  * Args:
  * request: Login request containing email and password.
- * db: Database session.
+ * auth_service: Authentication service.
  *
  * Returns:
  * Access and refresh tokens.
  *
  * Raises:
- * HTTPException: If credentials are invalid.
+ * HTTPException: If credentials are invalid or user is inactive.
  */
 export const loginMutation = (options?: Partial<Options<LoginData>>): UseMutationOptions<LoginResponse, AxiosError<LoginError>, Options<LoginData>> => {
     const mutationOptions: UseMutationOptions<LoginResponse, AxiosError<LoginError>, Options<LoginData>> = {
@@ -127,6 +127,7 @@ export const loginMutation = (options?: Partial<Options<LoginData>>): UseMutatio
  *
  * Args:
  * credentials: HTTP Bearer credentials containing the JWT token.
+ * auth_service: Authentication service.
  */
 export const logoutMutation = (options?: Partial<Options<LogoutData>>): UseMutationOptions<LogoutResponse, AxiosError<DefaultError>, Options<LogoutData>> => {
     const mutationOptions: UseMutationOptions<LogoutResponse, AxiosError<DefaultError>, Options<LogoutData>> = {
@@ -149,7 +150,7 @@ export const logoutMutation = (options?: Partial<Options<LogoutData>>): UseMutat
  *
  * Args:
  * request: Refresh token request.
- * db: Database session.
+ * auth_service: Authentication service.
  *
  * Returns:
  * New access and refresh tokens.
@@ -196,3 +197,151 @@ export const getCurrentUserInfoOptions = (options?: Options<GetCurrentUserInfoDa
     },
     queryKey: getCurrentUserInfoQueryKey(options)
 });
+
+export const listProjectsQueryKey = (options?: Options<ListProjectsData>) => createQueryKey('listProjects', options);
+
+/**
+ * List Projects
+ *
+ * List all projects owned by the current user.
+ *
+ * Args:
+ * current_user: The authenticated user.
+ * project_service: Project service.
+ * skip: Number of records to skip (pagination).
+ * limit: Maximum number of records to return.
+ *
+ * Returns:
+ * List of projects owned by the current user.
+ */
+export const listProjectsOptions = (options?: Options<ListProjectsData>) => queryOptions<ListProjectsResponse, AxiosError<ListProjectsError>, ListProjectsResponse, ReturnType<typeof listProjectsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Projects.listProjects({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listProjectsQueryKey(options)
+});
+
+/**
+ * Create Project
+ *
+ * Create a new project.
+ *
+ * Args:
+ * request: Project creation data.
+ * current_user: The authenticated user.
+ * project_service: Project service.
+ *
+ * Returns:
+ * The created project.
+ *
+ * Raises:
+ * HTTPException: If slug already exists.
+ */
+export const createProjectMutation = (options?: Partial<Options<CreateProjectData>>): UseMutationOptions<CreateProjectResponse, AxiosError<CreateProjectError>, Options<CreateProjectData>> => {
+    const mutationOptions: UseMutationOptions<CreateProjectResponse, AxiosError<CreateProjectError>, Options<CreateProjectData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Projects.createProject({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Delete Project
+ *
+ * Delete a project.
+ *
+ * Args:
+ * slug: The project slug.
+ * current_user: The authenticated user.
+ * project_service: Project service.
+ *
+ * Raises:
+ * HTTPException: If project is not found or user is not the owner.
+ */
+export const deleteProjectMutation = (options?: Partial<Options<DeleteProjectData>>): UseMutationOptions<DeleteProjectResponse, AxiosError<DeleteProjectError>, Options<DeleteProjectData>> => {
+    const mutationOptions: UseMutationOptions<DeleteProjectResponse, AxiosError<DeleteProjectError>, Options<DeleteProjectData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Projects.deleteProject({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getProjectQueryKey = (options: Options<GetProjectData>) => createQueryKey('getProject', options);
+
+/**
+ * Get Project
+ *
+ * Get a project by slug.
+ *
+ * Args:
+ * slug: The project slug.
+ * current_user: The authenticated user.
+ * project_service: Project service.
+ *
+ * Returns:
+ * The project.
+ *
+ * Raises:
+ * HTTPException: If project is not found or user is not the owner.
+ */
+export const getProjectOptions = (options: Options<GetProjectData>) => queryOptions<GetProjectResponse, AxiosError<GetProjectError>, GetProjectResponse, ReturnType<typeof getProjectQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Projects.getProject({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getProjectQueryKey(options)
+});
+
+/**
+ * Update Project
+ *
+ * Update a project.
+ *
+ * Args:
+ * slug: The project slug.
+ * request: Project update data.
+ * current_user: The authenticated user.
+ * project_service: Project service.
+ *
+ * Returns:
+ * The updated project.
+ *
+ * Raises:
+ * HTTPException: If project is not found or user is not the owner.
+ */
+export const updateProjectMutation = (options?: Partial<Options<UpdateProjectData>>): UseMutationOptions<UpdateProjectResponse, AxiosError<UpdateProjectError>, Options<UpdateProjectData>> => {
+    const mutationOptions: UseMutationOptions<UpdateProjectResponse, AxiosError<UpdateProjectError>, Options<UpdateProjectData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Projects.updateProject({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};

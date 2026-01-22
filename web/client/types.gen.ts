@@ -47,6 +47,136 @@ export type LoginRequest = {
 };
 
 /**
+ * ProjectCreate
+ *
+ * Schema for creating a project.
+ */
+export type ProjectCreate = {
+    /**
+     * Slug
+     */
+    slug: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Description
+     */
+    description?: string | null;
+    visibility?: ProjectVisibility;
+    /**
+     * Git Url
+     */
+    git_url?: string | null;
+    /**
+     * Git Branch
+     */
+    git_branch?: string | null;
+    /**
+     * Git Doc Root
+     */
+    git_doc_root?: string | null;
+    /**
+     * Chat Enabled
+     */
+    chat_enabled?: boolean;
+};
+
+/**
+ * ProjectRead
+ *
+ * Schema for reading a project.
+ */
+export type ProjectRead = {
+    /**
+     * Slug
+     */
+    slug: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Description
+     */
+    description?: string | null;
+    visibility?: ProjectVisibility;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Owner Id
+     */
+    owner_id: string;
+    /**
+     * Git Url
+     */
+    git_url: string | null;
+    /**
+     * Git Branch
+     */
+    git_branch: string | null;
+    /**
+     * Git Doc Root
+     */
+    git_doc_root: string | null;
+    /**
+     * Chat Enabled
+     */
+    chat_enabled: boolean;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+};
+
+/**
+ * ProjectUpdate
+ *
+ * Schema for updating a project.
+ */
+export type ProjectUpdate = {
+    /**
+     * Name
+     */
+    name?: string | null;
+    /**
+     * Description
+     */
+    description?: string | null;
+    visibility?: ProjectVisibility | null;
+    /**
+     * Git Url
+     */
+    git_url?: string | null;
+    /**
+     * Git Branch
+     */
+    git_branch?: string | null;
+    /**
+     * Git Doc Root
+     */
+    git_doc_root?: string | null;
+    /**
+     * Chat Enabled
+     */
+    chat_enabled?: boolean | null;
+};
+
+/**
+ * ProjectVisibility
+ *
+ * Project visibility enum.
+ */
+export type ProjectVisibility = 'public' | 'private';
+
+/**
  * RefreshTokenRequest
  *
  * Schema for token refresh request.
@@ -286,3 +416,154 @@ export type GetCurrentUserInfoResponses = {
 };
 
 export type GetCurrentUserInfoResponse = GetCurrentUserInfoResponses[keyof GetCurrentUserInfoResponses];
+
+export type ListProjectsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Skip
+         */
+        skip?: number;
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
+    url: '/api/v1/projects';
+};
+
+export type ListProjectsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListProjectsError = ListProjectsErrors[keyof ListProjectsErrors];
+
+export type ListProjectsResponses = {
+    /**
+     * Response List Projects
+     *
+     * Successful Response
+     */
+    200: Array<ProjectRead>;
+};
+
+export type ListProjectsResponse = ListProjectsResponses[keyof ListProjectsResponses];
+
+export type CreateProjectData = {
+    body: ProjectCreate;
+    path?: never;
+    query?: never;
+    url: '/api/v1/projects';
+};
+
+export type CreateProjectErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateProjectError = CreateProjectErrors[keyof CreateProjectErrors];
+
+export type CreateProjectResponses = {
+    /**
+     * Successful Response
+     */
+    201: ProjectRead;
+};
+
+export type CreateProjectResponse = CreateProjectResponses[keyof CreateProjectResponses];
+
+export type DeleteProjectData = {
+    body?: never;
+    path: {
+        /**
+         * Slug
+         */
+        slug: string;
+    };
+    query?: never;
+    url: '/api/v1/projects/{slug}';
+};
+
+export type DeleteProjectErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteProjectError = DeleteProjectErrors[keyof DeleteProjectErrors];
+
+export type DeleteProjectResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteProjectResponse = DeleteProjectResponses[keyof DeleteProjectResponses];
+
+export type GetProjectData = {
+    body?: never;
+    path: {
+        /**
+         * Slug
+         */
+        slug: string;
+    };
+    query?: never;
+    url: '/api/v1/projects/{slug}';
+};
+
+export type GetProjectErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetProjectError = GetProjectErrors[keyof GetProjectErrors];
+
+export type GetProjectResponses = {
+    /**
+     * Successful Response
+     */
+    200: ProjectRead;
+};
+
+export type GetProjectResponse = GetProjectResponses[keyof GetProjectResponses];
+
+export type UpdateProjectData = {
+    body: ProjectUpdate;
+    path: {
+        /**
+         * Slug
+         */
+        slug: string;
+    };
+    query?: never;
+    url: '/api/v1/projects/{slug}';
+};
+
+export type UpdateProjectErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateProjectError = UpdateProjectErrors[keyof UpdateProjectErrors];
+
+export type UpdateProjectResponses = {
+    /**
+     * Successful Response
+     */
+    200: ProjectRead;
+};
+
+export type UpdateProjectResponse = UpdateProjectResponses[keyof UpdateProjectResponses];

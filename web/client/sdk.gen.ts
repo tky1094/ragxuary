@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { GetCurrentUserInfoData, GetCurrentUserInfoResponses, HealthCheckData, HealthCheckResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, RefreshData, RefreshErrors, RefreshResponses, RegisterData, RegisterErrors, RegisterResponses } from './types.gen';
+import type { CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, GetCurrentUserInfoData, GetCurrentUserInfoResponses, GetProjectData, GetProjectErrors, GetProjectResponses, HealthCheckData, HealthCheckResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, RefreshData, RefreshErrors, RefreshResponses, RegisterData, RegisterErrors, RegisterResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -43,7 +43,7 @@ export class Auth {
      *
      * Args:
      * request: Registration request containing email, name, and password.
-     * db: Database session.
+     * auth_service: Authentication service.
      *
      * Returns:
      * Access and refresh tokens.
@@ -70,13 +70,13 @@ export class Auth {
      *
      * Args:
      * request: Login request containing email and password.
-     * db: Database session.
+     * auth_service: Authentication service.
      *
      * Returns:
      * Access and refresh tokens.
      *
      * Raises:
-     * HTTPException: If credentials are invalid.
+     * HTTPException: If credentials are invalid or user is inactive.
      */
     public static login<ThrowOnError extends boolean = false>(options: Options<LoginData, ThrowOnError>) {
         return (options.client ?? client).post<LoginResponses, LoginErrors, ThrowOnError>({
@@ -97,6 +97,7 @@ export class Auth {
      *
      * Args:
      * credentials: HTTP Bearer credentials containing the JWT token.
+     * auth_service: Authentication service.
      */
     public static logout<ThrowOnError extends boolean = false>(options?: Options<LogoutData, ThrowOnError>) {
         return (options?.client ?? client).post<LogoutResponses, unknown, ThrowOnError>({
@@ -113,7 +114,7 @@ export class Auth {
      *
      * Args:
      * request: Refresh token request.
-     * db: Database session.
+     * auth_service: Authentication service.
      *
      * Returns:
      * New access and refresh tokens.
@@ -150,6 +151,136 @@ export class Auth {
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/api/v1/auth/me',
             ...options
+        });
+    }
+}
+
+export class Projects {
+    /**
+     * List Projects
+     *
+     * List all projects owned by the current user.
+     *
+     * Args:
+     * current_user: The authenticated user.
+     * project_service: Project service.
+     * skip: Number of records to skip (pagination).
+     * limit: Maximum number of records to return.
+     *
+     * Returns:
+     * List of projects owned by the current user.
+     */
+    public static listProjects<ThrowOnError extends boolean = false>(options?: Options<ListProjectsData, ThrowOnError>) {
+        return (options?.client ?? client).get<ListProjectsResponses, ListProjectsErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects',
+            ...options
+        });
+    }
+    
+    /**
+     * Create Project
+     *
+     * Create a new project.
+     *
+     * Args:
+     * request: Project creation data.
+     * current_user: The authenticated user.
+     * project_service: Project service.
+     *
+     * Returns:
+     * The created project.
+     *
+     * Raises:
+     * HTTPException: If slug already exists.
+     */
+    public static createProject<ThrowOnError extends boolean = false>(options: Options<CreateProjectData, ThrowOnError>) {
+        return (options.client ?? client).post<CreateProjectResponses, CreateProjectErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Delete Project
+     *
+     * Delete a project.
+     *
+     * Args:
+     * slug: The project slug.
+     * current_user: The authenticated user.
+     * project_service: Project service.
+     *
+     * Raises:
+     * HTTPException: If project is not found or user is not the owner.
+     */
+    public static deleteProject<ThrowOnError extends boolean = false>(options: Options<DeleteProjectData, ThrowOnError>) {
+        return (options.client ?? client).delete<DeleteProjectResponses, DeleteProjectErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects/{slug}',
+            ...options
+        });
+    }
+    
+    /**
+     * Get Project
+     *
+     * Get a project by slug.
+     *
+     * Args:
+     * slug: The project slug.
+     * current_user: The authenticated user.
+     * project_service: Project service.
+     *
+     * Returns:
+     * The project.
+     *
+     * Raises:
+     * HTTPException: If project is not found or user is not the owner.
+     */
+    public static getProject<ThrowOnError extends boolean = false>(options: Options<GetProjectData, ThrowOnError>) {
+        return (options.client ?? client).get<GetProjectResponses, GetProjectErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects/{slug}',
+            ...options
+        });
+    }
+    
+    /**
+     * Update Project
+     *
+     * Update a project.
+     *
+     * Args:
+     * slug: The project slug.
+     * request: Project update data.
+     * current_user: The authenticated user.
+     * project_service: Project service.
+     *
+     * Returns:
+     * The updated project.
+     *
+     * Raises:
+     * HTTPException: If project is not found or user is not the owner.
+     */
+    public static updateProject<ThrowOnError extends boolean = false>(options: Options<UpdateProjectData, ThrowOnError>) {
+        return (options.client ?? client).patch<UpdateProjectResponses, UpdateProjectErrors, ThrowOnError>({
+            responseType: 'json',
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects/{slug}',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
         });
     }
 }
