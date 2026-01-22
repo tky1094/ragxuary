@@ -32,11 +32,14 @@ web/
 │   │   ├── (auth)/                  # Auth pages (Route Group)
 │   │   │   ├── login/page.tsx
 │   │   │   └── register/page.tsx
-│   │   ├── (public)/                # Public pages (Route Group)
-│   │   │   └── docs/
+│   │   ├── p/[projectSlug]/         # Project routes (auth required)
+│   │   │   ├── docs/                # Documentation
+│   │   │   ├── edit/                # Editor
+│   │   │   ├── chat/                # RAG chat
+│   │   │   └── settings/            # Project settings
+│   │   ├── projects/                # Project list
 │   │   ├── admin/                   # Admin panel
-│   │   ├── chat/                    # RAG chat
-│   │   ├── projects/                # Project management
+│   │   ├── personal/                # Personal settings
 │   │   ├── layout.tsx               # Locale layout
 │   │   └── page.tsx                 # Dashboard
 │   ├── api/                         # API Routes
@@ -44,7 +47,12 @@ web/
 │   └── layout.tsx                   # Root layout
 │
 ├── features/                        # Feature modules
-│   └── auth/                        # Authentication feature (example)
+│   ├── auth/                        # Authentication feature
+│   ├── chat/                        # Chat feature (scaffold)
+│   ├── docs/                        # Documentation feature (scaffold)
+│   ├── projects/                    # Projects feature
+│   └── dashboard/                   # Dashboard feature
+│   # Example feature structure (auth):
 │       ├── components/              # Feature-specific components
 │       │   ├── LoginForm.tsx
 │       │   ├── RegisterForm.tsx

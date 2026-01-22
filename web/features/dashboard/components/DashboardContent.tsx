@@ -72,7 +72,7 @@ export function DashboardContent() {
                 key={project.id}
                 className="transition-colors hover:bg-accent/50"
               >
-                <Link href={`/projects/${project.slug}/settings`}>
+                <Link href={`/p/${project.slug}/docs`}>
                   <CardHeader>
                     <CardTitle className="text-lg">{project.name}</CardTitle>
                     <CardDescription>

@@ -1,5 +1,7 @@
+import { redirect } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
+import { auth } from '@/auth';
 
 interface ConversationPageProps {
   params: Promise<{
@@ -14,6 +16,11 @@ export default async function ConversationPage({
 }: ConversationPageProps) {
   const { locale, projectSlug, conversationId } = await params;
   setRequestLocale(locale);
+
+  const session = await auth();
+  if (!session) {
+    redirect(`/${locale}/login`);
+  }
 
   return (
     <ConversationContent
@@ -41,7 +48,7 @@ function ConversationContent({
         <p className="text-gray-500 text-sm">ID: {conversationId}</p>
       </header>
       <main className="flex-1 overflow-auto p-4">
-        {/* TODO: チャットメッセージ表示を実装 */}
+        {/* TODO: Implement chat message display */}
       </main>
       <footer className="border-t p-4">
         <input
@@ -49,7 +56,7 @@ function ConversationContent({
           placeholder={t('placeholder')}
           className="w-full rounded border p-2"
         />
-        {/* TODO: メッセージ入力フォームを実装 */}
+        {/* TODO: Implement message input form */}
       </footer>
     </div>
   );

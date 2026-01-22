@@ -143,7 +143,15 @@
       "llm": "LLM Settings",
       "embedding": "Embedding Model Settings",
       "rateLimit": "Rate Limit"
+    },
+    "models": {
+      "title": "Model Management",
+      "description": "Configure LLM and embedding models"
     }
+  },
+  "personal": {
+    "title": "Personal Settings",
+    "description": "Manage your account settings"
   },
   "errors": {
     "notFound": "Page not found",

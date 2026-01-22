@@ -1,5 +1,8 @@
+import { redirect } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
+import { auth } from '@/auth';
+import { PageContainer } from '@/shared/components/layout';
 
 interface EditDocPageProps {
   params: Promise<{
@@ -12,9 +15,19 @@ interface EditDocPageProps {
 export default async function EditDocPage({ params }: EditDocPageProps) {
   const { locale, projectSlug, docPath } = await params;
   setRequestLocale(locale);
+
+  const session = await auth();
+  if (!session) {
+    redirect(`/${locale}/login`);
+  }
+
   const path = docPath.join('/');
 
-  return <EditDocContent projectSlug={projectSlug} path={path} />;
+  return (
+    <PageContainer>
+      <EditDocContent projectSlug={projectSlug} path={path} />
+    </PageContainer>
+  );
 }
 
 function EditDocContent({
@@ -27,13 +40,13 @@ function EditDocContent({
   const t = useTranslations('docs');
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div>
       <nav className="mb-4 text-gray-500 text-sm">
         {projectSlug} / {path}
       </nav>
       <h1 className="font-bold text-3xl">{t('edit')}</h1>
       <p className="mt-4 text-gray-600">{path}</p>
-      {/* TODO: ドキュメントエディターを実装 */}
+      {/* TODO: Implement document editor */}
     </div>
   );
 }

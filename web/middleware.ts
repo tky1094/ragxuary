@@ -6,7 +6,6 @@ import { routing } from './i18n/routing';
 import {
   isAdminRoute,
   isProtectedRoute,
-  isPublicDocsRoute,
   isPublicRoute,
 } from './shared/lib/routes';
 
@@ -76,11 +75,6 @@ export default auth(async function middleware(request) {
   const session = request.auth;
   const isAuthenticated = !!session?.user;
   const isAdmin = session?.user?.isAdmin ?? false;
-
-  // Public docs are accessible to everyone
-  if (isPublicDocsRoute(pathWithoutLocale)) {
-    return intlMiddleware(request);
-  }
 
   // Redirect authenticated users away from login/register pages
   if (isAuthenticated && isPublicRoute(pathWithoutLocale)) {
