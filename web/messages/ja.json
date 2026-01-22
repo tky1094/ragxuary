@@ -66,7 +66,14 @@
     "private": "非公開",
     "settings": "プロジェクト設定",
     "members": "メンバー",
-    "noProjects": "プロジェクトがありません"
+    "noProjects": "プロジェクトがありません",
+    "loadError": "プロジェクトの読み込みに失敗しました",
+    "noDescription": "説明なし",
+    "createProject": "プロジェクトを作成",
+    "creating": "作成中...",
+    "nameRequired": "プロジェクト名を入力してください",
+    "slugRequired": "スラッグを入力してください",
+    "slugInvalid": "スラッグは小文字英数字とハイフンのみ使用できます"
   },
   "docs": {
     "title": "ドキュメント",

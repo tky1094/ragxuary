@@ -66,7 +66,14 @@
     "private": "Private",
     "settings": "Project Settings",
     "members": "Members",
-    "noProjects": "No projects found"
+    "noProjects": "No projects found",
+    "loadError": "Failed to load projects",
+    "noDescription": "No description",
+    "createProject": "Create Project",
+    "creating": "Creating...",
+    "nameRequired": "Project name is required",
+    "slugRequired": "Slug is required",
+    "slugInvalid": "Slug must contain only lowercase letters, numbers, and hyphens"
   },
   "docs": {
     "title": "Documentation",
