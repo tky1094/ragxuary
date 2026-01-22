@@ -6,9 +6,14 @@ from app.services.exceptions import (
     EmailAlreadyExistsError,
     InvalidCredentialsError,
     InvalidTokenError,
+    PermissionDeniedError,
+    ProjectNotFoundError,
+    ProjectServiceError,
     ServiceError,
+    SlugAlreadyExistsError,
     UserInactiveError,
 )
+from app.services.project import ProjectService
 
 __all__ = [
     "AuthService",
@@ -16,6 +21,11 @@ __all__ = [
     "EmailAlreadyExistsError",
     "InvalidCredentialsError",
     "InvalidTokenError",
+    "PermissionDeniedError",
+    "ProjectNotFoundError",
+    "ProjectService",
+    "ProjectServiceError",
     "ServiceError",
+    "SlugAlreadyExistsError",
     "UserInactiveError",
 ]

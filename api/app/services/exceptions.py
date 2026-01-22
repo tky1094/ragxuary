@@ -35,3 +35,30 @@ class InvalidTokenError(AuthServiceError):
     """Raised when token is invalid or blacklisted."""
 
     pass
+
+
+# --- Project Service Exceptions ---
+
+
+class ProjectServiceError(ServiceError):
+    """Base exception for project service errors."""
+
+    pass
+
+
+class ProjectNotFoundError(ProjectServiceError):
+    """Raised when project is not found."""
+
+    pass
+
+
+class SlugAlreadyExistsError(ProjectServiceError):
+    """Raised when project slug already exists."""
+
+    pass
+
+
+class PermissionDeniedError(ProjectServiceError):
+    """Raised when user does not have permission to perform action."""
+
+    pass
