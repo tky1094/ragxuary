@@ -1,155 +1,229 @@
 #!/bin/bash
-# Issue 完了確認スクリプト
-# 使用方法: ./scripts/verify.sh
+# Issue completion verification script
+# Usage: ./scripts/verify.sh
 
 set -e
 
-# カラー定義
+# Color definitions
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# プロジェクトルートに移動
+# Move to project root
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 cd "$PROJECT_ROOT"
 
+# Cleanup function
+cleanup() {
+    echo ""
+    echo -e "${YELLOW}🧹 Cleaning up...${NC}"
+    docker compose down -v 2>/dev/null || true
+    echo -e "${GREEN}✅ Cleanup complete${NC}"
+}
+
+# Execute cleanup on script exit
+trap cleanup EXIT
+
 echo -e "${BLUE}========================================${NC}"
-echo -e "${BLUE}    Issue 完了確認フロー${NC}"
+echo -e "${BLUE}    Issue Verification Flow${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo ""
 
-# 結果を記録する変数
+# Variables to store results
+BACKEND_LINT_RESULT=""
+BACKEND_FORMAT_RESULT=""
+FRONTEND_LINT_RESULT=""
 BACKEND_TEST_RESULT=""
 FRONTEND_TEST_RESULT=""
 DOCKER_BUILD_RESULT=""
 HEALTH_CHECK_RESULT=""
 FRONTEND_CHECK_RESULT=""
 
-# Step 1: バックエンドテスト
-echo -e "${YELLOW}📦 Step 1: バックエンドテスト${NC}"
+# Step 1: Backend lint check
+echo -e "${YELLOW}🔍 Step 1: Backend Lint Check${NC}"
 echo "----------------------------------------"
 cd api
 
-# 依存関係をインストール
+# Install dependencies
 uv sync --frozen --extra dev
 
-if uv run pytest --cov=app --cov-report=term-missing 2>&1; then
-    BACKEND_TEST_RESULT="${GREEN}✅ 成功${NC}"
-    echo -e "${GREEN}✅ バックエンドテスト成功${NC}"
+if uv run ruff check . 2>&1; then
+    BACKEND_LINT_RESULT="${GREEN}✅ Passed${NC}"
+    echo -e "${GREEN}✅ Backend lint check passed${NC}"
 else
-    BACKEND_TEST_RESULT="${RED}❌ 失敗${NC}"
-    echo -e "${RED}❌ バックエンドテスト失敗${NC}"
+    BACKEND_LINT_RESULT="${RED}❌ Failed${NC}"
+    echo -e "${RED}❌ Backend lint check failed${NC}"
 fi
 cd "$PROJECT_ROOT"
 echo ""
 
-# Step 2: フロントエンドテスト
-echo -e "${YELLOW}📦 Step 2: フロントエンドテスト${NC}"
+# Step 2: Backend format check
+echo -e "${YELLOW}🔍 Step 2: Backend Format Check${NC}"
+echo "----------------------------------------"
+cd api
+
+if uv run ruff format --check . 2>&1; then
+    BACKEND_FORMAT_RESULT="${GREEN}✅ Passed${NC}"
+    echo -e "${GREEN}✅ Backend format check passed${NC}"
+else
+    BACKEND_FORMAT_RESULT="${RED}❌ Failed${NC}"
+    echo -e "${RED}❌ Backend format check failed${NC}"
+fi
+cd "$PROJECT_ROOT"
+echo ""
+
+# Step 3: Frontend lint & format check
+echo -e "${YELLOW}🔍 Step 3: Frontend Lint & Format Check${NC}"
+echo "----------------------------------------"
+cd web
+
+if pnpm run check 2>&1; then
+    FRONTEND_LINT_RESULT="${GREEN}✅ Passed${NC}"
+    echo -e "${GREEN}✅ Frontend lint & format check passed${NC}"
+else
+    FRONTEND_LINT_RESULT="${RED}❌ Failed${NC}"
+    echo -e "${RED}❌ Frontend lint & format check failed${NC}"
+fi
+cd "$PROJECT_ROOT"
+echo ""
+
+# Step 4: Backend tests
+echo -e "${YELLOW}📦 Step 4: Backend Tests${NC}"
+echo "----------------------------------------"
+cd api
+
+if uv run pytest --cov=app --cov-report=term-missing 2>&1; then
+    BACKEND_TEST_RESULT="${GREEN}✅ Passed${NC}"
+    echo -e "${GREEN}✅ Backend tests passed${NC}"
+else
+    BACKEND_TEST_RESULT="${RED}❌ Failed${NC}"
+    echo -e "${RED}❌ Backend tests failed${NC}"
+fi
+cd "$PROJECT_ROOT"
+echo ""
+
+# Step 5: Frontend tests
+echo -e "${YELLOW}📦 Step 5: Frontend Tests${NC}"
 echo "----------------------------------------"
 cd web
 
 if pnpm run test:run 2>&1; then
-    FRONTEND_TEST_RESULT="${GREEN}✅ 成功${NC}"
-    echo -e "${GREEN}✅ フロントエンドテスト成功${NC}"
+    FRONTEND_TEST_RESULT="${GREEN}✅ Passed${NC}"
+    echo -e "${GREEN}✅ Frontend tests passed${NC}"
 else
-    FRONTEND_TEST_RESULT="${RED}❌ 失敗${NC}"
-    echo -e "${RED}❌ フロントエンドテスト失敗${NC}"
+    FRONTEND_TEST_RESULT="${RED}❌ Failed${NC}"
+    echo -e "${RED}❌ Frontend tests failed${NC}"
 fi
 cd "$PROJECT_ROOT"
 echo ""
 
-# Step 3: Docker Compose ビルド
-echo -e "${YELLOW}🐳 Step 3: Docker Compose ビルド${NC}"
+# Step 6: Docker Compose build
+echo -e "${YELLOW}🐳 Step 6: Docker Compose Build${NC}"
 echo "----------------------------------------"
 
-# 既存のコンテナを停止
+# Stop existing containers
 docker compose down -v 2>/dev/null || true
 
 if docker compose up -d --build 2>&1; then
-    DOCKER_BUILD_RESULT="${GREEN}✅ 成功${NC}"
-    echo -e "${GREEN}✅ Docker Compose ビルド成功${NC}"
+    DOCKER_BUILD_RESULT="${GREEN}✅ Passed${NC}"
+    echo -e "${GREEN}✅ Docker Compose build succeeded${NC}"
 else
-    DOCKER_BUILD_RESULT="${RED}❌ 失敗${NC}"
-    echo -e "${RED}❌ Docker Compose ビルド失敗${NC}"
+    DOCKER_BUILD_RESULT="${RED}❌ Failed${NC}"
+    echo -e "${RED}❌ Docker Compose build failed${NC}"
     exit 1
 fi
 echo ""
 
-# サービス起動待機
-echo -e "${YELLOW}⏳ サービス起動待機中...${NC}"
-sleep 15
+# Wait for services to start (health check loop)
+echo -e "${YELLOW}⏳ Waiting for services to start...${NC}"
+for i in {1..30}; do
+    if curl -s http://localhost:8000/api/v1/health 2>/dev/null | grep -q '"status":"ok"'; then
+        echo -e "${GREEN}✅ API service started${NC}"
+        break
+    fi
+    if [ $i -eq 30 ]; then
+        echo -e "${RED}❌ API service startup timeout${NC}"
+    fi
+    sleep 2
+done
 
-# サービス状態確認
-echo -e "${YELLOW}📊 サービス状態:${NC}"
+# Check service status
+echo -e "${YELLOW}📊 Service Status:${NC}"
 docker compose ps
 echo ""
 
-# Step 4: マイグレーション
-echo -e "${YELLOW}📊 Step 4: マイグレーション実行${NC}"
+# Step 7: Migration
+echo -e "${YELLOW}📊 Step 7: Run Migration${NC}"
 echo "----------------------------------------"
 docker compose exec -T api alembic upgrade head
 echo ""
 
-# Step 5: ヘルスチェック
-echo -e "${YELLOW}🏥 Step 5: ヘルスチェック${NC}"
+# Step 8: Health check
+echo -e "${YELLOW}🏥 Step 8: Health Check${NC}"
 echo "----------------------------------------"
 
-HEALTH_RESPONSE=$(curl -s http://localhost:8000/api/v1/health)
-echo "レスポンス: $HEALTH_RESPONSE"
+HEALTH_RESPONSE=$(curl -s --max-time 10 http://localhost:8000/api/v1/health)
+echo "Response: $HEALTH_RESPONSE"
 
 if echo "$HEALTH_RESPONSE" | grep -q '"status":"ok"'; then
-    HEALTH_CHECK_RESULT="${GREEN}✅ 成功${NC}"
-    echo -e "${GREEN}✅ ヘルスチェック成功${NC}"
+    HEALTH_CHECK_RESULT="${GREEN}✅ Passed${NC}"
+    echo -e "${GREEN}✅ Health check passed${NC}"
 else
-    HEALTH_CHECK_RESULT="${RED}❌ 失敗${NC}"
-    echo -e "${RED}❌ ヘルスチェック失敗${NC}"
+    HEALTH_CHECK_RESULT="${RED}❌ Failed${NC}"
+    echo -e "${RED}❌ Health check failed${NC}"
 fi
 echo ""
 
-# Step 6: フロントエンド確認
-echo -e "${YELLOW}🌐 Step 6: フロントエンド確認${NC}"
+# Step 9: Frontend verification
+echo -e "${YELLOW}🌐 Step 9: Frontend Verification${NC}"
 echo "----------------------------------------"
 
-HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/ja/login)
-echo "ログインページ HTTP ステータス: $HTTP_STATUS"
+HTTP_STATUS=$(curl -s --max-time 10 -o /dev/null -w "%{http_code}" http://localhost:3000/ja/login)
+echo "Login page HTTP status: $HTTP_STATUS"
 
 if [ "$HTTP_STATUS" = "200" ]; then
-    FRONTEND_CHECK_RESULT="${GREEN}✅ 成功${NC}"
-    echo -e "${GREEN}✅ フロントエンド確認成功${NC}"
+    FRONTEND_CHECK_RESULT="${GREEN}✅ Passed${NC}"
+    echo -e "${GREEN}✅ Frontend verification passed${NC}"
 else
-    FRONTEND_CHECK_RESULT="${RED}❌ 失敗${NC}"
-    echo -e "${RED}❌ フロントエンド確認失敗 (HTTP $HTTP_STATUS)${NC}"
+    FRONTEND_CHECK_RESULT="${RED}❌ Failed${NC}"
+    echo -e "${RED}❌ Frontend verification failed (HTTP $HTTP_STATUS)${NC}"
 fi
 echo ""
 
-# 結果サマリー
+# Results summary
 echo -e "${BLUE}========================================${NC}"
-echo -e "${BLUE}    確認結果サマリー${NC}"
+echo -e "${BLUE}    Verification Results Summary${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo ""
-echo -e "バックエンドテスト:    $BACKEND_TEST_RESULT"
-echo -e "フロントエンドテスト:  $FRONTEND_TEST_RESULT"
-echo -e "Docker Compose ビルド: $DOCKER_BUILD_RESULT"
-echo -e "ヘルスチェック:        $HEALTH_CHECK_RESULT"
-echo -e "フロントエンド確認:    $FRONTEND_CHECK_RESULT"
+echo -e "Backend Lint:          $BACKEND_LINT_RESULT"
+echo -e "Backend Format:        $BACKEND_FORMAT_RESULT"
+echo -e "Frontend Lint/Format:  $FRONTEND_LINT_RESULT"
+echo -e "Backend Tests:         $BACKEND_TEST_RESULT"
+echo -e "Frontend Tests:        $FRONTEND_TEST_RESULT"
+echo -e "Docker Compose Build:  $DOCKER_BUILD_RESULT"
+echo -e "Health Check:          $HEALTH_CHECK_RESULT"
+echo -e "Frontend Verification: $FRONTEND_CHECK_RESULT"
 echo ""
 
-# 全体結果
-if [[ "$BACKEND_TEST_RESULT" == *"成功"* ]] && \
-   [[ "$FRONTEND_TEST_RESULT" == *"成功"* ]] && \
-   [[ "$DOCKER_BUILD_RESULT" == *"成功"* ]] && \
-   [[ "$HEALTH_CHECK_RESULT" == *"成功"* ]] && \
-   [[ "$FRONTEND_CHECK_RESULT" == *"成功"* ]]; then
+# Overall result
+if [[ "$BACKEND_LINT_RESULT" == *"Passed"* ]] && \
+   [[ "$BACKEND_FORMAT_RESULT" == *"Passed"* ]] && \
+   [[ "$FRONTEND_LINT_RESULT" == *"Passed"* ]] && \
+   [[ "$BACKEND_TEST_RESULT" == *"Passed"* ]] && \
+   [[ "$FRONTEND_TEST_RESULT" == *"Passed"* ]] && \
+   [[ "$DOCKER_BUILD_RESULT" == *"Passed"* ]] && \
+   [[ "$HEALTH_CHECK_RESULT" == *"Passed"* ]] && \
+   [[ "$FRONTEND_CHECK_RESULT" == *"Passed"* ]]; then
     echo -e "${GREEN}========================================${NC}"
-    echo -e "${GREEN}    🎉 全ての確認が成功しました！${NC}"
+    echo -e "${GREEN}    🎉 All verifications passed!${NC}"
     echo -e "${GREEN}========================================${NC}"
     exit 0
 else
     echo -e "${RED}========================================${NC}"
-    echo -e "${RED}    ⚠️  一部の確認が失敗しました${NC}"
+    echo -e "${RED}    ⚠️  Some verifications failed${NC}"
     echo -e "${RED}========================================${NC}"
     exit 1
 fi
