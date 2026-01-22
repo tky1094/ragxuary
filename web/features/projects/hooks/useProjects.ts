@@ -15,15 +15,21 @@ import { useApiClient } from '@/shared/hooks/useApiClient';
  * Hook for fetching the list of projects
  */
 export function useProjectList(skip = 0, limit = 100) {
-  const { client, isAuthenticated } = useApiClient();
+  const { client, isAuthenticated, isLoading: isAuthLoading } = useApiClient();
 
-  return useQuery({
+  const query = useQuery({
     ...listProjectsOptions({
       client,
       query: { skip, limit },
     }),
     enabled: isAuthenticated,
   });
+
+  return {
+    ...query,
+    // Treat authentication checking or data fetching as loading
+    isLoading: isAuthLoading || query.isPending,
+  };
 }
 
 /**

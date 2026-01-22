@@ -24,13 +24,13 @@ export function ProjectList() {
 
   if (error) {
     return (
-      <div className="text-destructive text-center py-8">{t('loadError')}</div>
+      <div className="py-8 text-center text-destructive">{t('loadError')}</div>
     );
   }
 
   if (!projects || projects.length === 0) {
     return (
-      <div className="text-muted-foreground text-center py-8">
+      <div className="py-8 text-center text-muted-foreground">
         {t('noProjects')}
       </div>
     );

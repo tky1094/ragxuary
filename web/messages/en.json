@@ -1,4 +1,11 @@
 {
+  "dashboard": {
+    "welcome": "Welcome to Dashboard",
+    "welcomeDescription": "Manage your projects and create documentation",
+    "recentProjects": "Recent Projects",
+    "viewAllProjects": "View all projects",
+    "createFirstProject": "Create your first project to get started"
+  },
   "common": {
     "loading": "Loading...",
     "error": "An error occurred",
