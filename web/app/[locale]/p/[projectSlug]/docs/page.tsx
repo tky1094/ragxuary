@@ -1,5 +1,8 @@
+import { redirect } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
+import { auth } from '@/auth';
+import { PageContainer } from '@/shared/components/layout';
 
 interface ProjectDocsPageProps {
   params: Promise<{
@@ -14,19 +17,28 @@ export default async function ProjectDocsPage({
   const { locale, projectSlug } = await params;
   setRequestLocale(locale);
 
-  return <ProjectDocsContent projectSlug={projectSlug} />;
+  const session = await auth();
+  if (!session) {
+    redirect(`/${locale}/login`);
+  }
+
+  return (
+    <PageContainer>
+      <ProjectDocsContent projectSlug={projectSlug} />
+    </PageContainer>
+  );
 }
 
 function ProjectDocsContent({ projectSlug }: { projectSlug: string }) {
   const t = useTranslations();
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div>
       <h1 className="font-bold text-3xl">
         {projectSlug} {t('docs.title')}
       </h1>
       <p className="mt-4 text-gray-600">{t('docs.noDocs')}</p>
-      {/* TODO: ドキュメント一覧を実装 */}
+      {/* TODO: Implement document list */}
     </div>
   );
 }

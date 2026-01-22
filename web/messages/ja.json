@@ -143,7 +143,15 @@
       "llm": "LLM設定",
       "embedding": "埋め込みモデル設定",
       "rateLimit": "レート制限"
+    },
+    "models": {
+      "title": "モデル管理",
+      "description": "LLMと埋め込みモデルを設定します"
     }
+  },
+  "personal": {
+    "title": "個人設定",
+    "description": "アカウント設定を管理します"
   },
   "errors": {
     "notFound": "ページが見つかりませんでした",

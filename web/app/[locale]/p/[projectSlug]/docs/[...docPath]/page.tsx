@@ -1,5 +1,8 @@
+import { redirect } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
+import { auth } from '@/auth';
+import { PageContainer } from '@/shared/components/layout';
 
 interface DocPageProps {
   params: Promise<{
@@ -12,9 +15,19 @@ interface DocPageProps {
 export default async function DocPage({ params }: DocPageProps) {
   const { locale, projectSlug, docPath } = await params;
   setRequestLocale(locale);
+
+  const session = await auth();
+  if (!session) {
+    redirect(`/${locale}/login`);
+  }
+
   const path = docPath.join('/');
 
-  return <DocContent projectSlug={projectSlug} path={path} />;
+  return (
+    <PageContainer>
+      <DocContent projectSlug={projectSlug} path={path} />
+    </PageContainer>
+  );
 }
 
 function DocContent({
@@ -27,7 +40,7 @@ function DocContent({
   const t = useTranslations();
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div>
       <nav className="mb-4 text-gray-500 text-sm">
         {projectSlug} / {path}
       </nav>
@@ -35,7 +48,7 @@ function DocContent({
         <h1>
           {t('docs.title')}: {path}
         </h1>
-        {/* TODO: ドキュメント内容を表示 */}
+        {/* TODO: Display document content */}
       </article>
     </div>
   );

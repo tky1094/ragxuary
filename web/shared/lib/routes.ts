@@ -6,13 +6,10 @@
 export const PUBLIC_ROUTES = ['/login', '/register'];
 
 // Routes that require authentication
-export const PROTECTED_ROUTES = ['/', '/projects', '/chat'];
+export const PROTECTED_ROUTES = ['/', '/projects', '/p', '/personal'];
 
 // Routes that require admin role
 export const ADMIN_ROUTES = ['/admin'];
-
-// Public documentation routes (accessible to everyone)
-export const PUBLIC_DOCS_PATTERN = /^\/docs(\/.*)?$/;
 
 /**
  * Check if a path matches any route in the list
@@ -38,7 +35,6 @@ export function isPublicRoute(path: string): boolean {
  * Check if path is a protected route (requires authentication)
  */
 export function isProtectedRoute(path: string): boolean {
-  // Root path or any protected route prefix
   return matchesRoute(path, PROTECTED_ROUTES);
 }
 
@@ -47,11 +43,4 @@ export function isProtectedRoute(path: string): boolean {
  */
 export function isAdminRoute(path: string): boolean {
   return matchesRoute(path, ADMIN_ROUTES);
-}
-
-/**
- * Check if path is public documentation
- */
-export function isPublicDocsRoute(path: string): boolean {
-  return PUBLIC_DOCS_PATTERN.test(path);
 }

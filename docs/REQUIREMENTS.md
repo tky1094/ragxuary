@@ -371,20 +371,19 @@ flowchart TB
 | `/{locale}`                                          | ダッシュボード       | 要             |
 | `/{locale}/login`                                    | ログイン             | 不要           |
 | `/{locale}/register`                                 | 新規登録             | 不要           |
-| `/{locale}/docs/{projectSlug}`                       | ドキュメントトップ   | 公開設定依存   |
-| `/{locale}/docs/{projectSlug}/{...docPath}`          | ドキュメントページ   | 公開設定依存   |
-| `/{locale}/docs/{projectSlug}/search`                | プロジェクト内検索   | 公開設定依存   |
-| `/{locale}/projects/new`                             | 新規プロジェクト作成 | 要             |
-| `/{locale}/projects/{projectSlug}/edit`              | エディタトップ       | 要（編集権限） |
-| `/{locale}/projects/{projectSlug}/edit/{...docPath}` | ドキュメント編集     | 要（編集権限） |
-| `/{locale}/projects/{projectSlug}/new`               | 新規ドキュメント作成 | 要（編集権限） |
-| `/{locale}/projects/{projectSlug}/settings`          | プロジェクト設定     | 要（管理権限） |
-| `/{locale}/chat/{projectSlug}`                       | RAG チャット         | 要             |
-| `/{locale}/chat/{projectSlug}/{conversationId}`      | チャット履歴         | 要             |
+| `/{locale}/projects`                                 | プロジェクト一覧     | 要             |
+| `/{locale}/p/{projectSlug}/docs`                     | ドキュメントトップ   | 要             |
+| `/{locale}/p/{projectSlug}/docs/{...docPath}`        | ドキュメントページ   | 要             |
+| `/{locale}/p/{projectSlug}/edit`                     | エディタトップ       | 要（編集権限） |
+| `/{locale}/p/{projectSlug}/edit/{...docPath}`        | ドキュメント編集     | 要（編集権限） |
+| `/{locale}/p/{projectSlug}/chat`                     | RAG チャット         | 要             |
+| `/{locale}/p/{projectSlug}/chat/{conversationId}`    | チャット履歴         | 要             |
+| `/{locale}/p/{projectSlug}/settings`                 | プロジェクト設定     | 要（管理権限） |
 | `/{locale}/admin`                                    | 管理画面トップ       | 要（管理者）   |
 | `/{locale}/admin/users`                              | ユーザー管理         | 要（管理者）   |
 | `/{locale}/admin/groups`                             | グループ管理         | 要（管理者）   |
-| `/{locale}/admin/settings`                           | システム設定         | 要（管理者）   |
+| `/{locale}/admin/models`                             | モデル設定           | 要（管理者）   |
+| `/{locale}/personal`                                 | 個人設定             | 要             |
 
 ### Next.js App Router 構成
 
@@ -394,29 +393,25 @@ app/
 │   ├── (auth)/                               # 認証関連（Route Group）
 │   │   ├── login/page.tsx                    # /{locale}/login
 │   │   └── register/page.tsx                 # /{locale}/register
-│   ├── (public)/                             # 公開ページ（Route Group）
-│   │   └── docs/
-│   │       └── [projectSlug]/
-│   │           ├── page.tsx                  # /{locale}/docs/{projectSlug}
-│   │           ├── [...docPath]/page.tsx     # /{locale}/docs/{projectSlug}/{...docPath}
-│   │           └── search/page.tsx           # /{locale}/docs/{projectSlug}/search
 │   ├── projects/
-│   │   ├── new/page.tsx                      # /{locale}/projects/new
-│   │   └── [projectSlug]/
-│   │       ├── edit/
-│   │       │   ├── page.tsx                  # /{locale}/projects/{projectSlug}/edit
-│   │       │   └── [...docPath]/page.tsx     # /{locale}/projects/{projectSlug}/edit/{...docPath}
-│   │       ├── new/page.tsx                  # /{locale}/projects/{projectSlug}/new
-│   │       └── settings/page.tsx             # /{locale}/projects/{projectSlug}/settings
-│   ├── chat/
-│   │   └── [projectSlug]/
-│   │       ├── page.tsx                      # /{locale}/chat/{projectSlug}
-│   │       └── [conversationId]/page.tsx     # /{locale}/chat/{projectSlug}/{conversationId}
+│   │   └── page.tsx                          # /{locale}/projects
+│   ├── p/[projectSlug]/                      # プロジェクト関連（認証必須）
+│   │   ├── docs/
+│   │   │   ├── page.tsx                      # /{locale}/p/{projectSlug}/docs
+│   │   │   └── [...docPath]/page.tsx         # /{locale}/p/{projectSlug}/docs/{...docPath}
+│   │   ├── edit/
+│   │   │   ├── page.tsx                      # /{locale}/p/{projectSlug}/edit
+│   │   │   └── [...docPath]/page.tsx         # /{locale}/p/{projectSlug}/edit/{...docPath}
+│   │   ├── chat/
+│   │   │   ├── page.tsx                      # /{locale}/p/{projectSlug}/chat
+│   │   │   └── [conversationId]/page.tsx     # /{locale}/p/{projectSlug}/chat/{conversationId}
+│   │   └── settings/page.tsx                 # /{locale}/p/{projectSlug}/settings
 │   ├── admin/
 │   │   ├── page.tsx                          # /{locale}/admin
 │   │   ├── users/page.tsx                    # /{locale}/admin/users
 │   │   ├── groups/page.tsx                   # /{locale}/admin/groups
-│   │   └── settings/page.tsx                 # /{locale}/admin/settings
+│   │   └── models/page.tsx                   # /{locale}/admin/models
+│   ├── personal/page.tsx                     # /{locale}/personal
 │   ├── page.tsx                              # /{locale} (ダッシュボード)
 │   └── layout.tsx                            # ロケール用レイアウト
 ├── api/

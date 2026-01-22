@@ -3,7 +3,6 @@ import {
   ADMIN_ROUTES,
   isAdminRoute,
   isProtectedRoute,
-  isPublicDocsRoute,
   isPublicRoute,
   matchesRoute,
   PROTECTED_ROUTES,
@@ -19,10 +18,11 @@ describe('routes configuration', () => {
   });
 
   describe('PROTECTED_ROUTES', () => {
-    it('should include root, projects, and chat', () => {
+    it('should include root, projects, p, and personal', () => {
       expect(PROTECTED_ROUTES).toContain('/');
       expect(PROTECTED_ROUTES).toContain('/projects');
-      expect(PROTECTED_ROUTES).toContain('/chat');
+      expect(PROTECTED_ROUTES).toContain('/p');
+      expect(PROTECTED_ROUTES).toContain('/personal');
     });
   });
 
@@ -42,7 +42,8 @@ describe('matchesRoute', () => {
   it('should match prefix routes', () => {
     expect(matchesRoute('/projects/123', ['/projects'])).toBe(true);
     expect(matchesRoute('/projects/abc/edit', ['/projects'])).toBe(true);
-    expect(matchesRoute('/chat/project-1', ['/chat'])).toBe(true);
+    expect(matchesRoute('/p/project-1', ['/p'])).toBe(true);
+    expect(matchesRoute('/p/project-1/docs', ['/p'])).toBe(true);
   });
 
   it('should handle root path correctly', () => {
@@ -69,7 +70,8 @@ describe('isPublicRoute', () => {
   it('should return false for protected routes', () => {
     expect(isPublicRoute('/')).toBe(false);
     expect(isPublicRoute('/projects')).toBe(false);
-    expect(isPublicRoute('/chat')).toBe(false);
+    expect(isPublicRoute('/p')).toBe(false);
+    expect(isPublicRoute('/personal')).toBe(false);
   });
 
   it('should return false for admin routes', () => {
@@ -86,23 +88,24 @@ describe('isProtectedRoute', () => {
   it('should return true for projects routes', () => {
     expect(isProtectedRoute('/projects')).toBe(true);
     expect(isProtectedRoute('/projects/123')).toBe(true);
-    expect(isProtectedRoute('/projects/abc/edit')).toBe(true);
   });
 
-  it('should return true for chat routes', () => {
-    expect(isProtectedRoute('/chat')).toBe(true);
-    expect(isProtectedRoute('/chat/project-1')).toBe(true);
-    expect(isProtectedRoute('/chat/project-1/conv-1')).toBe(true);
+  it('should return true for p (project) routes', () => {
+    expect(isProtectedRoute('/p')).toBe(true);
+    expect(isProtectedRoute('/p/project-1')).toBe(true);
+    expect(isProtectedRoute('/p/project-1/docs')).toBe(true);
+    expect(isProtectedRoute('/p/project-1/chat')).toBe(true);
+    expect(isProtectedRoute('/p/project-1/settings')).toBe(true);
+    expect(isProtectedRoute('/p/project-1/edit')).toBe(true);
+  });
+
+  it('should return true for personal routes', () => {
+    expect(isProtectedRoute('/personal')).toBe(true);
   });
 
   it('should return false for public routes', () => {
     expect(isProtectedRoute('/login')).toBe(false);
     expect(isProtectedRoute('/register')).toBe(false);
-  });
-
-  it('should return false for docs routes', () => {
-    expect(isProtectedRoute('/docs')).toBe(false);
-    expect(isProtectedRoute('/docs/project-1')).toBe(false);
   });
 });
 
@@ -110,7 +113,7 @@ describe('isAdminRoute', () => {
   it('should return true for admin routes', () => {
     expect(isAdminRoute('/admin')).toBe(true);
     expect(isAdminRoute('/admin/users')).toBe(true);
-    expect(isAdminRoute('/admin/settings')).toBe(true);
+    expect(isAdminRoute('/admin/models')).toBe(true);
     expect(isAdminRoute('/admin/groups')).toBe(true);
   });
 
@@ -118,23 +121,5 @@ describe('isAdminRoute', () => {
     expect(isAdminRoute('/')).toBe(false);
     expect(isAdminRoute('/login')).toBe(false);
     expect(isAdminRoute('/projects')).toBe(false);
-  });
-});
-
-describe('isPublicDocsRoute', () => {
-  it('should return true for docs root', () => {
-    expect(isPublicDocsRoute('/docs')).toBe(true);
-  });
-
-  it('should return true for docs subpaths', () => {
-    expect(isPublicDocsRoute('/docs/project-1')).toBe(true);
-    expect(isPublicDocsRoute('/docs/project-1/page')).toBe(true);
-    expect(isPublicDocsRoute('/docs/project-1/section/page')).toBe(true);
-  });
-
-  it('should return false for non-docs routes', () => {
-    expect(isPublicDocsRoute('/')).toBe(false);
-    expect(isPublicDocsRoute('/documents')).toBe(false);
-    expect(isPublicDocsRoute('/docsx')).toBe(false);
   });
 });
