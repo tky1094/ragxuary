@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from '@/shared/components/ui/card';
 import { useProject } from '../hooks/useProjects';
+import { DeleteProjectDialog } from './DeleteProjectDialog';
 import { ProjectSettingsForm } from './ProjectSettingsForm';
 
 interface ProjectSettingsPageContentProps {
@@ -63,6 +64,16 @@ export function ProjectSettingsPageContent({
         </CardHeader>
         <CardContent>
           <ProjectSettingsForm project={project} />
+        </CardContent>
+      </Card>
+
+      <Card className="border-destructive">
+        <CardHeader>
+          <CardTitle className="text-destructive">{t('dangerZone')}</CardTitle>
+          <CardDescription>{t('dangerZoneDescription')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DeleteProjectDialog project={project} />
         </CardContent>
       </Card>
     </div>

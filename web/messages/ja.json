@@ -91,7 +91,15 @@
     "slugRequired": "スラッグを入力してください",
     "slugInvalid": "スラッグは小文字英数字とハイフンのみ使用できます",
     "updateSuccess": "プロジェクトを更新しました",
-    "updateError": "プロジェクトの更新に失敗しました"
+    "updateError": "プロジェクトの更新に失敗しました",
+    "deleteConfirmTitle": "プロジェクトを削除しますか？",
+    "deleteConfirmDescription": "「{name}」を削除すると、すべてのドキュメントとデータが完全に削除されます。この操作は取り消せません。",
+    "deleteConfirmLabel": "確認のため「{name}」と入力してください",
+    "deleteSuccess": "プロジェクトを削除しました",
+    "deleteError": "プロジェクトの削除に失敗しました",
+    "deleting": "削除中...",
+    "dangerZone": "危険な操作",
+    "dangerZoneDescription": "プロジェクトを削除すると、すべてのデータが失われます"
   },
   "docs": {
     "title": "ドキュメント",

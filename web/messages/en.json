@@ -91,7 +91,15 @@
     "slugRequired": "Slug is required",
     "slugInvalid": "Slug must contain only lowercase letters, numbers, and hyphens",
     "updateSuccess": "Project updated successfully",
-    "updateError": "Failed to update project"
+    "updateError": "Failed to update project",
+    "deleteConfirmTitle": "Delete project?",
+    "deleteConfirmDescription": "Deleting \"{name}\" will permanently remove all documents and data. This action cannot be undone.",
+    "deleteConfirmLabel": "Please type \"{name}\" to confirm",
+    "deleteSuccess": "Project deleted successfully",
+    "deleteError": "Failed to delete project",
+    "deleting": "Deleting...",
+    "dangerZone": "Danger Zone",
+    "dangerZoneDescription": "Deleting the project will permanently remove all data"
   },
   "docs": {
     "title": "Documentation",
