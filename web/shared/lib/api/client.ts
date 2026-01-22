@@ -33,3 +33,17 @@ export const createBrowserClient = (): Client => {
     })
   );
 };
+
+// Authenticated browser client factory
+export const createAuthenticatedBrowserClient = (
+  accessToken: string
+): Client => {
+  return createClient(
+    createConfig({
+      baseURL: '',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+  );
+};

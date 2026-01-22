@@ -3,6 +3,11 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import type { Locale } from '@/i18n/config';
 import { routing } from '@/i18n/routing';
+import {
+  QueryClientProvider,
+  SessionProvider,
+} from '@/shared/components/providers';
+import { Toaster } from '@/shared/components/ui/sonner';
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -33,7 +38,12 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
-      {children}
+      <SessionProvider>
+        <QueryClientProvider>
+          {children}
+          <Toaster richColors position="top-right" />
+        </QueryClientProvider>
+      </SessionProvider>
     </NextIntlClientProvider>
   );
 }
