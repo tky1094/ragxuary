@@ -1,7 +1,6 @@
 'use client';
 
-import { ArrowRight, FolderPlus, Loader2, LogOut } from 'lucide-react';
-import { signOut } from 'next-auth/react';
+import { ArrowRight, FolderPlus, Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useProjectList } from '@/features/projects/hooks/useProjects';
 import { Link } from '@/i18n/routing';
@@ -16,26 +15,14 @@ import {
 export function DashboardContent() {
   const t = useTranslations('dashboard');
   const tProjects = useTranslations('projects');
-  const tAuth = useTranslations('auth');
   const { data: projects, isLoading, isError } = useProjectList(0, 3);
 
   return (
     <div className="space-y-8">
-      {/* Header with Logout */}
-      <div className="flex items-center justify-between">
-        <section className="space-y-2">
-          <h1 className="font-bold text-3xl tracking-tight">{t('welcome')}</h1>
-          <p className="text-muted-foreground">{t('welcomeDescription')}</p>
-        </section>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => signOut({ callbackUrl: '/ja/login' })}
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          {tAuth('logout')}
-        </Button>
-      </div>
+      <section className="space-y-2">
+        <h1 className="font-bold text-3xl tracking-tight">{t('welcome')}</h1>
+        <p className="text-muted-foreground">{t('welcomeDescription')}</p>
+      </section>
 
       {/* Recent Projects Section */}
       <section className="space-y-4">

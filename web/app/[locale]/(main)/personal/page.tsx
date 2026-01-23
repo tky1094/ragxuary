@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { auth } from '@/auth';
-import { PageContainer } from '@/shared/components/layout';
 
 interface PersonalPageProps {
   params: Promise<{ locale: string }>;
@@ -17,11 +16,7 @@ export default async function PersonalPage({ params }: PersonalPageProps) {
     redirect(`/${locale}/login`);
   }
 
-  return (
-    <PageContainer>
-      <PersonalContent />
-    </PageContainer>
-  );
+  return <PersonalContent />;
 }
 
 function PersonalContent() {

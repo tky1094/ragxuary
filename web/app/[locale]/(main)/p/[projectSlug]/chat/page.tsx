@@ -1,7 +1,5 @@
-import { redirect } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
-import { auth } from '@/auth';
 
 interface ChatPageProps {
   params: Promise<{
@@ -14,11 +12,6 @@ export default async function ChatPage({ params }: ChatPageProps) {
   const { locale, projectSlug } = await params;
   setRequestLocale(locale);
 
-  const session = await auth();
-  if (!session) {
-    redirect(`/${locale}/login`);
-  }
-
   return <ChatContent projectSlug={projectSlug} />;
 }
 
@@ -26,7 +19,7 @@ function ChatContent({ projectSlug }: { projectSlug: string }) {
   const t = useTranslations('chat');
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex min-h-[calc(100vh-8rem)] flex-col">
       <header className="border-b p-4">
         <h1 className="font-bold text-xl">
           {projectSlug} {t('title')}
