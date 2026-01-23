@@ -1,0 +1,122 @@
+'use client';
+
+import Image from 'next/image';
+import { useParams, usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { Fragment, useMemo } from 'react';
+import { Link } from '@/i18n/routing';
+import {
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  Breadcrumb as BreadcrumbRoot,
+  BreadcrumbSeparator,
+} from '@/shared/components/ui/breadcrumb';
+
+interface BreadcrumbSegment {
+  label: string;
+  href: string;
+  isLast: boolean;
+}
+
+export function Breadcrumb() {
+  const pathname = usePathname();
+  const params = useParams();
+  const t = useTranslations('navigation');
+
+  const locale = params.locale as string;
+
+  const segments = useMemo((): BreadcrumbSegment[] => {
+    const pathWithoutLocale = pathname.replace(`/${locale}`, '') || '/';
+    const parts = pathWithoutLocale.split('/').filter(Boolean);
+
+    const result: BreadcrumbSegment[] = [
+      { label: 'Ragxuary', href: '/', isLast: parts.length === 0 },
+    ];
+
+    let currentPath = '';
+
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      const isLast = i === parts.length - 1;
+
+      if (part === 'p' && parts[i + 1]) {
+        continue;
+      }
+
+      currentPath += `/${part}`;
+
+      let label = part;
+      if (part === 'projects') label = t('projects');
+      else if (part === 'admin') label = t('admin');
+      else if (part === 'personal') label = t('settings');
+      else if (part === 'docs') label = t('docs');
+      else if (part === 'chat') label = t('chat');
+      else if (part === 'settings') label = t('settings');
+      else if (part === 'users') label = t('users');
+      else if (part === 'groups') label = t('groups');
+      else if (part === 'edit') label = t('docs');
+      else if (part === 'models') label = 'Models';
+
+      const prevPart = parts[i - 1];
+      if (prevPart === 'p') {
+        currentPath = `/p/${part}`;
+      }
+
+      result.push({
+        label,
+        href: currentPath,
+        isLast,
+      });
+    }
+
+    return result;
+  }, [pathname, locale, t]);
+
+  return (
+    <BreadcrumbRoot>
+      <BreadcrumbList>
+        {segments.map((segment, index) => (
+          <Fragment key={`${index}-${segment.href}`}>
+            {index > 0 && <BreadcrumbSeparator />}
+            <BreadcrumbItem>
+              {segment.isLast ? (
+                <BreadcrumbPage>
+                  {index === 0 && (
+                    <Image
+                      src="/favicon.ico"
+                      alt=""
+                      width={16}
+                      height={16}
+                      className="mr-1.5 inline-block"
+                    />
+                  )}
+                  {segment.label}
+                </BreadcrumbPage>
+              ) : (
+                <BreadcrumbLink asChild>
+                  <Link
+                    href={segment.href}
+                    className="inline-flex items-center"
+                  >
+                    {index === 0 && (
+                      <Image
+                        src="/favicon.ico"
+                        alt=""
+                        width={16}
+                        height={16}
+                        className="mr-1.5"
+                      />
+                    )}
+                    {segment.label}
+                  </Link>
+                </BreadcrumbLink>
+              )}
+            </BreadcrumbItem>
+          </Fragment>
+        ))}
+      </BreadcrumbList>
+    </BreadcrumbRoot>
+  );
+}

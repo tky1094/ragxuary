@@ -169,5 +169,11 @@
   "metadata": {
     "title": "ragxuary",
     "description": "RAGネイティブなドキュメンテーションツール"
+  },
+  "projectTabs": {
+    "docs": "ドキュメント",
+    "edit": "編集",
+    "chat": "チャット",
+    "settings": "設定"
   }
 }

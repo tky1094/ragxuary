@@ -1,14 +1,13 @@
 import { redirect } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { auth } from '@/auth';
-import { DashboardContent } from '@/features/dashboard';
-import { PageContainer } from '@/shared/components/layout';
+import { ProjectsPageContent } from '@/features/projects';
 
-interface HomePageProps {
+interface ProjectsPageProps {
   params: Promise<{ locale: string }>;
 }
 
-export default async function HomePage({ params }: HomePageProps) {
+export default async function ProjectsPage({ params }: ProjectsPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
 
@@ -17,9 +16,5 @@ export default async function HomePage({ params }: HomePageProps) {
     redirect(`/${locale}/login`);
   }
 
-  return (
-    <PageContainer>
-      <DashboardContent />
-    </PageContainer>
-  );
+  return <ProjectsPageContent />;
 }

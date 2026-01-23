@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { auth } from '@/auth';
-import { PageContainer } from '@/shared/components/layout';
 
 interface DocPageProps {
   params: Promise<{
@@ -23,11 +22,7 @@ export default async function DocPage({ params }: DocPageProps) {
 
   const path = docPath.join('/');
 
-  return (
-    <PageContainer>
-      <DocContent projectSlug={projectSlug} path={path} />
-    </PageContainer>
-  );
+  return <DocContent projectSlug={projectSlug} path={path} />;
 }
 
 function DocContent({

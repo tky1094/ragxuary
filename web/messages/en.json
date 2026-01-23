@@ -169,5 +169,11 @@
   "metadata": {
     "title": "ragxuary",
     "description": "RAG-native documentation tool"
+  },
+  "projectTabs": {
+    "docs": "Docs",
+    "edit": "Edit",
+    "chat": "Chat",
+    "settings": "Settings"
   }
 }

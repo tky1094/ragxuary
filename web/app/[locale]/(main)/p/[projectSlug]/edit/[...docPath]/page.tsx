@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { auth } from '@/auth';
-import { PageContainer } from '@/shared/components/layout';
 
 interface EditDocPageProps {
   params: Promise<{
@@ -23,11 +22,7 @@ export default async function EditDocPage({ params }: EditDocPageProps) {
 
   const path = docPath.join('/');
 
-  return (
-    <PageContainer>
-      <EditDocContent projectSlug={projectSlug} path={path} />
-    </PageContainer>
-  );
+  return <EditDocContent projectSlug={projectSlug} path={path} />;
 }
 
 function EditDocContent({

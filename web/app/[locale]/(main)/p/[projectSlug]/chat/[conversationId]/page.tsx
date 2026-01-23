@@ -40,7 +40,7 @@ function ConversationContent({
   const t = useTranslations('chat');
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex min-h-[calc(100vh-8rem)] flex-col">
       <header className="border-b p-4">
         <h1 className="font-bold text-xl">
           {projectSlug} {t('title')}

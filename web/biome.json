@@ -50,8 +50,8 @@
     }
   },
   "css": {
-    "parser": {
-      "cssModules": true
+    "formatter": {
+      "enabled": false
     },
     "linter": {
       "enabled": false

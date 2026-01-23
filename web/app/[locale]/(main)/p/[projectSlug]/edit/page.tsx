@@ -1,8 +1,5 @@
-import { redirect } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
-import { auth } from '@/auth';
-import { PageContainer } from '@/shared/components/layout';
 
 interface EditProjectPageProps {
   params: Promise<{
@@ -17,16 +14,7 @@ export default async function EditProjectPage({
   const { locale, projectSlug } = await params;
   setRequestLocale(locale);
 
-  const session = await auth();
-  if (!session) {
-    redirect(`/${locale}/login`);
-  }
-
-  return (
-    <PageContainer>
-      <EditProjectContent projectSlug={projectSlug} />
-    </PageContainer>
-  );
+  return <EditProjectContent projectSlug={projectSlug} />;
 }
 
 function EditProjectContent({ projectSlug }: { projectSlug: string }) {
