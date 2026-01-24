@@ -1,7 +1,9 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+
 import { Button } from '@/shared/components/ui/button';
 import {
   Dialog,
@@ -12,6 +14,14 @@ import {
 } from '@/shared/components/ui/dialog';
 import { CreateProjectForm } from './CreateProjectForm';
 import { ProjectList } from './ProjectList';
+import { ProjectListSkeleton } from './ProjectListSkeleton';
+
+function ProjectListError() {
+  const t = useTranslations('projects');
+  return (
+    <div className="py-8 text-center text-destructive">{t('loadError')}</div>
+  );
+}
 
 export function ProjectsPageContent() {
   const t = useTranslations('projects');
@@ -33,7 +43,11 @@ export function ProjectsPageContent() {
           </DialogContent>
         </Dialog>
       </div>
-      <ProjectList />
+      <ErrorBoundary fallback={<ProjectListError />}>
+        <Suspense fallback={<ProjectListSkeleton />}>
+          <ProjectList />
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 }

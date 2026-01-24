@@ -1,6 +1,13 @@
 'use client';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+
 import {
   createProjectMutation,
   deleteProjectMutation,
@@ -9,100 +16,110 @@ import {
   listProjectsQueryKey,
   updateProjectMutation,
 } from '@/client/@tanstack/react-query.gen';
-import { useApiClient } from '@/shared/hooks/useApiClient';
 
 /**
- * Hook for fetching the list of projects
+ * Hook for fetching the list of projects.
+ * Uses the global API client configured in client.ts.
  */
 export function useProjectList(skip = 0, limit = 100) {
-  const { client, isAuthenticated, isLoading: isAuthLoading } = useApiClient();
+  const { status } = useSession();
+  const isAuthenticated = status === 'authenticated';
+  const isAuthLoading = status === 'loading';
 
   const query = useQuery({
-    ...listProjectsOptions({
-      client,
-      query: { skip, limit },
-    }),
+    ...listProjectsOptions({ query: { skip, limit } }),
     enabled: isAuthenticated,
   });
 
   return {
     ...query,
-    // Treat authentication checking or data fetching as loading
     isLoading: isAuthLoading || query.isPending,
   };
 }
 
 /**
- * Hook for fetching a single project by slug
+ * Suspense-enabled hook for fetching the list of projects.
+ * Use with React Suspense and server-side prefetching via HydrationBoundary.
+ * Data must be prefetched on the server, otherwise this will suspend indefinitely.
+ */
+export function useProjectListSuspense(skip = 0, limit = 100) {
+  return useSuspenseQuery(listProjectsOptions({ query: { skip, limit } }));
+}
+
+/**
+ * Hook for fetching a single project by slug.
+ * Uses the global API client configured in client.ts.
  */
 export function useProject(slug: string) {
-  const { client, isAuthenticated, isLoading: isAuthLoading } = useApiClient();
+  const { status } = useSession();
+  const isAuthenticated = status === 'authenticated';
+  const isAuthLoading = status === 'loading';
 
   const query = useQuery({
-    ...getProjectOptions({
-      client,
-      path: { slug },
-    }),
+    ...getProjectOptions({ path: { slug } }),
     enabled: isAuthenticated && !!slug,
   });
 
   return {
     ...query,
-    // Treat authentication checking or data fetching as loading
     isLoading: isAuthLoading || query.isPending,
   };
 }
 
 /**
- * Hook for creating a new project
+ * Suspense-enabled hook for fetching a single project by slug.
+ * Use with React Suspense and server-side prefetching via HydrationBoundary.
+ */
+export function useProjectSuspense(slug: string) {
+  return useSuspenseQuery(getProjectOptions({ path: { slug } }));
+}
+
+/**
+ * Hook for creating a new project.
+ * Uses the global API client configured in client.ts.
  */
 export function useCreateProject() {
-  const { client } = useApiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
-    ...createProjectMutation({ client }),
+    ...createProjectMutation(),
     onSuccess: () => {
-      // Invalidate the projects list to refetch
-      // Pass client to ensure baseURL in queryKey matches
       queryClient.invalidateQueries({
-        queryKey: listProjectsQueryKey({ client }),
+        queryKey: listProjectsQueryKey(),
       });
     },
   });
 }
 
 /**
- * Hook for updating a project
+ * Hook for updating a project.
+ * Uses the global API client configured in client.ts.
  */
 export function useUpdateProject() {
-  const { client } = useApiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
-    ...updateProjectMutation({ client }),
+    ...updateProjectMutation(),
     onSuccess: () => {
-      // Pass client to ensure baseURL in queryKey matches
       queryClient.invalidateQueries({
-        queryKey: listProjectsQueryKey({ client }),
+        queryKey: listProjectsQueryKey(),
       });
     },
   });
 }
 
 /**
- * Hook for deleting a project
+ * Hook for deleting a project.
+ * Uses the global API client configured in client.ts.
  */
 export function useDeleteProject() {
-  const { client } = useApiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
-    ...deleteProjectMutation({ client }),
+    ...deleteProjectMutation(),
     onSuccess: () => {
-      // Pass client to ensure baseURL in queryKey matches
       queryClient.invalidateQueries({
-        queryKey: listProjectsQueryKey({ client }),
+        queryKey: listProjectsQueryKey(),
       });
     },
   });

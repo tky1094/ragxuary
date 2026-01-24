@@ -1,49 +1,50 @@
 /**
- * API Client configuration for hey-api generated client
+ * API Client configuration and interceptors.
+ *
+ * The client is initialized via createClientConfig in hey-api-config.ts.
+ * This file sets up additional interceptors for error handling and
+ * provides a server client factory for server-side requests.
  */
 import { type Client, createClient, createConfig } from '@/client/client';
+import { client } from '@/client/client.gen';
 
-// Server-side client with full BACKEND_URL (lazy initialization)
-let _serverClient: Client | null = null;
+// Setup 401 error handling interceptor (client-side only)
+if (typeof window !== 'undefined') {
+  client.interceptors.response.use(async (response: Response) => {
+    if (response.status === 401) {
+      const { signOut } = await import('next-auth/react');
+      signOut({ callbackUrl: '/auth/signin' });
+    }
+    return response;
+  });
+}
 
-export const getServerClient = (): Client => {
-  if (_serverClient) {
-    return _serverClient;
-  }
-
+/**
+ * Get a server-side API client for direct backend communication.
+ * Uses BACKEND_URL and automatically retrieves the access token.
+ *
+ * Note: Each call creates a new client instance to avoid shared state issues.
+ */
+export function getServerClient(): Client {
   const baseUrl = process.env.BACKEND_URL;
   if (!baseUrl) {
     throw new Error('BACKEND_URL environment variable is not set');
   }
 
-  _serverClient = createClient(
-    createConfig({
-      baseURL: baseUrl,
-    })
-  );
-
-  return _serverClient;
-};
-
-// Client-side client (uses Next.js API routes as proxy)
-export const createBrowserClient = (): Client => {
   return createClient(
     createConfig({
-      baseURL: '',
-    })
-  );
-};
-
-// Authenticated browser client factory
-export const createAuthenticatedBrowserClient = (
-  accessToken: string
-): Client => {
-  return createClient(
-    createConfig({
-      baseURL: '',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+      baseUrl,
+      auth: async () => {
+        try {
+          const { auth } = await import('@/auth');
+          const session = await auth();
+          return session?.accessToken;
+        } catch {
+          return undefined;
+        }
       },
     })
   );
-};
+}
+
+export { client };

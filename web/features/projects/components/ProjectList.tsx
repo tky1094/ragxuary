@@ -1,32 +1,22 @@
 'use client';
 
-import { Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from '@/shared/components/ui/card';
-import { useProjectList } from '../hooks/useProjects';
+import { useProjectListSuspense } from '../hooks/useProjects';
 
+/**
+ * Project list component using Suspense.
+ * Must be wrapped in a Suspense boundary and data should be prefetched on the server.
+ */
 export function ProjectList() {
   const t = useTranslations('projects');
-  const { data: projects, isLoading, error } = useProjectList();
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center py-8">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="py-8 text-center text-destructive">{t('loadError')}</div>
-    );
-  }
+  const { data: projects } = useProjectListSuspense();
 
   if (!projects || projects.length === 0) {
     return (

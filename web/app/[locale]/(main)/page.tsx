@@ -1,7 +1,10 @@
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
+
 import { auth } from '@/auth';
 import { DashboardContent } from '@/features/dashboard';
+import { prefetchProjectList } from '@/features/projects/lib/prefetch';
 
 interface HomePageProps {
   params: Promise<{ locale: string }>;
@@ -16,5 +19,12 @@ export default async function HomePage({ params }: HomePageProps) {
     redirect(`/${locale}/login`);
   }
 
-  return <DashboardContent />;
+  // Prefetch recent projects (limit 3 for dashboard)
+  const queryClient = await prefetchProjectList(0, 3);
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <DashboardContent />
+    </HydrationBoundary>
+  );
 }

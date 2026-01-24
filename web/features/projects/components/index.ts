@@ -1,7 +1,9 @@
 export { CreateProjectForm } from './CreateProjectForm';
 export { DeleteProjectDialog } from './DeleteProjectDialog';
 export { ProjectList } from './ProjectList';
+export { ProjectListSkeleton } from './ProjectListSkeleton';
 export { ProjectSettingsForm } from './ProjectSettingsForm';
 export { ProjectSettingsPageContent } from './ProjectSettingsPageContent';
+export { ProjectSettingsSkeleton } from './ProjectSettingsSkeleton';
 export { ProjectsPageContent } from './ProjectsPageContent';
 export { ProjectTabs } from './ProjectTabs';
