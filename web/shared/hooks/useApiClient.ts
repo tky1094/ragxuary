@@ -1,7 +1,7 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
-import { useMemo } from 'react';
+import { signOut, useSession } from 'next-auth/react';
+import { useEffect, useMemo } from 'react';
 import {
   createAuthenticatedBrowserClient,
   createBrowserClient,
@@ -14,16 +14,23 @@ import {
 export function useApiClient() {
   const { data: session, status } = useSession();
 
+  // Handle token refresh errors by signing out
+  useEffect(() => {
+    if (session?.error === 'RefreshAccessTokenError') {
+      signOut({ callbackUrl: '/auth/signin' });
+    }
+  }, [session?.error]);
+
   const client = useMemo(() => {
-    if (status === 'authenticated' && session?.accessToken) {
+    if (status === 'authenticated' && session?.accessToken && !session?.error) {
       return createAuthenticatedBrowserClient(session.accessToken);
     }
     return createBrowserClient();
-  }, [session?.accessToken, status]);
+  }, [session?.accessToken, session?.error, status]);
 
   return {
     client,
-    isAuthenticated: status === 'authenticated',
+    isAuthenticated: status === 'authenticated' && !session?.error,
     isLoading: status === 'loading',
   };
 }
