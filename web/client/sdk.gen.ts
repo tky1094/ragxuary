@@ -27,11 +27,7 @@ export class Health {
      * Returns the health status of the application and database connection.
      */
     public static healthCheck<ThrowOnError extends boolean = false>(options?: Options<HealthCheckData, ThrowOnError>) {
-        return (options?.client ?? client).get<HealthCheckResponses, unknown, ThrowOnError>({
-            responseType: 'json',
-            url: '/api/v1/health',
-            ...options
-        });
+        return (options?.client ?? client).get<HealthCheckResponses, unknown, ThrowOnError>({ url: '/api/v1/health', ...options });
     }
 }
 
@@ -53,7 +49,6 @@ export class Auth {
      */
     public static register<ThrowOnError extends boolean = false>(options: Options<RegisterData, ThrowOnError>) {
         return (options.client ?? client).post<RegisterResponses, RegisterErrors, ThrowOnError>({
-            responseType: 'json',
             url: '/api/v1/auth/register',
             ...options,
             headers: {
@@ -80,7 +75,6 @@ export class Auth {
      */
     public static login<ThrowOnError extends boolean = false>(options: Options<LoginData, ThrowOnError>) {
         return (options.client ?? client).post<LoginResponses, LoginErrors, ThrowOnError>({
-            responseType: 'json',
             url: '/api/v1/auth/login',
             ...options,
             headers: {
@@ -124,7 +118,6 @@ export class Auth {
      */
     public static refresh<ThrowOnError extends boolean = false>(options: Options<RefreshData, ThrowOnError>) {
         return (options.client ?? client).post<RefreshResponses, RefreshErrors, ThrowOnError>({
-            responseType: 'json',
             url: '/api/v1/auth/refresh',
             ...options,
             headers: {
@@ -147,7 +140,6 @@ export class Auth {
      */
     public static getCurrentUserInfo<ThrowOnError extends boolean = false>(options?: Options<GetCurrentUserInfoData, ThrowOnError>) {
         return (options?.client ?? client).get<GetCurrentUserInfoResponses, unknown, ThrowOnError>({
-            responseType: 'json',
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/api/v1/auth/me',
             ...options
@@ -172,7 +164,6 @@ export class Projects {
      */
     public static listProjects<ThrowOnError extends boolean = false>(options?: Options<ListProjectsData, ThrowOnError>) {
         return (options?.client ?? client).get<ListProjectsResponses, ListProjectsErrors, ThrowOnError>({
-            responseType: 'json',
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/api/v1/projects',
             ...options
@@ -197,7 +188,6 @@ export class Projects {
      */
     public static createProject<ThrowOnError extends boolean = false>(options: Options<CreateProjectData, ThrowOnError>) {
         return (options.client ?? client).post<CreateProjectResponses, CreateProjectErrors, ThrowOnError>({
-            responseType: 'json',
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/api/v1/projects',
             ...options,
@@ -247,7 +237,6 @@ export class Projects {
      */
     public static getProject<ThrowOnError extends boolean = false>(options: Options<GetProjectData, ThrowOnError>) {
         return (options.client ?? client).get<GetProjectResponses, GetProjectErrors, ThrowOnError>({
-            responseType: 'json',
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/api/v1/projects/{slug}',
             ...options
@@ -273,7 +262,6 @@ export class Projects {
      */
     public static updateProject<ThrowOnError extends boolean = false>(options: Options<UpdateProjectData, ThrowOnError>) {
         return (options.client ?? client).patch<UpdateProjectResponses, UpdateProjectErrors, ThrowOnError>({
-            responseType: 'json',
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/api/v1/projects/{slug}',
             ...options,

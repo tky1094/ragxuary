@@ -7,10 +7,13 @@ export default defineConfig({
   },
   plugins: [
     {
+      name: '@hey-api/client-next',
+      runtimeConfigPath: '@/shared/lib/api/hey-api-config',
+    },
+    {
       name: '@hey-api/sdk',
       operations: { strategy: 'byTags' },
     },
-    '@hey-api/client-axios',
     '@tanstack/react-query',
   ],
 });

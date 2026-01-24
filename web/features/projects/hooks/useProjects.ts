@@ -1,6 +1,11 @@
 'use client';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 
 import {
@@ -14,7 +19,7 @@ import {
 
 /**
  * Hook for fetching the list of projects.
- * Uses the global API client configured in setupClient.ts.
+ * Uses the global API client configured in client.ts.
  */
 export function useProjectList(skip = 0, limit = 100) {
   const { status } = useSession();
@@ -33,8 +38,17 @@ export function useProjectList(skip = 0, limit = 100) {
 }
 
 /**
+ * Suspense-enabled hook for fetching the list of projects.
+ * Use with React Suspense and server-side prefetching via HydrationBoundary.
+ * Data must be prefetched on the server, otherwise this will suspend indefinitely.
+ */
+export function useProjectListSuspense(skip = 0, limit = 100) {
+  return useSuspenseQuery(listProjectsOptions({ query: { skip, limit } }));
+}
+
+/**
  * Hook for fetching a single project by slug.
- * Uses the global API client configured in setupClient.ts.
+ * Uses the global API client configured in client.ts.
  */
 export function useProject(slug: string) {
   const { status } = useSession();
@@ -53,8 +67,16 @@ export function useProject(slug: string) {
 }
 
 /**
+ * Suspense-enabled hook for fetching a single project by slug.
+ * Use with React Suspense and server-side prefetching via HydrationBoundary.
+ */
+export function useProjectSuspense(slug: string) {
+  return useSuspenseQuery(getProjectOptions({ path: { slug } }));
+}
+
+/**
  * Hook for creating a new project.
- * Uses the global API client configured in setupClient.ts.
+ * Uses the global API client configured in client.ts.
  */
 export function useCreateProject() {
   const queryClient = useQueryClient();
@@ -71,7 +93,7 @@ export function useCreateProject() {
 
 /**
  * Hook for updating a project.
- * Uses the global API client configured in setupClient.ts.
+ * Uses the global API client configured in client.ts.
  */
 export function useUpdateProject() {
   const queryClient = useQueryClient();
@@ -88,7 +110,7 @@ export function useUpdateProject() {
 
 /**
  * Hook for deleting a project.
- * Uses the global API client configured in setupClient.ts.
+ * Uses the global API client configured in client.ts.
  */
 export function useDeleteProject() {
   const queryClient = useQueryClient();

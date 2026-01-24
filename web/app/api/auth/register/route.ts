@@ -1,4 +1,3 @@
-import type { AxiosError } from 'axios';
 import { NextResponse } from 'next/server';
 
 import { Auth, type TokenResponse } from '@/client';
@@ -14,7 +13,7 @@ export async function POST(request: Request) {
   try {
     const body: RegisterRequestBody = await request.json();
 
-    const { data, error } = await Auth.register({
+    const { data, error, response } = await Auth.register({
       client: getServerClient(),
       body: {
         email: body.email,
@@ -24,8 +23,7 @@ export async function POST(request: Request) {
     });
 
     if (error) {
-      const axiosError = error as AxiosError;
-      const status = axiosError.response?.status ?? 500;
+      const status = response?.status ?? 500;
 
       if (status === 400) {
         return NextResponse.json(

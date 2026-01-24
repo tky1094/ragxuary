@@ -7,17 +7,14 @@ import {
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { type ReactNode, useState } from 'react';
 
-import { setupBrowserClient } from '@/shared/lib/api/client';
+// Import client module to initialize 401 error handling interceptor
+import '@/shared/lib/api/client';
 
 interface QueryClientProviderProps {
   children: ReactNode;
 }
 
 export function QueryClientProvider({ children }: QueryClientProviderProps) {
-  // Initialize the API client with auth callback
-  // This runs once on first render due to internal guard
-  setupBrowserClient();
-
   // Create QueryClient inside useState for SSR safety
   // Each request gets a new QueryClient instance
   const [queryClient] = useState(
