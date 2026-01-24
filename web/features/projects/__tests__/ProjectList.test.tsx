@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
+import { Suspense } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ProjectList } from '../components/ProjectList';
@@ -47,7 +48,9 @@ function createTestQueryClient() {
 function renderWithProviders(ui: ReactNode) {
   const queryClient = createTestQueryClient();
   return render(
-    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <Suspense fallback={<div>Loading...</div>}>{ui}</Suspense>
+    </QueryClientProvider>
   );
 }
 
@@ -56,50 +59,12 @@ describe('ProjectList', () => {
     vi.clearAllMocks();
   });
 
-  it('should show loading state', () => {
-    vi.spyOn(useProjectsModule, 'useProjectList').mockReturnValue({
-      data: undefined,
-      isLoading: true,
-      error: null,
-      isPending: true,
-      isError: false,
-      isSuccess: false,
-      refetch: vi.fn(),
-    } as unknown as ReturnType<typeof useProjectsModule.useProjectList>);
-
-    const { container } = renderWithProviders(<ProjectList />);
-
-    // Loading spinner has animate-spin class
-    const spinner = container.querySelector('.animate-spin');
-    expect(spinner).toBeInTheDocument();
-  });
-
-  it('should show error state', () => {
-    vi.spyOn(useProjectsModule, 'useProjectList').mockReturnValue({
-      data: undefined,
-      isLoading: false,
-      error: new Error('Failed to fetch'),
-      isPending: false,
-      isError: true,
-      isSuccess: false,
-      refetch: vi.fn(),
-    } as unknown as ReturnType<typeof useProjectsModule.useProjectList>);
-
-    renderWithProviders(<ProjectList />);
-
-    expect(screen.getByText('Failed to load projects')).toBeInTheDocument();
-  });
-
   it('should show empty state when no projects', () => {
-    vi.spyOn(useProjectsModule, 'useProjectList').mockReturnValue({
+    vi.spyOn(useProjectsModule, 'useProjectListSuspense').mockReturnValue({
       data: [],
-      isLoading: false,
-      error: null,
-      isPending: false,
-      isError: false,
-      isSuccess: true,
-      refetch: vi.fn(),
-    } as unknown as ReturnType<typeof useProjectsModule.useProjectList>);
+    } as unknown as ReturnType<
+      typeof useProjectsModule.useProjectListSuspense
+    >);
 
     renderWithProviders(<ProjectList />);
 
@@ -132,15 +97,11 @@ describe('ProjectList', () => {
       },
     ];
 
-    vi.spyOn(useProjectsModule, 'useProjectList').mockReturnValue({
+    vi.spyOn(useProjectsModule, 'useProjectListSuspense').mockReturnValue({
       data: mockProjects,
-      isLoading: false,
-      error: null,
-      isPending: false,
-      isError: false,
-      isSuccess: true,
-      refetch: vi.fn(),
-    } as unknown as ReturnType<typeof useProjectsModule.useProjectList>);
+    } as unknown as ReturnType<
+      typeof useProjectsModule.useProjectListSuspense
+    >);
 
     renderWithProviders(<ProjectList />);
 
@@ -165,15 +126,11 @@ describe('ProjectList', () => {
       },
     ];
 
-    vi.spyOn(useProjectsModule, 'useProjectList').mockReturnValue({
+    vi.spyOn(useProjectsModule, 'useProjectListSuspense').mockReturnValue({
       data: mockProjects,
-      isLoading: false,
-      error: null,
-      isPending: false,
-      isError: false,
-      isSuccess: true,
-      refetch: vi.fn(),
-    } as unknown as ReturnType<typeof useProjectsModule.useProjectList>);
+    } as unknown as ReturnType<
+      typeof useProjectsModule.useProjectListSuspense
+    >);
 
     const { container } = renderWithProviders(<ProjectList />);
 
