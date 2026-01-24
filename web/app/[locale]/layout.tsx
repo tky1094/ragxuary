@@ -6,6 +6,7 @@ import { routing } from '@/i18n/routing';
 import {
   QueryClientProvider,
   SessionProvider,
+  ThemeProvider,
 } from '@/shared/components/providers';
 import { Toaster } from '@/shared/components/ui/sonner';
 
@@ -38,12 +39,14 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <SessionProvider>
-        <QueryClientProvider>
-          {children}
-          <Toaster richColors position="top-right" />
-        </QueryClientProvider>
-      </SessionProvider>
+      <ThemeProvider>
+        <SessionProvider>
+          <QueryClientProvider>
+            {children}
+            <Toaster richColors position="top-right" />
+          </QueryClientProvider>
+        </SessionProvider>
+      </ThemeProvider>
     </NextIntlClientProvider>
   );
 }

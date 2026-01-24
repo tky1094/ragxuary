@@ -56,7 +56,7 @@ export function Breadcrumb() {
       else if (part === 'settings') label = t('settings');
       else if (part === 'users') label = t('users');
       else if (part === 'groups') label = t('groups');
-      else if (part === 'edit') label = t('docs');
+      else if (part === 'edit') label = t('edit');
       else if (part === 'models') label = 'Models';
 
       const prevPart = parts[i - 1];

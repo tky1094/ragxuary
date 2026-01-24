@@ -6,6 +6,7 @@ import { signOut } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/shared/components/ui/button';
 import { LanguageSwitcher } from '../LanguageSwitcher';
+import { ThemeToggle } from '../ThemeToggle';
 import { Breadcrumb } from './Breadcrumb';
 
 export function Header() {
@@ -22,14 +23,15 @@ export function Header() {
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
         <Breadcrumb />
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           <LanguageSwitcher />
           <Button
             variant="ghost"
             size="sm"
             onClick={handleLogout}
-            className="gap-2 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+            className="gap-2 text-zinc-600 hover:text-zinc-900 sm:min-w-32 sm:justify-start dark:text-zinc-400 dark:hover:text-zinc-100"
           >
-            <LogOut className="h-4 w-4" />
+            <LogOut className="h-4 w-4 shrink-0" />
             <span className="hidden sm:inline">{t('logout')}</span>
           </Button>
         </div>
