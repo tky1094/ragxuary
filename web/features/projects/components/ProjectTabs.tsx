@@ -76,7 +76,7 @@ export function ProjectTabs() {
                 key={tab.key}
                 href={tab.href}
                 className={cn(
-                  'group relative flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors',
+                  'group relative flex items-center gap-2 px-4 py-3 font-medium text-sm transition-colors',
                   active
                     ? 'text-zinc-900 dark:text-zinc-100'
                     : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300'
