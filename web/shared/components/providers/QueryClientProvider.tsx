@@ -7,21 +7,27 @@ import {
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { type ReactNode, useState } from 'react';
 
+import { setupBrowserClient } from '@/shared/lib/api/client';
+
 interface QueryClientProviderProps {
   children: ReactNode;
 }
 
 export function QueryClientProvider({ children }: QueryClientProviderProps) {
-  // SSR対策: コンポーネント内でQueryClientをuseStateで作成
-  // これにより各リクエストで新しいQueryClientが作成される
+  // Initialize the API client with auth callback
+  // This runs once on first render due to internal guard
+  setupBrowserClient();
+
+  // Create QueryClient inside useState for SSR safety
+  // Each request gets a new QueryClient instance
   const [queryClient] = useState(
     () =>
       new QueryClient({
         defaultOptions: {
           queries: {
-            // SSRのハイドレーション時に即座に再フェッチしない
-            staleTime: 60 * 1000, // 1分
-            // ウィンドウフォーカス時の自動再フェッチを無効化
+            // Prevent immediate refetch during SSR hydration
+            staleTime: 60 * 1000, // 1 minute
+            // Disable automatic refetch on window focus
             refetchOnWindowFocus: false,
           },
         },
