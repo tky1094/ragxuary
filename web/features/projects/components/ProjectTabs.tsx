@@ -64,7 +64,7 @@ export function ProjectTabs() {
   };
 
   return (
-    <nav className="border-zinc-200 border-b bg-white dark:border-zinc-800 dark:bg-zinc-950">
+    <nav className="border-border border-b bg-card">
       <div className="container mx-auto px-4">
         <div className="-mb-px flex gap-1">
           {tabs.map((tab) => {
@@ -78,16 +78,16 @@ export function ProjectTabs() {
                 className={cn(
                   'group relative flex items-center gap-2 px-4 py-3 font-medium text-sm transition-colors',
                   active
-                    ? 'text-zinc-900 dark:text-zinc-100'
-                    : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300'
+                    ? 'text-foreground'
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 <Icon
                   className={cn(
                     'h-4 w-4 transition-colors',
                     active
-                      ? 'text-zinc-700 dark:text-zinc-300'
-                      : 'text-zinc-400 group-hover:text-zinc-500 dark:text-zinc-500 dark:group-hover:text-zinc-400'
+                      ? 'text-foreground'
+                      : 'text-muted-foreground group-hover:text-foreground'
                   )}
                 />
                 <span>{t(tab.labelKey)}</span>
@@ -97,8 +97,8 @@ export function ProjectTabs() {
                   className={cn(
                     'absolute inset-x-0 -bottom-px h-0.5 rounded-full transition-all',
                     active
-                      ? 'bg-zinc-900 dark:bg-zinc-100'
-                      : 'bg-transparent group-hover:bg-zinc-300 dark:group-hover:bg-zinc-700'
+                      ? 'bg-foreground'
+                      : 'bg-transparent group-hover:bg-border'
                   )}
                 />
               </Link>

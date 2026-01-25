@@ -25,7 +25,7 @@ function PersonalContent() {
   return (
     <div>
       <h1 className="font-bold text-3xl">{t('title')}</h1>
-      <p className="mt-4 text-gray-600">{t('description')}</p>
+      <p className="mt-4 text-muted-foreground">{t('description')}</p>
       {/* TODO: Implement personal settings */}
     </div>
   );

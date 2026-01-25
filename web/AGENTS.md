@@ -189,6 +189,41 @@ export function Button({ className, children }: ButtonProps) {
 }
 ```
 
+### Theme Colors
+
+**Always use CSS variable-based colors instead of hardcoded Tailwind colors.**
+
+Theme colors are defined in `app/globals.css` and automatically support light/dark mode.
+
+| Purpose | Use (✅) | Avoid (❌) |
+| ------- | -------- | ---------- |
+| Background | `bg-background`, `bg-card`, `bg-muted` | `bg-white`, `bg-zinc-50`, `bg-gray-100` |
+| Text | `text-foreground`, `text-muted-foreground` | `text-black`, `text-zinc-600`, `text-gray-500` |
+| Border | `border-border` | `border-zinc-200`, `border-gray-300` |
+| Primary | `bg-primary`, `text-primary` | Hardcoded brand colors |
+
+```tsx
+// ✅ Good - uses CSS variables
+<div className="bg-background text-foreground">
+  <p className="text-muted-foreground">Secondary text</p>
+</div>
+
+// ❌ Bad - hardcoded colors don't respect theme
+<div className="bg-white text-black dark:bg-zinc-900 dark:text-white">
+  <p className="text-gray-600 dark:text-gray-400">Secondary text</p>
+</div>
+```
+
+**Available CSS variable colors:**
+- `background`, `foreground` - Main background/text
+- `card`, `card-foreground` - Card surfaces
+- `muted`, `muted-foreground` - Muted surfaces/secondary text
+- `primary`, `primary-foreground` - Primary actions
+- `secondary`, `secondary-foreground` - Secondary actions
+- `accent`, `accent-foreground` - Accent highlights
+- `border`, `input`, `ring` - Borders and focus states
+- `destructive` - Destructive actions (delete, etc.)
+
 ### Server Components vs Client Components
 
 ```tsx
@@ -534,6 +569,7 @@ import { useTranslations } from 'next-intl';
 ### Prohibited
 
 - Hardcoding UI text (use translation files)
+- Hardcoding colors (use CSS variables like `bg-background`, `text-foreground`)
 - Using `any` type
 - Adding unnecessary `'use client'`
 - Merging without tests

@@ -26,7 +26,7 @@ function ChatContent({ projectSlug }: { projectSlug: string }) {
         </h1>
       </header>
       <main className="flex-1 overflow-auto p-4">
-        <p className="text-gray-600">{t('newConversation')}</p>
+        <p className="text-muted-foreground">{t('newConversation')}</p>
         {/* TODO: Implement conversation list and chat interface */}
       </main>
     </div>

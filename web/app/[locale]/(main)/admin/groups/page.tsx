@@ -18,7 +18,7 @@ function GroupsContent() {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="font-bold text-3xl">{t('title')}</h1>
-      <p className="mt-4 text-gray-600">{t('list')}</p>
+      <p className="mt-4 text-muted-foreground">{t('list')}</p>
       {/* TODO: グループ一覧と管理機能を実装 */}
     </div>
   );
