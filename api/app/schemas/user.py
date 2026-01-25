@@ -11,6 +11,7 @@ class UserBase(BaseModel):
 
     email: EmailStr
     name: str
+    avatar_url: str | None = None
 
 
 class UserCreate(UserBase):
@@ -24,6 +25,7 @@ class UserUpdate(BaseModel):
 
     email: EmailStr | None = None
     name: str | None = None
+    avatar_url: str | None = None
     password: str | None = None
     is_active: bool | None = None
     api_limit: int | None = None
