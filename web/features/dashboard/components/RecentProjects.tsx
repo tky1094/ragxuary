@@ -3,6 +3,7 @@
 import { FolderPlus } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
+import { ProjectCard } from '@/features/projects/components/ProjectCard';
 import { useProjectListSuspense } from '@/features/projects/hooks/useProjects';
 import { Link } from '@/i18n/routing';
 import { Button } from '@/shared/components/ui/button';
@@ -42,16 +43,13 @@ export function RecentProjects() {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {projects.map((project) => (
-        <Card key={project.id} className="transition-colors hover:bg-accent/50">
-          <Link href={`/p/${project.slug}/docs`}>
-            <CardHeader>
-              <CardTitle className="text-lg">{project.name}</CardTitle>
-              <CardDescription>
-                {project.description || tProjects('noDescription')}
-              </CardDescription>
-            </CardHeader>
-          </Link>
-        </Card>
+        <ProjectCard
+          key={project.id}
+          project={project}
+          noDescription={tProjects('noDescription')}
+          href={`/p/${project.slug}/docs`}
+          className="transition-colors hover:bg-accent/50"
+        />
       ))}
     </div>
   );
