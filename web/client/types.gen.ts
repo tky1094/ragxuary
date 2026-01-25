@@ -243,6 +243,10 @@ export type UserRead = {
      */
     name: string;
     /**
+     * Avatar Url
+     */
+    avatar_url?: string | null;
+    /**
      * Id
      */
     id: string;
