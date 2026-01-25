@@ -18,7 +18,7 @@ export function ThemeToggle() {
       <Button
         variant="ghost"
         size="icon"
-        className="h-9 w-9 text-zinc-600 dark:text-zinc-400"
+        className="h-9 w-9 text-muted-foreground"
         disabled
       >
         <Sun className="h-4 w-4" />
@@ -36,7 +36,7 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={toggleTheme}
-      className="h-9 w-9 rounded-full text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+      className="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground"
     >
       {theme === 'dark' ? (
         <Sun className="h-4 w-4" />

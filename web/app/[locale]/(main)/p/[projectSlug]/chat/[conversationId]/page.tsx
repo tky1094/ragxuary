@@ -45,7 +45,7 @@ function ConversationContent({
         <h1 className="font-bold text-xl">
           {projectSlug} {t('title')}
         </h1>
-        <p className="text-gray-500 text-sm">ID: {conversationId}</p>
+        <p className="text-muted-foreground text-sm">ID: {conversationId}</p>
       </header>
       <main className="flex-1 overflow-auto p-4">
         {/* TODO: Implement chat message display */}

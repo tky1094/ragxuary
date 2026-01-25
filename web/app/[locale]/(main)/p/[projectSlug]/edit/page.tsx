@@ -23,7 +23,7 @@ function EditProjectContent({ projectSlug }: { projectSlug: string }) {
   return (
     <div>
       <h1 className="font-bold text-3xl">{t('common.edit')}</h1>
-      <p className="mt-4 text-gray-600">{projectSlug}</p>
+      <p className="mt-4 text-muted-foreground">{projectSlug}</p>
       {/* TODO: Implement project edit form */}
     </div>
   );

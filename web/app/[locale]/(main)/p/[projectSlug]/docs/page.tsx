@@ -25,7 +25,7 @@ function ProjectDocsContent({ projectSlug }: { projectSlug: string }) {
       <h1 className="font-bold text-3xl">
         {projectSlug} {t('docs.title')}
       </h1>
-      <p className="mt-4 text-gray-600">{t('docs.noDocs')}</p>
+      <p className="mt-4 text-muted-foreground">{t('docs.noDocs')}</p>
       {/* TODO: Implement document list */}
     </div>
   );

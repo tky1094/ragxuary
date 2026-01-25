@@ -36,7 +36,7 @@ function DocContent({
 
   return (
     <div>
-      <nav className="mb-4 text-gray-500 text-sm">
+      <nav className="mb-4 text-muted-foreground text-sm">
         {projectSlug} / {path}
       </nav>
       <article className="prose max-w-none">

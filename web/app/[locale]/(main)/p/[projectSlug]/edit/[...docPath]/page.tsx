@@ -36,11 +36,11 @@ function EditDocContent({
 
   return (
     <div>
-      <nav className="mb-4 text-gray-500 text-sm">
+      <nav className="mb-4 text-muted-foreground text-sm">
         {projectSlug} / {path}
       </nav>
       <h1 className="font-bold text-3xl">{t('edit')}</h1>
-      <p className="mt-4 text-gray-600">{path}</p>
+      <p className="mt-4 text-muted-foreground">{path}</p>
       {/* TODO: Implement document editor */}
     </div>
   );
