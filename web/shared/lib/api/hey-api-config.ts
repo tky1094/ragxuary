@@ -22,7 +22,7 @@ export const createClientConfig: CreateClientConfig = (config) => ({
       const session = await getSession();
       if (session?.error === 'RefreshAccessTokenError') {
         const { signOut } = await import('next-auth/react');
-        signOut({ callbackUrl: '/auth/signin' });
+        signOut({ callbackUrl: '/login' });
         return undefined;
       }
       return session?.accessToken;

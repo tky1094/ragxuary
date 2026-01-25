@@ -13,7 +13,7 @@ if (typeof window !== 'undefined') {
   client.interceptors.response.use(async (response: Response) => {
     if (response.status === 401) {
       const { signOut } = await import('next-auth/react');
-      signOut({ callbackUrl: '/auth/signin' });
+      signOut({ callbackUrl: '/login' });
     }
     return response;
   });

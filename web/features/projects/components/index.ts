@@ -1,5 +1,6 @@
 export { CreateProjectForm } from './CreateProjectForm';
 export { DeleteProjectDialog } from './DeleteProjectDialog';
+export { ProjectCard } from './ProjectCard';
 export { ProjectList } from './ProjectList';
 export { ProjectListSkeleton } from './ProjectListSkeleton';
 export { ProjectSettingsForm } from './ProjectSettingsForm';

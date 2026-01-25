@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader } from '@/shared/components/ui/card';
+import { Card } from '@/shared/components/ui/card';
 import { Skeleton } from '@/shared/components/ui/skeleton';
 
 const SKELETON_ITEMS = [
@@ -18,14 +18,26 @@ export function ProjectListSkeleton() {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {SKELETON_ITEMS.map((id) => (
-        <Card key={id}>
-          <CardHeader>
-            <Skeleton className="h-6 w-3/4" />
-          </CardHeader>
-          <CardContent>
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="mt-2 h-4 w-2/3" />
-          </CardContent>
+        <Card
+          key={id}
+          className="rounded-md border-border/60 bg-card/80 shadow-none py-1.5"
+        >
+          <div className="flex flex-col gap-3 p-4">
+            {/* Header: Icon + Name + Badge */}
+            <div className="flex items-center gap-3">
+              <Skeleton className="h-8 w-8 shrink-0 rounded-md" />
+              <div className="flex flex-1 flex-wrap items-center gap-2">
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="h-5 w-14 rounded-full" />
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="space-y-1.5">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+            </div>
+          </div>
         </Card>
       ))}
     </div>
