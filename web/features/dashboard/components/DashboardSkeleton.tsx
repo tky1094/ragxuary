@@ -13,7 +13,7 @@ export function DashboardSkeleton() {
       {SKELETON_ITEMS.map((id) => (
         <Card
           key={id}
-          className="rounded-md border-border/60 bg-card/80 shadow-none py-1.5"
+          className="rounded-md border-border/60 bg-card/80 py-1.5 shadow-none"
         >
           <div className="flex flex-col gap-3 p-4">
             {/* Header: Icon + Name + Badge */}

@@ -35,7 +35,7 @@ export function ProjectCard({
             </h3>
             <Badge
               variant={'outline'}
-              className={cn('h-5 gap-1 px-1.5 text-[10px] font-normal')}
+              className={cn('h-5 gap-1 px-1.5 font-normal text-[10px]')}
             >
               {isPublic ? (
                 <Globe className="h-2.5 w-2.5" />
@@ -49,7 +49,7 @@ export function ProjectCard({
       </div>
 
       {/* Description */}
-      <p className="line-clamp-2 text-[13px] leading-relaxed text-muted-foreground">
+      <p className="line-clamp-2 text-[13px] text-muted-foreground leading-relaxed">
         {project.description || noDescription}
       </p>
     </div>
@@ -59,7 +59,7 @@ export function ProjectCard({
     <Card
       className={cn(
         'group rounded-md border-border/60 bg-card/80 shadow-none transition-all duration-200',
-        'hover:border-border hover:bg-card hover:shadow-sm py-1.5',
+        'py-1.5 hover:border-border hover:bg-card hover:shadow-sm',
         className
       )}
     >
