@@ -82,14 +82,16 @@ export function Breadcrumb() {
             {index > 0 && <BreadcrumbSeparator />}
             <BreadcrumbItem>
               {segment.isLast ? (
-                <BreadcrumbPage>
+                <BreadcrumbPage
+                  className={index === 0 ? 'font-bold font-serif text-lg' : ''}
+                >
                   {index === 0 && (
                     <Image
-                      src="/favicon.ico"
+                      src="/icon.svg"
                       alt=""
-                      width={16}
-                      height={16}
-                      className="mr-1.5 inline-block"
+                      width={32}
+                      height={32}
+                      className="mr-1.5 inline-block align-middle dark:invert"
                     />
                   )}
                   {segment.label}
@@ -98,15 +100,15 @@ export function Breadcrumb() {
                 <BreadcrumbLink asChild>
                   <Link
                     href={segment.href}
-                    className="inline-flex items-center"
+                    className={`inline-flex items-center ${index === 0 ? 'font-bold font-serif text-foreground text-lg' : ''}`}
                   >
                     {index === 0 && (
                       <Image
-                        src="/favicon.ico"
+                        src="/icon.svg"
                         alt=""
-                        width={16}
-                        height={16}
-                        className="mr-1.5"
+                        width={32}
+                        height={32}
+                        className="mr-1.5 dark:invert"
                       />
                     )}
                     {segment.label}
