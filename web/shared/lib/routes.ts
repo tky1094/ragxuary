@@ -6,10 +6,10 @@
 export const PUBLIC_ROUTES = ['/login', '/register'];
 
 // Routes that require authentication
-export const PROTECTED_ROUTES = ['/', '/projects', '/p', '/personal'];
+export const PROTECTED_ROUTES = ['/', '/projects', '/p', '/settings'];
 
 // Routes that require admin role
-export const ADMIN_ROUTES = ['/admin'];
+export const ADMIN_ROUTES = ['/settings/admin'];
 
 /**
  * Check if a path matches any route in the list

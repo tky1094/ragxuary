@@ -25,13 +25,16 @@
     "home": "ホーム",
     "dashboard": "ダッシュボード",
     "projects": "プロジェクト",
+    "bookmarks": "ブックマーク",
+    "notifications": "通知",
     "docs": "ドキュメント",
     "edit": "編集",
     "chat": "チャット",
     "admin": "管理",
     "settings": "設定",
     "users": "ユーザー管理",
-    "groups": "グループ管理"
+    "groups": "グループ管理",
+    "account": "アカウント"
   },
   "auth": {
     "login": "ログイン",
@@ -153,6 +156,16 @@
   "personal": {
     "title": "個人設定",
     "description": "アカウント設定を管理します"
+  },
+  "bookmarks": {
+    "title": "ブックマーク",
+    "noBookmarks": "ブックマークがありません",
+    "noBookmarksDescription": "ブックマークしたドキュメントがここに表示されます。"
+  },
+  "notifications": {
+    "title": "通知",
+    "noNotifications": "通知がありません",
+    "noNotificationsDescription": "新しい通知はここに表示されます。"
   },
   "errors": {
     "notFound": "ページが見つかりませんでした",
