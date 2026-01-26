@@ -18,17 +18,17 @@ describe('routes configuration', () => {
   });
 
   describe('PROTECTED_ROUTES', () => {
-    it('should include root, projects, p, and personal', () => {
+    it('should include root, projects, p, and settings', () => {
       expect(PROTECTED_ROUTES).toContain('/');
       expect(PROTECTED_ROUTES).toContain('/projects');
       expect(PROTECTED_ROUTES).toContain('/p');
-      expect(PROTECTED_ROUTES).toContain('/personal');
+      expect(PROTECTED_ROUTES).toContain('/settings');
     });
   });
 
   describe('ADMIN_ROUTES', () => {
-    it('should include admin', () => {
-      expect(ADMIN_ROUTES).toContain('/admin');
+    it('should include settings/admin', () => {
+      expect(ADMIN_ROUTES).toContain('/settings/admin');
     });
   });
 });
@@ -71,12 +71,12 @@ describe('isPublicRoute', () => {
     expect(isPublicRoute('/')).toBe(false);
     expect(isPublicRoute('/projects')).toBe(false);
     expect(isPublicRoute('/p')).toBe(false);
-    expect(isPublicRoute('/personal')).toBe(false);
+    expect(isPublicRoute('/settings')).toBe(false);
   });
 
   it('should return false for admin routes', () => {
-    expect(isPublicRoute('/admin')).toBe(false);
-    expect(isPublicRoute('/admin/users')).toBe(false);
+    expect(isPublicRoute('/settings/admin')).toBe(false);
+    expect(isPublicRoute('/settings/admin/users')).toBe(false);
   });
 });
 
@@ -99,8 +99,10 @@ describe('isProtectedRoute', () => {
     expect(isProtectedRoute('/p/project-1/edit')).toBe(true);
   });
 
-  it('should return true for personal routes', () => {
-    expect(isProtectedRoute('/personal')).toBe(true);
+  it('should return true for settings routes', () => {
+    expect(isProtectedRoute('/settings')).toBe(true);
+    expect(isProtectedRoute('/settings/personal')).toBe(true);
+    expect(isProtectedRoute('/settings/admin')).toBe(true);
   });
 
   it('should return false for public routes', () => {
@@ -111,15 +113,16 @@ describe('isProtectedRoute', () => {
 
 describe('isAdminRoute', () => {
   it('should return true for admin routes', () => {
-    expect(isAdminRoute('/admin')).toBe(true);
-    expect(isAdminRoute('/admin/users')).toBe(true);
-    expect(isAdminRoute('/admin/models')).toBe(true);
-    expect(isAdminRoute('/admin/groups')).toBe(true);
+    expect(isAdminRoute('/settings/admin')).toBe(true);
+    expect(isAdminRoute('/settings/admin/users')).toBe(true);
+    expect(isAdminRoute('/settings/admin/models')).toBe(true);
+    expect(isAdminRoute('/settings/admin/groups')).toBe(true);
   });
 
   it('should return false for non-admin routes', () => {
     expect(isAdminRoute('/')).toBe(false);
     expect(isAdminRoute('/login')).toBe(false);
     expect(isAdminRoute('/projects')).toBe(false);
+    expect(isAdminRoute('/settings/personal')).toBe(false);
   });
 });

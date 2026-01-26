@@ -49,11 +49,13 @@ export function Breadcrumb() {
 
       let label = part;
       if (part === 'projects') label = t('projects');
+      else if (part === 'bookmarks') label = t('bookmarks');
+      else if (part === 'notifications') label = t('notifications');
+      else if (part === 'settings') label = t('settings');
       else if (part === 'admin') label = t('admin');
       else if (part === 'personal') label = t('settings');
       else if (part === 'docs') label = t('docs');
       else if (part === 'chat') label = t('chat');
-      else if (part === 'settings') label = t('settings');
       else if (part === 'users') label = t('users');
       else if (part === 'groups') label = t('groups');
       else if (part === 'edit') label = t('edit');

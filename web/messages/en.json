@@ -25,13 +25,16 @@
     "home": "Home",
     "dashboard": "Dashboard",
     "projects": "Projects",
+    "bookmarks": "Bookmarks",
+    "notifications": "Notifications",
     "docs": "Documentation",
     "edit": "Edit",
     "chat": "Chat",
     "admin": "Admin",
     "settings": "Settings",
     "users": "User Management",
-    "groups": "Group Management"
+    "groups": "Group Management",
+    "account": "Account"
   },
   "auth": {
     "login": "Log in",
@@ -153,6 +156,16 @@
   "personal": {
     "title": "Personal Settings",
     "description": "Manage your account settings"
+  },
+  "bookmarks": {
+    "title": "Bookmarks",
+    "noBookmarks": "No bookmarks",
+    "noBookmarksDescription": "Documents you bookmark will appear here for quick access."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "noNotifications": "No notifications",
+    "noNotificationsDescription": "You're all caught up! New notifications will appear here."
   },
   "errors": {
     "notFound": "Page not found",

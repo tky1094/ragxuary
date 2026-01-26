@@ -1,4 +1,4 @@
-import { Header, PageContainer } from '@/shared/components/layout';
+import { ActivityBar, Header, PageContainer } from '@/shared/components/layout';
 
 export default function MainLayout({
   children,
@@ -6,9 +6,12 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <PageContainer>{children}</PageContainer>
+    <div className="flex min-h-screen bg-background">
+      <ActivityBar />
+      <div className="ml-12 flex-1">
+        <Header />
+        <PageContainer>{children}</PageContainer>
+      </div>
     </div>
   );
 }
