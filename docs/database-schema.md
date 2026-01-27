@@ -14,16 +14,17 @@
 6. [project_versions](#project_versions)
 7. [git_credentials](#git_credentials)
 8. [documents](#documents)
-9. [document_snapshots](#document_snapshots)
-10. [uploads](#uploads)
-11. [embeddings](#embeddings)
-12. [groups](#groups)
-13. [group_members](#group_members)
-14. [project_members](#project_members)
-15. [conversations](#conversations)
-16. [messages](#messages)
-17. [audit_logs](#audit_logs)
-18. [settings](#settings)
+9. [document_revisions](#document_revisions)
+10. [document_snapshots](#document_snapshots)
+11. [uploads](#uploads)
+12. [embeddings](#embeddings)
+13. [groups](#groups)
+14. [group_members](#group_members)
+15. [project_members](#project_members)
+16. [conversations](#conversations)
+17. [messages](#messages)
+18. [audit_logs](#audit_logs)
+19. [settings](#settings)
 
 ---
 
@@ -233,6 +234,38 @@ Git 連携の認証情報を管理するテーブル。
 - `path` は `parent_id` と `slug` から自動生成される派生データ
 - 親ドキュメントが移動した場合、子孫の `path` も再計算が必要
 - フォルダ（`is_folder=true`）の場合、`content` は NULL
+
+---
+
+## document_revisions
+
+ドキュメントの編集履歴を管理するテーブル。変更ごとに記録され、差分表示に使用。
+
+| カラム      | 型        | NULL | 説明                                     |
+| ----------- | --------- | ---- | ---------------------------------------- |
+| id          | UUID      | NO   | 主キー                                   |
+| document_id | UUID      | NO   | ドキュメント ID（FK）                    |
+| user_id     | UUID      | YES  | 変更したユーザー ID（FK、削除時 NULL）   |
+| content     | TEXT      | NO   | 変更後のコンテンツ                       |
+| created_at  | TIMESTAMP | NO   | 変更日時                                 |
+
+**インデックス:**
+
+- `document_revisions_document_idx` (document_id, created_at DESC)
+- `document_revisions_user_idx` (user_id, created_at DESC)
+
+**外部キー:**
+
+- `document_id` → `documents(id)` ON DELETE CASCADE
+- `user_id` → `users(id)` ON DELETE SET NULL
+
+**備考:**
+
+- ドキュメント保存時に自動的にリビジョンを作成
+- 差分表示は前後のリビジョンの `content` を比較してアプリケーション側で計算
+- `document_snapshots`（公開版）とは独立して管理
+- ユーザー削除後も編集履歴は保持（`ON DELETE SET NULL`）
+- 古いリビジョンの自動削除ポリシーを検討（例: 最新 100 件のみ保持）
 
 ---
 
@@ -597,3 +630,47 @@ SET path = descendants.new_path,
 FROM descendants
 WHERE documents.id = descendants.id;
 ```
+
+### ドキュメント編集履歴の取得
+
+ドキュメントの編集履歴を取得する例：
+
+```sql
+SELECT
+  dr.id,
+  dr.content,
+  dr.created_at,
+  u.id AS user_id,
+  u.name AS user_name,
+  u.avatar_url
+FROM document_revisions dr
+LEFT JOIN users u ON dr.user_id = u.id
+WHERE dr.document_id = :document_id
+ORDER BY dr.created_at DESC
+LIMIT 50;
+```
+
+### 差分表示用の連続リビジョン取得
+
+2 つの連続するリビジョンを取得して差分計算に使用：
+
+```sql
+WITH ranked_revisions AS (
+  SELECT
+    id,
+    content,
+    created_at,
+    user_id,
+    LAG(content) OVER (ORDER BY created_at) AS previous_content
+  FROM document_revisions
+  WHERE document_id = :document_id
+)
+SELECT
+  rr.id,
+  rr.content AS current_content,
+  rr.previous_content,
+  rr.created_at,
+  u.name AS user_name
+FROM ranked_revisions rr
+LEFT JOIN users u ON rr.user_id = u.id
+WHERE rr.id = :revision_id;
