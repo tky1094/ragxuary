@@ -62,3 +62,36 @@ class PermissionDeniedError(ProjectServiceError):
     """Raised when user does not have permission to perform action."""
 
     pass
+
+
+# --- Document Service Exceptions ---
+
+
+class DocumentServiceError(ServiceError):
+    """Base exception for document service errors."""
+
+    pass
+
+
+class DocumentNotFoundError(DocumentServiceError):
+    """Raised when document is not found."""
+
+    pass
+
+
+class ParentNotFoundError(DocumentServiceError):
+    """Raised when parent document is not found."""
+
+    pass
+
+
+class InvalidPathError(DocumentServiceError):
+    """Raised when document path is invalid."""
+
+    pass
+
+
+class PathAlreadyExistsError(DocumentServiceError):
+    """Raised when document path already exists."""
+
+    pass
