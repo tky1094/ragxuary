@@ -14,17 +14,18 @@
 6. [project_versions](#project_versions)
 7. [git_credentials](#git_credentials)
 8. [documents](#documents)
-9. [document_revisions](#document_revisions)
-10. [document_snapshots](#document_snapshots)
-11. [uploads](#uploads)
-12. [embeddings](#embeddings)
-13. [groups](#groups)
-14. [group_members](#group_members)
-15. [project_members](#project_members)
-16. [conversations](#conversations)
-17. [messages](#messages)
-18. [audit_logs](#audit_logs)
-19. [settings](#settings)
+9. [revision_batches](#revision_batches)
+10. [document_revisions](#document_revisions)
+11. [document_snapshots](#document_snapshots)
+12. [uploads](#uploads)
+13. [embeddings](#embeddings)
+14. [groups](#groups)
+15. [group_members](#group_members)
+16. [project_members](#project_members)
+17. [conversations](#conversations)
+18. [messages](#messages)
+19. [audit_logs](#audit_logs)
+20. [settings](#settings)
 
 ---
 
@@ -237,35 +238,73 @@ Git 連携の認証情報を管理するテーブル。
 
 ---
 
+## revision_batches
+
+ドキュメントの一括更新操作を管理するテーブル。複数ドキュメントの同時更新をグループ化。
+
+| カラム     | 型           | NULL | 説明                                     |
+| ---------- | ------------ | ---- | ---------------------------------------- |
+| id         | UUID         | NO   | 主キー                                   |
+| project_id | UUID         | NO   | プロジェクト ID（FK）                    |
+| user_id    | UUID         | YES  | 更新したユーザー ID（FK、削除時 NULL）   |
+| message    | VARCHAR(500) | YES  | 変更メモ（任意）                         |
+| created_at | TIMESTAMP    | NO   | 更新日時                                 |
+
+**インデックス:**
+
+- `revision_batches_project_idx` (project_id, created_at DESC)
+- `revision_batches_user_idx` (user_id, created_at DESC)
+
+**外部キー:**
+
+- `project_id` → `projects(id)` ON DELETE CASCADE
+- `user_id` → `users(id)` ON DELETE SET NULL
+
+**備考:**
+
+- 「確定」ボタン押下時に 1 つのバッチが作成される
+- 単独ドキュメント更新でも 1 つのバッチが作成される（1 対 1）
+- ユーザー削除後も更新履歴は保持（`ON DELETE SET NULL`）
+- `message` は将来的なコミットメッセージ機能に使用可能
+
+---
+
 ## document_revisions
 
 ドキュメントの編集履歴を管理するテーブル。変更ごとに記録され、差分表示に使用。
 
-| カラム      | 型        | NULL | 説明                                     |
-| ----------- | --------- | ---- | ---------------------------------------- |
-| id          | UUID      | NO   | 主キー                                   |
-| document_id | UUID      | NO   | ドキュメント ID（FK）                    |
-| user_id     | UUID      | YES  | 変更したユーザー ID（FK、削除時 NULL）   |
-| content     | TEXT      | NO   | 変更後のコンテンツ                       |
-| created_at  | TIMESTAMP | NO   | 変更日時                                 |
+| カラム      | 型           | NULL | 説明                                      |
+| ----------- | ------------ | ---- | ----------------------------------------- |
+| id          | UUID         | NO   | 主キー                                    |
+| batch_id    | UUID         | NO   | リビジョンバッチ ID（FK）                 |
+| document_id | UUID         | NO   | ドキュメント ID（FK）                     |
+| change_type | VARCHAR(20)  | NO   | 変更種別（create/update/delete/rename）  |
+| title       | VARCHAR(200) | NO   | 変更時のタイトル                          |
+| content     | TEXT         | YES  | 変更後のコンテンツ（delete 時は NULL）    |
 
 **インデックス:**
 
-- `document_revisions_document_idx` (document_id, created_at DESC)
-- `document_revisions_user_idx` (user_id, created_at DESC)
+- `document_revisions_batch_idx` (batch_id)
+- `document_revisions_document_idx` (document_id)
 
 **外部キー:**
 
+- `batch_id` → `revision_batches(id)` ON DELETE CASCADE
 - `document_id` → `documents(id)` ON DELETE CASCADE
-- `user_id` → `users(id)` ON DELETE SET NULL
 
 **備考:**
 
 - ドキュメント保存時に自動的にリビジョンを作成
 - 差分表示は前後のリビジョンの `content` を比較してアプリケーション側で計算
 - `document_snapshots`（公開版）とは独立して管理
-- ユーザー削除後も編集履歴は保持（`ON DELETE SET NULL`）
+- `user_id` と `created_at` は `revision_batches` で管理
 - 古いリビジョンの自動削除ポリシーを検討（例: 最新 100 件のみ保持）
+- `change_type` の値:
+  - `create`: 新規作成
+  - `update`: 内容更新
+  - `delete`: 削除
+  - `rename`: タイトル変更（内容変更なし）
+- タイトルと内容を同時に変更した場合は `update` として記録し、`title` に新しいタイトルを保存
 
 ---
 
@@ -638,15 +677,50 @@ WHERE documents.id = descendants.id;
 ```sql
 SELECT
   dr.id,
+  dr.change_type,
+  dr.title,
   dr.content,
-  dr.created_at,
+  rb.created_at,
+  rb.message,
   u.id AS user_id,
   u.name AS user_name,
   u.avatar_url
 FROM document_revisions dr
-LEFT JOIN users u ON dr.user_id = u.id
+JOIN revision_batches rb ON dr.batch_id = rb.id
+LEFT JOIN users u ON rb.user_id = u.id
 WHERE dr.document_id = :document_id
-ORDER BY dr.created_at DESC
+ORDER BY rb.created_at DESC
+LIMIT 50;
+```
+
+### プロジェクト全体のアクティビティ取得
+
+プロジェクト内の全ドキュメントの更新履歴をバッチ単位で取得：
+
+```sql
+SELECT
+  rb.id AS batch_id,
+  rb.message,
+  rb.created_at,
+  u.id AS user_id,
+  u.name AS user_name,
+  u.avatar_url,
+  json_agg(
+    json_build_object(
+      'revision_id', dr.id,
+      'document_id', dr.document_id,
+      'change_type', dr.change_type,
+      'document_title', dr.title,
+      'document_path', d.path
+    )
+  ) AS documents
+FROM revision_batches rb
+LEFT JOIN users u ON rb.user_id = u.id
+JOIN document_revisions dr ON dr.batch_id = rb.id
+LEFT JOIN documents d ON dr.document_id = d.id
+WHERE rb.project_id = :project_id
+GROUP BY rb.id, rb.message, rb.created_at, u.id, u.name, u.avatar_url
+ORDER BY rb.created_at DESC
 LIMIT 50;
 ```
 
@@ -657,16 +731,23 @@ LIMIT 50;
 ```sql
 WITH ranked_revisions AS (
   SELECT
-    id,
-    content,
-    created_at,
-    user_id,
-    LAG(content) OVER (ORDER BY created_at) AS previous_content
-  FROM document_revisions
-  WHERE document_id = :document_id
+    dr.id,
+    dr.change_type,
+    dr.title,
+    dr.content,
+    rb.created_at,
+    rb.user_id,
+    LAG(dr.title) OVER (ORDER BY rb.created_at) AS previous_title,
+    LAG(dr.content) OVER (ORDER BY rb.created_at) AS previous_content
+  FROM document_revisions dr
+  JOIN revision_batches rb ON dr.batch_id = rb.id
+  WHERE dr.document_id = :document_id
 )
 SELECT
   rr.id,
+  rr.change_type,
+  rr.title AS current_title,
+  rr.previous_title,
   rr.content AS current_content,
   rr.previous_content,
   rr.created_at,
