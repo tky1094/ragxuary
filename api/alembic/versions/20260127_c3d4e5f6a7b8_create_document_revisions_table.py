@@ -9,7 +9,7 @@ Create Date: 2026-01-27 10:02:00.000000
 from collections.abc import Sequence
 
 import sqlalchemy as sa
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import ENUM, UUID
 
 from alembic import op
 
@@ -22,11 +22,15 @@ depends_on: str | Sequence[str] | None = None
 
 def upgrade() -> None:
     """Create document_revisions table."""
-    # Create enum type for change_type
-    changetype_enum = sa.Enum(
+    # Create enum type for change_type using raw SQL
+    op.execute(
+        "CREATE TYPE changetype AS ENUM ('create', 'update', 'delete', 'rename')"
+    )
+
+    # Reference the existing enum type
+    changetype_enum = ENUM(
         "create", "update", "delete", "rename", name="changetype", create_type=False
     )
-    changetype_enum.create(op.get_bind(), checkfirst=True)
 
     op.create_table(
         "document_revisions",
@@ -74,5 +78,5 @@ def downgrade() -> None:
     op.drop_index("document_revisions_batch_idx", table_name="document_revisions")
     op.drop_table("document_revisions")
 
-    # Drop enum type
-    sa.Enum(name="changetype").drop(op.get_bind(), checkfirst=True)
+    # Drop enum type using raw SQL
+    op.execute("DROP TYPE IF EXISTS changetype")
