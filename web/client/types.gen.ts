@@ -5,6 +5,166 @@ export type ClientOptions = {
 };
 
 /**
+ * DocumentPutRequest
+ *
+ * Schema for PUT document (create or update).
+ */
+export type DocumentPutRequest = {
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Content
+     */
+    content?: string | null;
+    /**
+     * Is Folder
+     */
+    is_folder?: boolean;
+    /**
+     * Message
+     */
+    message?: string | null;
+};
+
+/**
+ * DocumentRead
+ *
+ * Schema for reading a document.
+ */
+export type DocumentRead = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Project Id
+     */
+    project_id: string;
+    /**
+     * Parent Id
+     */
+    parent_id: string | null;
+    /**
+     * Slug
+     */
+    slug: string;
+    /**
+     * Path
+     */
+    path: string;
+    /**
+     * Index
+     */
+    index: number;
+    /**
+     * Is Folder
+     */
+    is_folder: boolean;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Content
+     */
+    content: string | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+};
+
+/**
+ * DocumentRevisionRead
+ *
+ * Schema for reading a document revision.
+ */
+export type DocumentRevisionRead = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Batch Id
+     */
+    batch_id: string;
+    /**
+     * Document Id
+     */
+    document_id: string;
+    /**
+     * Change Type
+     */
+    change_type: string;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Content
+     */
+    content: string | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * User Id
+     */
+    user_id: string | null;
+    /**
+     * User Name
+     */
+    user_name?: string | null;
+    /**
+     * Message
+     */
+    message?: string | null;
+};
+
+/**
+ * DocumentTreeNode
+ *
+ * Schema for document tree node.
+ */
+export type DocumentTreeNode = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Slug
+     */
+    slug: string;
+    /**
+     * Path
+     */
+    path: string;
+    /**
+     * Title
+     */
+    title: string;
+    /**
+     * Index
+     */
+    index: number;
+    /**
+     * Is Folder
+     */
+    is_folder: boolean;
+    /**
+     * Children
+     */
+    children?: Array<DocumentTreeNode>;
+};
+
+/**
  * HTTPValidationError
  */
 export type HttpValidationError = {
@@ -206,6 +366,74 @@ export type RegisterRequest = {
      * Password
      */
     password: string;
+};
+
+/**
+ * RevisionBatchRead
+ *
+ * Schema for reading a revision batch.
+ */
+export type RevisionBatchRead = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Project Id
+     */
+    project_id: string;
+    /**
+     * User Id
+     */
+    user_id: string | null;
+    /**
+     * User Name
+     */
+    user_name?: string | null;
+    /**
+     * User Avatar Url
+     */
+    user_avatar_url?: string | null;
+    /**
+     * Message
+     */
+    message: string | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Documents
+     */
+    documents?: Array<RevisionDocumentSummary>;
+};
+
+/**
+ * RevisionDocumentSummary
+ *
+ * Summary of document change in a revision.
+ */
+export type RevisionDocumentSummary = {
+    /**
+     * Revision Id
+     */
+    revision_id: string;
+    /**
+     * Document Id
+     */
+    document_id: string;
+    /**
+     * Change Type
+     */
+    change_type: string;
+    /**
+     * Document Title
+     */
+    document_title: string;
+    /**
+     * Document Path
+     */
+    document_path: string | null;
 };
 
 /**
@@ -571,3 +799,248 @@ export type UpdateProjectResponses = {
 };
 
 export type UpdateProjectResponse = UpdateProjectResponses[keyof UpdateProjectResponses];
+
+export type GetDocumentTreeData = {
+    body?: never;
+    path: {
+        /**
+         * Slug
+         *
+         * Project slug
+         */
+        slug: string;
+    };
+    query?: never;
+    url: '/api/v1/projects/{slug}/docs';
+};
+
+export type GetDocumentTreeErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetDocumentTreeError = GetDocumentTreeErrors[keyof GetDocumentTreeErrors];
+
+export type GetDocumentTreeResponses = {
+    /**
+     * Response Get Document Tree
+     *
+     * Successful Response
+     */
+    200: Array<DocumentTreeNode>;
+};
+
+export type GetDocumentTreeResponse = GetDocumentTreeResponses[keyof GetDocumentTreeResponses];
+
+export type GetDocumentHistoryData = {
+    body?: never;
+    path: {
+        /**
+         * Slug
+         *
+         * Project slug
+         */
+        slug: string;
+        /**
+         * Path
+         *
+         * Document path
+         */
+        path: string;
+    };
+    query?: {
+        /**
+         * Skip
+         */
+        skip?: number;
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
+    url: '/api/v1/projects/{slug}/docs/{path}/history';
+};
+
+export type GetDocumentHistoryErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetDocumentHistoryError = GetDocumentHistoryErrors[keyof GetDocumentHistoryErrors];
+
+export type GetDocumentHistoryResponses = {
+    /**
+     * Response Get Document History
+     *
+     * Successful Response
+     */
+    200: Array<DocumentRevisionRead>;
+};
+
+export type GetDocumentHistoryResponse = GetDocumentHistoryResponses[keyof GetDocumentHistoryResponses];
+
+export type DeleteDocumentData = {
+    body?: never;
+    path: {
+        /**
+         * Slug
+         *
+         * Project slug
+         */
+        slug: string;
+        /**
+         * Path
+         *
+         * Document path
+         */
+        path: string;
+    };
+    query?: {
+        /**
+         * Message
+         */
+        message?: string | null;
+    };
+    url: '/api/v1/projects/{slug}/docs/{path}';
+};
+
+export type DeleteDocumentErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteDocumentError = DeleteDocumentErrors[keyof DeleteDocumentErrors];
+
+export type DeleteDocumentResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteDocumentResponse = DeleteDocumentResponses[keyof DeleteDocumentResponses];
+
+export type GetDocumentData = {
+    body?: never;
+    path: {
+        /**
+         * Slug
+         *
+         * Project slug
+         */
+        slug: string;
+        /**
+         * Path
+         *
+         * Document path
+         */
+        path: string;
+    };
+    query?: never;
+    url: '/api/v1/projects/{slug}/docs/{path}';
+};
+
+export type GetDocumentErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetDocumentError = GetDocumentErrors[keyof GetDocumentErrors];
+
+export type GetDocumentResponses = {
+    /**
+     * Successful Response
+     */
+    200: DocumentRead;
+};
+
+export type GetDocumentResponse = GetDocumentResponses[keyof GetDocumentResponses];
+
+export type PutDocumentData = {
+    body: DocumentPutRequest;
+    path: {
+        /**
+         * Slug
+         *
+         * Project slug
+         */
+        slug: string;
+        /**
+         * Path
+         *
+         * Document path
+         */
+        path: string;
+    };
+    query?: never;
+    url: '/api/v1/projects/{slug}/docs/{path}';
+};
+
+export type PutDocumentErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type PutDocumentError = PutDocumentErrors[keyof PutDocumentErrors];
+
+export type PutDocumentResponses = {
+    /**
+     * Successful Response
+     */
+    200: DocumentRead;
+};
+
+export type PutDocumentResponse = PutDocumentResponses[keyof PutDocumentResponses];
+
+export type GetProjectActivityData = {
+    body?: never;
+    path: {
+        /**
+         * Slug
+         *
+         * Project slug
+         */
+        slug: string;
+    };
+    query?: {
+        /**
+         * Skip
+         */
+        skip?: number;
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
+    url: '/api/v1/projects/{slug}/activity';
+};
+
+export type GetProjectActivityErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetProjectActivityError = GetProjectActivityErrors[keyof GetProjectActivityErrors];
+
+export type GetProjectActivityResponses = {
+    /**
+     * Response Get Project Activity
+     *
+     * Successful Response
+     */
+    200: Array<RevisionBatchRead>;
+};
+
+export type GetProjectActivityResponse = GetProjectActivityResponses[keyof GetProjectActivityResponses];

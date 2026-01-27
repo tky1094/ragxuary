@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { Auth, Health, type Options, Projects } from '../sdk.gen';
-import type { CreateProjectData, CreateProjectError, CreateProjectResponse, DeleteProjectData, DeleteProjectError, DeleteProjectResponse, GetCurrentUserInfoData, GetCurrentUserInfoResponse, GetProjectData, GetProjectError, GetProjectResponse, HealthCheckData, HealthCheckResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, RefreshData, RefreshError, RefreshResponse, RegisterData, RegisterError, RegisterResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse } from '../types.gen';
+import { Auth, Documents, Health, type Options, Projects } from '../sdk.gen';
+import type { CreateProjectData, CreateProjectError, CreateProjectResponse, DeleteDocumentData, DeleteDocumentError, DeleteDocumentResponse, DeleteProjectData, DeleteProjectError, DeleteProjectResponse, GetCurrentUserInfoData, GetCurrentUserInfoResponse, GetDocumentData, GetDocumentError, GetDocumentHistoryData, GetDocumentHistoryError, GetDocumentHistoryResponse, GetDocumentResponse, GetDocumentTreeData, GetDocumentTreeError, GetDocumentTreeResponse, GetProjectActivityData, GetProjectActivityError, GetProjectActivityResponse, GetProjectData, GetProjectError, GetProjectResponse, HealthCheckData, HealthCheckResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, PutDocumentData, PutDocumentError, PutDocumentResponse, RefreshData, RefreshError, RefreshResponse, RegisterData, RegisterError, RegisterResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -344,3 +344,176 @@ export const updateProjectMutation = (options?: Partial<Options<UpdateProjectDat
     };
     return mutationOptions;
 };
+
+export const getDocumentTreeQueryKey = (options: Options<GetDocumentTreeData>) => createQueryKey('getDocumentTree', options);
+
+/**
+ * Get Document Tree
+ *
+ * Get document tree for a project.
+ *
+ * Args:
+ * slug: The project slug.
+ * current_user: The authenticated user.
+ * document_service: Document service.
+ *
+ * Returns:
+ * List of root-level document tree nodes.
+ */
+export const getDocumentTreeOptions = (options: Options<GetDocumentTreeData>) => queryOptions<GetDocumentTreeResponse, GetDocumentTreeError, GetDocumentTreeResponse, ReturnType<typeof getDocumentTreeQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Documents.getDocumentTree({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getDocumentTreeQueryKey(options)
+});
+
+export const getDocumentHistoryQueryKey = (options: Options<GetDocumentHistoryData>) => createQueryKey('getDocumentHistory', options);
+
+/**
+ * Get Document History
+ *
+ * Get document revision history.
+ *
+ * Args:
+ * slug: The project slug.
+ * path: Document path.
+ * current_user: The authenticated user.
+ * document_service: Document service.
+ * skip: Number of records to skip (pagination).
+ * limit: Maximum number of records to return.
+ *
+ * Returns:
+ * List of document revisions.
+ */
+export const getDocumentHistoryOptions = (options: Options<GetDocumentHistoryData>) => queryOptions<GetDocumentHistoryResponse, GetDocumentHistoryError, GetDocumentHistoryResponse, ReturnType<typeof getDocumentHistoryQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Documents.getDocumentHistory({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getDocumentHistoryQueryKey(options)
+});
+
+/**
+ * Delete Document
+ *
+ * Delete document.
+ *
+ * Args:
+ * slug: The project slug.
+ * path: Document path.
+ * current_user: The authenticated user.
+ * document_service: Document service.
+ * message: Optional delete message.
+ */
+export const deleteDocumentMutation = (options?: Partial<Options<DeleteDocumentData>>): UseMutationOptions<DeleteDocumentResponse, DeleteDocumentError, Options<DeleteDocumentData>> => {
+    const mutationOptions: UseMutationOptions<DeleteDocumentResponse, DeleteDocumentError, Options<DeleteDocumentData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Documents.deleteDocument({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getDocumentQueryKey = (options: Options<GetDocumentData>) => createQueryKey('getDocument', options);
+
+/**
+ * Get Document
+ *
+ * Get document by path.
+ *
+ * Args:
+ * slug: The project slug.
+ * path: Document path.
+ * current_user: The authenticated user.
+ * document_service: Document service.
+ *
+ * Returns:
+ * The document.
+ */
+export const getDocumentOptions = (options: Options<GetDocumentData>) => queryOptions<GetDocumentResponse, GetDocumentError, GetDocumentResponse, ReturnType<typeof getDocumentQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Documents.getDocument({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getDocumentQueryKey(options)
+});
+
+/**
+ * Put Document
+ *
+ * Create or update document.
+ *
+ * Args:
+ * slug: The project slug.
+ * path: Document path.
+ * request: Document data.
+ * current_user: The authenticated user.
+ * document_service: Document service.
+ *
+ * Returns:
+ * The created or updated document.
+ */
+export const putDocumentMutation = (options?: Partial<Options<PutDocumentData>>): UseMutationOptions<PutDocumentResponse, PutDocumentError, Options<PutDocumentData>> => {
+    const mutationOptions: UseMutationOptions<PutDocumentResponse, PutDocumentError, Options<PutDocumentData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Documents.putDocument({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getProjectActivityQueryKey = (options: Options<GetProjectActivityData>) => createQueryKey('getProjectActivity', options);
+
+/**
+ * Get Project Activity
+ *
+ * Get project activity feed.
+ *
+ * Args:
+ * slug: The project slug.
+ * current_user: The authenticated user.
+ * document_service: Document service.
+ * skip: Number of records to skip (pagination).
+ * limit: Maximum number of records to return.
+ *
+ * Returns:
+ * List of revision batches with document summaries.
+ */
+export const getProjectActivityOptions = (options: Options<GetProjectActivityData>) => queryOptions<GetProjectActivityResponse, GetProjectActivityError, GetProjectActivityResponse, ReturnType<typeof getProjectActivityQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Documents.getProjectActivity({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getProjectActivityQueryKey(options)
+});

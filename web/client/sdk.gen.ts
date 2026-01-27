@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, GetCurrentUserInfoData, GetCurrentUserInfoResponses, GetProjectData, GetProjectErrors, GetProjectResponses, HealthCheckData, HealthCheckResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, RefreshData, RefreshErrors, RefreshResponses, RegisterData, RegisterErrors, RegisterResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses } from './types.gen';
+import type { CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteDocumentData, DeleteDocumentErrors, DeleteDocumentResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, GetCurrentUserInfoData, GetCurrentUserInfoResponses, GetDocumentData, GetDocumentErrors, GetDocumentHistoryData, GetDocumentHistoryErrors, GetDocumentHistoryResponses, GetDocumentResponses, GetDocumentTreeData, GetDocumentTreeErrors, GetDocumentTreeResponses, GetProjectActivityData, GetProjectActivityErrors, GetProjectActivityResponses, GetProjectData, GetProjectErrors, GetProjectResponses, HealthCheckData, HealthCheckResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PutDocumentData, PutDocumentErrors, PutDocumentResponses, RefreshData, RefreshErrors, RefreshResponses, RegisterData, RegisterErrors, RegisterResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -269,6 +269,145 @@ export class Projects {
                 'Content-Type': 'application/json',
                 ...options.headers
             }
+        });
+    }
+}
+
+export class Documents {
+    /**
+     * Get Document Tree
+     *
+     * Get document tree for a project.
+     *
+     * Args:
+     * slug: The project slug.
+     * current_user: The authenticated user.
+     * document_service: Document service.
+     *
+     * Returns:
+     * List of root-level document tree nodes.
+     */
+    public static getDocumentTree<ThrowOnError extends boolean = false>(options: Options<GetDocumentTreeData, ThrowOnError>) {
+        return (options.client ?? client).get<GetDocumentTreeResponses, GetDocumentTreeErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects/{slug}/docs',
+            ...options
+        });
+    }
+    
+    /**
+     * Get Document History
+     *
+     * Get document revision history.
+     *
+     * Args:
+     * slug: The project slug.
+     * path: Document path.
+     * current_user: The authenticated user.
+     * document_service: Document service.
+     * skip: Number of records to skip (pagination).
+     * limit: Maximum number of records to return.
+     *
+     * Returns:
+     * List of document revisions.
+     */
+    public static getDocumentHistory<ThrowOnError extends boolean = false>(options: Options<GetDocumentHistoryData, ThrowOnError>) {
+        return (options.client ?? client).get<GetDocumentHistoryResponses, GetDocumentHistoryErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects/{slug}/docs/{path}/history',
+            ...options
+        });
+    }
+    
+    /**
+     * Delete Document
+     *
+     * Delete document.
+     *
+     * Args:
+     * slug: The project slug.
+     * path: Document path.
+     * current_user: The authenticated user.
+     * document_service: Document service.
+     * message: Optional delete message.
+     */
+    public static deleteDocument<ThrowOnError extends boolean = false>(options: Options<DeleteDocumentData, ThrowOnError>) {
+        return (options.client ?? client).delete<DeleteDocumentResponses, DeleteDocumentErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects/{slug}/docs/{path}',
+            ...options
+        });
+    }
+    
+    /**
+     * Get Document
+     *
+     * Get document by path.
+     *
+     * Args:
+     * slug: The project slug.
+     * path: Document path.
+     * current_user: The authenticated user.
+     * document_service: Document service.
+     *
+     * Returns:
+     * The document.
+     */
+    public static getDocument<ThrowOnError extends boolean = false>(options: Options<GetDocumentData, ThrowOnError>) {
+        return (options.client ?? client).get<GetDocumentResponses, GetDocumentErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects/{slug}/docs/{path}',
+            ...options
+        });
+    }
+    
+    /**
+     * Put Document
+     *
+     * Create or update document.
+     *
+     * Args:
+     * slug: The project slug.
+     * path: Document path.
+     * request: Document data.
+     * current_user: The authenticated user.
+     * document_service: Document service.
+     *
+     * Returns:
+     * The created or updated document.
+     */
+    public static putDocument<ThrowOnError extends boolean = false>(options: Options<PutDocumentData, ThrowOnError>) {
+        return (options.client ?? client).put<PutDocumentResponses, PutDocumentErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects/{slug}/docs/{path}',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Get Project Activity
+     *
+     * Get project activity feed.
+     *
+     * Args:
+     * slug: The project slug.
+     * current_user: The authenticated user.
+     * document_service: Document service.
+     * skip: Number of records to skip (pagination).
+     * limit: Maximum number of records to return.
+     *
+     * Returns:
+     * List of revision batches with document summaries.
+     */
+    public static getProjectActivity<ThrowOnError extends boolean = false>(options: Options<GetProjectActivityData, ThrowOnError>) {
+        return (options.client ?? client).get<GetProjectActivityResponses, GetProjectActivityErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects/{slug}/activity',
+            ...options
         });
     }
 }
