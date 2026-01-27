@@ -23,7 +23,9 @@ depends_on: str | Sequence[str] | None = None
 def upgrade() -> None:
     """Create document_revisions table."""
     # Create enum type for change_type
-    changetype_enum = sa.Enum("create", "update", "delete", "rename", name="changetype")
+    changetype_enum = sa.Enum(
+        "create", "update", "delete", "rename", name="changetype", create_type=False
+    )
     changetype_enum.create(op.get_bind(), checkfirst=True)
 
     op.create_table(
