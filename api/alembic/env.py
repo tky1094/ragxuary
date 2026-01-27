@@ -10,7 +10,13 @@ from alembic import context
 from app.config import settings
 
 # Import models to register them with Base.metadata for autogenerate support
-from app.models import Project, User  # noqa: F401
+from app.models import (  # noqa: F401
+    Document,
+    DocumentRevision,
+    Project,
+    RevisionBatch,
+    User,
+)
 from app.models.base import Base
 
 # this is the Alembic Config object, which provides

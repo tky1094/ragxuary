@@ -12,6 +12,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base
 
 if TYPE_CHECKING:
+    from app.models.document import Document
+    from app.models.revision_batch import RevisionBatch
     from app.models.user import User
 
 
@@ -52,3 +54,7 @@ class Project(Base):
 
     # Relationships
     owner: Mapped["User"] = relationship(back_populates="projects")
+    documents: Mapped[list["Document"]] = relationship(back_populates="project")
+    revision_batches: Mapped[list["RevisionBatch"]] = relationship(
+        back_populates="project"
+    )
