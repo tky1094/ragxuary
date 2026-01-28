@@ -1,4 +1,4 @@
-# ragxuary 要件定義書
+# ragxuary
 
 > RAG ネイティブなドキュメンテーションツール
 
@@ -134,6 +134,7 @@ flowchart TB
 | React Testing Library | 16+        | コンポーネントテスト      |
 | Playwright            | 1.50+      | E2E テスト                |
 | MSW                   | 2+         | API モック                |
+| Biome                 | 2+         | リンター・フォーマッター  |
 
 ### バックエンド
 
@@ -151,6 +152,7 @@ flowchart TB
 | pytest-cov     | 5+         | カバレッジ計測           |
 | httpx          | 0.28+      | API テスト用クライアント |
 | Faker          | 30+        | テストデータ生成         |
+| ruff           | 0.9+       | リンター・フォーマッター |
 
 ### インフラストラクチャ
 
@@ -372,18 +374,24 @@ flowchart TB
 | `/{locale}/login`                                    | ログイン             | 不要           |
 | `/{locale}/register`                                 | 新規登録             | 不要           |
 | `/{locale}/projects`                                 | プロジェクト一覧     | 要             |
+| `/{locale}/bookmarks`                                | ブックマーク         | 要             |
+| `/{locale}/notifications`                            | 通知                 | 要             |
+| `/{locale}/p/{projectSlug}`                          | docs へリダイレクト  | 要             |
+| `/{locale}/p/{projectSlug}/info`                     | プロジェクト情報     | 要             |
 | `/{locale}/p/{projectSlug}/docs`                     | ドキュメントトップ   | 要             |
 | `/{locale}/p/{projectSlug}/docs/{...docPath}`        | ドキュメントページ   | 要             |
 | `/{locale}/p/{projectSlug}/edit`                     | エディタトップ       | 要（編集権限） |
 | `/{locale}/p/{projectSlug}/edit/{...docPath}`        | ドキュメント編集     | 要（編集権限） |
 | `/{locale}/p/{projectSlug}/chat`                     | RAG チャット         | 要             |
 | `/{locale}/p/{projectSlug}/chat/{conversationId}`    | チャット履歴         | 要             |
+| `/{locale}/p/{projectSlug}/activity`                 | プロジェクト活動履歴 | 要             |
 | `/{locale}/p/{projectSlug}/settings`                 | プロジェクト設定     | 要（管理権限） |
-| `/{locale}/admin`                                    | 管理画面トップ       | 要（管理者）   |
-| `/{locale}/admin/users`                              | ユーザー管理         | 要（管理者）   |
-| `/{locale}/admin/groups`                             | グループ管理         | 要（管理者）   |
-| `/{locale}/admin/models`                             | モデル設定           | 要（管理者）   |
-| `/{locale}/personal`                                 | 個人設定             | 要             |
+| `/{locale}/settings`                                 | 設定トップ           | 要             |
+| `/{locale}/settings/personal`                        | 個人設定             | 要             |
+| `/{locale}/settings/admin`                           | 管理画面トップ       | 要（管理者）   |
+| `/{locale}/settings/admin/users`                     | ユーザー管理         | 要（管理者）   |
+| `/{locale}/settings/admin/groups`                    | グループ管理         | 要（管理者）   |
+| `/{locale}/settings/admin/models`                    | モデル設定           | 要（管理者）   |
 
 ### Next.js App Router 構成
 
@@ -393,26 +401,33 @@ app/
 │   ├── (auth)/                               # 認証関連（Route Group）
 │   │   ├── login/page.tsx                    # /{locale}/login
 │   │   └── register/page.tsx                 # /{locale}/register
-│   ├── projects/
-│   │   └── page.tsx                          # /{locale}/projects
-│   ├── p/[projectSlug]/                      # プロジェクト関連（認証必須）
-│   │   ├── docs/
-│   │   │   ├── page.tsx                      # /{locale}/p/{projectSlug}/docs
-│   │   │   └── [...docPath]/page.tsx         # /{locale}/p/{projectSlug}/docs/{...docPath}
-│   │   ├── edit/
-│   │   │   ├── page.tsx                      # /{locale}/p/{projectSlug}/edit
-│   │   │   └── [...docPath]/page.tsx         # /{locale}/p/{projectSlug}/edit/{...docPath}
-│   │   ├── chat/
-│   │   │   ├── page.tsx                      # /{locale}/p/{projectSlug}/chat
-│   │   │   └── [conversationId]/page.tsx     # /{locale}/p/{projectSlug}/chat/{conversationId}
-│   │   └── settings/page.tsx                 # /{locale}/p/{projectSlug}/settings
-│   ├── admin/
-│   │   ├── page.tsx                          # /{locale}/admin
-│   │   ├── users/page.tsx                    # /{locale}/admin/users
-│   │   ├── groups/page.tsx                   # /{locale}/admin/groups
-│   │   └── models/page.tsx                   # /{locale}/admin/models
-│   ├── personal/page.tsx                     # /{locale}/personal
-│   ├── page.tsx                              # /{locale} (ダッシュボード)
+│   ├── (main)/                               # メインコンテンツ（Route Group）
+│   │   ├── page.tsx                          # /{locale} (ダッシュボード)
+│   │   ├── projects/page.tsx                 # /{locale}/projects
+│   │   ├── bookmarks/page.tsx                # /{locale}/bookmarks
+│   │   ├── notifications/page.tsx            # /{locale}/notifications
+│   │   ├── p/[projectSlug]/                  # プロジェクト関連
+│   │   │   ├── page.tsx                      # /{locale}/p/{projectSlug} → docs へリダイレクト
+│   │   │   ├── info/page.tsx                 # /{locale}/p/{projectSlug}/info
+│   │   │   ├── docs/
+│   │   │   │   ├── page.tsx                  # /{locale}/p/{projectSlug}/docs
+│   │   │   │   └── [...docPath]/page.tsx     # /{locale}/p/{projectSlug}/docs/{...docPath}
+│   │   │   ├── edit/
+│   │   │   │   ├── page.tsx                  # /{locale}/p/{projectSlug}/edit
+│   │   │   │   └── [...docPath]/page.tsx     # /{locale}/p/{projectSlug}/edit/{...docPath}
+│   │   │   ├── chat/
+│   │   │   │   ├── page.tsx                  # /{locale}/p/{projectSlug}/chat
+│   │   │   │   └── [conversationId]/page.tsx # /{locale}/p/{projectSlug}/chat/{conversationId}
+│   │   │   ├── activity/page.tsx             # /{locale}/p/{projectSlug}/activity
+│   │   │   └── settings/page.tsx             # /{locale}/p/{projectSlug}/settings
+│   │   └── settings/                         # 設定関連
+│   │       ├── page.tsx                      # /{locale}/settings
+│   │       ├── personal/page.tsx             # /{locale}/settings/personal
+│   │       └── admin/                        # 管理者設定
+│   │           ├── page.tsx                  # /{locale}/settings/admin
+│   │           ├── users/page.tsx            # /{locale}/settings/admin/users
+│   │           ├── groups/page.tsx           # /{locale}/settings/admin/groups
+│   │           └── models/page.tsx           # /{locale}/settings/admin/models
 │   └── layout.tsx                            # ロケール用レイアウト
 ├── api/
 │   └── auth/
@@ -434,82 +449,6 @@ middleware.ts                                 # ロケールリダイレクト�
 ## データベース設計
 
 詳細は [database-schema.md](./database-schema.md) を参照。
-
----
-
-## API 設計
-
-### 認証
-
-```
-POST   /api/v1/auth/register       # ユーザー新規登録
-POST   /api/v1/auth/login          # ログイン
-POST   /api/v1/auth/logout         # ログアウト
-POST   /api/v1/auth/refresh        # トークンリフレッシュ
-GET    /api/v1/auth/me             # 現在のユーザー情報
-```
-
-### プロジェクト
-
-```
-GET    /api/v1/projects            # プロジェクト一覧
-POST   /api/v1/projects            # プロジェクト作成
-GET    /api/v1/projects/{slug}     # プロジェクト詳細
-PATCH  /api/v1/projects/{slug}     # プロジェクト更新
-DELETE /api/v1/projects/{slug}     # プロジェクト削除
-```
-
-### ドキュメント
-
-```
-GET    /api/v1/projects/{slug}/docs                 # ドキュメント一覧（ツリー）
-GET    /api/v1/projects/{slug}/docs/{path}          # ドキュメント取得
-PUT    /api/v1/projects/{slug}/docs/{path}          # ドキュメント作成・更新
-DELETE /api/v1/projects/{slug}/docs/{path}          # ドキュメント削除
-POST   /api/v1/projects/{slug}/docs/{path}/move     # ドキュメント移動
-```
-
-### 検索
-
-```
-GET    /api/v1/projects/{slug}/search?q={query}     # 全文検索
-```
-
-### RAG チャット
-
-```
-GET    /api/v1/projects/{slug}/conversations        # 会話一覧
-POST   /api/v1/projects/{slug}/conversations        # 新規会話
-GET    /api/v1/projects/{slug}/conversations/{id}   # 会話詳細
-DELETE /api/v1/projects/{slug}/conversations/{id}   # 会話削除
-POST   /api/v1/projects/{slug}/chat                 # チャットメッセージ送信（SSE）
-```
-
-### Git 連携
-
-```
-POST   /api/v1/projects/{slug}/git/pull             # Gitからプル
-POST   /api/v1/projects/{slug}/git/push             # Gitへプッシュ
-GET    /api/v1/projects/{slug}/git/status           # Git状態取得
-POST   /api/v1/projects/{slug}/git/webhook          # Webhook受信
-```
-
-### 管理
-
-```
-GET    /api/v1/admin/users                          # ユーザー一覧
-POST   /api/v1/admin/users                          # ユーザー作成
-PATCH  /api/v1/admin/users/{id}                     # ユーザー更新
-DELETE /api/v1/admin/users/{id}                     # ユーザー削除
-
-GET    /api/v1/admin/groups                         # グループ一覧
-POST   /api/v1/admin/groups                         # グループ作成
-PATCH  /api/v1/admin/groups/{id}                    # グループ更新
-DELETE /api/v1/admin/groups/{id}                    # グループ削除
-
-GET    /api/v1/admin/settings                       # システム設定取得
-PATCH  /api/v1/admin/settings                       # システム設定更新
-```
 
 ---
 
@@ -564,36 +503,6 @@ flowchart TB
         F3["Citation injection"]
     end
 ```
-
-### 埋め込みモデル
-
-| プロバイダー | モデル                 | 次元数 | 備考           |
-| ------------ | ---------------------- | ------ | -------------- |
-| OpenAI       | text-embedding-3-small | 1536   | コスト効率良好 |
-| OpenAI       | text-embedding-3-large | 3072   | 高精度         |
-| Ollama       | nomic-embed-text       | 768    | ローカル実行   |
-| HuggingFace  | multilingual-e5-large  | 1024   | 多言語対応     |
-
-> **注意**: 埋め込みモデルの次元数はモデルごとに異なります。システム設定で選択したモデルに応じて、`embeddings` テーブルのベクトル次元数が決定されます。一度設定したモデルを変更する場合は、既存の埋め込みデータの再生成が必要です。
-
-### システムプロンプト（例）
-
-```
-あなたは「{project_name}」のドキュメントに関する質問に回答するアシスタントです。
-
-## 制約事項
-1. 回答は提供されたドキュメントの内容のみに基づいてください
-2. ドキュメントに記載がない情報については「この情報はドキュメントに記載されていません」と回答してください
-3. 推測や一般的な知識での補完は行わないでください
-4. 回答の根拠となるドキュメントページを引用してください
-
-## 参照ドキュメント
-{context}
-
-## ユーザーの質問
-{question}
-```
-
 ---
 
 ## 認証・認可
@@ -656,95 +565,118 @@ flowchart LR
 
 ---
 
-## デプロイメント
-
-### Docker Compose 構成
-
-```yaml
-# docker-compose.yml 構成イメージ
-services:
-  nginx: # リバースプロキシ
-  frontend: # Next.js
-  backend: # FastAPI
-  postgres: # PostgreSQL + pgvector
-  redis: # セッション・キャッシュ
-```
-
-### 環境変数
-
-```bash
-# 必須
-DATABASE_URL=postgresql://user:pass@postgres:5432/ragxuary
-REDIS_URL=redis://redis:6379
-NEXTAUTH_SECRET=your-secret-key
-NEXTAUTH_URL=https://your-domain.com
-
-# LLM設定
-OPENAI_API_KEY=sk-xxx
-ANTHROPIC_API_KEY=sk-ant-xxx
-OLLAMA_BASE_URL=http://ollama:11434
-
-# オプション
-LDAP_URL=ldap://ldap.example.com
-LDAP_BASE_DN=dc=example,dc=com
-```
-
-### システム要件（最小構成）
-
-| リソース | 最小値  | 推奨値   |
-| -------- | ------- | -------- |
-| CPU      | 2 cores | 4+ cores |
-| Memory   | 4 GB    | 8+ GB    |
-| Storage  | 20 GB   | 100+ GB  |
-
----
-
 ## MVP 定義
 
-### Phase 1: MVP（v0.1.0）
+### Phase 1: ドキュメンテーション基盤（v0.1.0）
+
+「ドキュメントを書いて公開する」コア価値に集中し、チーム利用の基盤も整える。
 
 **スコープ:**
 
-- [ ] ユーザー認証（メール+パスワード）
-- [ ] プロジェクト作成・管理
-- [ ] マークダウンエディタ（Web 編集モードのみ）
-- [ ] ドキュメント閲覧
-- [ ] 基本的な RAG チャット（OpenAI）
-- [ ] Docker Compose デプロイ
-- [ ] **UI 国際化対応（日本語/英語）**
-- [ ] **テスト基盤構築**
-  - [ ] バックエンド：単体テスト・統合テスト
-  - [ ] フロントエンド：単体テスト
-  - [ ] CI パイプライン（GitHub Actions）
+- [ ] **認証**
+  - [ ] ユーザー認証（メール+パスワード）
+  - [ ] ユーザー登録・ログイン・ログアウト
+- [ ] **プロジェクト管理**
+  - [ ] プロジェクト作成・編集・削除
+  - [ ] プロジェクトメタデータ（名前、説明、スラッグ）
+  - [ ] プロジェクト公開/非公開設定
+  - [ ] プロジェクトオーナー（作成者）
+  - [ ] メンバー招待（メールアドレス指定）
+  - [ ] プロジェクトロール（viewer / editor）
+- [ ] **エディタ**
+  - [ ] マークダウンエディタ（Web 編集モードのみ）
+  - [ ] リアルタイムプレビュー
+  - [ ] ファイルツリー表示
+  - [ ] 保存（確定ボタンによる明示的な保存）
+  - [ ] 編集履歴（バージョン管理）
+  - [ ] 変更差分表示
+  - [ ] 過去バージョンとの比較・復元
+- [ ] **ドキュメント閲覧**
+  - [ ] マークダウンレンダリング（GFM 準拠）
+  - [ ] シンタックスハイライト
+  - [ ] 目次自動生成
+  - [ ] ページ間ナビゲーション
+  - [ ] ダークモード対応
+- [ ] **基盤**
+  - [ ] UI 国際化対応（日本語/英語）
+  - [ ] Docker Compose デプロイ
+  - [ ] テスト基盤構築
+    - [ ] バックエンド：単体テスト・統合テスト
+    - [ ] フロントエンド：単体テスト
+    - [ ] CI パイプライン（GitHub Actions）
 
 **除外:**
 
+- RAG チャット
 - Git 連携
-- LDAP 認証
-- OAuth
-- ローカル LLM 対応
+- グループ管理
+- OAuth / LDAP 認証
 
-### Phase 2: 拡張（v0.2.0）
+### Phase 2: RAG チャット（v0.2.0）
 
-- [ ] Git 連携モード
-- [ ] OAuth 認証（Google, GitHub）
-- [ ] グループ・権限管理
-- [ ] 全文検索
-- [ ] **フロントエンド E2E テスト**
+ドキュメントの価値を高める AI 検索・質問応答機能を追加。
 
-### Phase 3: エンタープライズ（v0.3.0）
+**スコープ:**
 
-- [ ] LDAP 対応
-- [ ] ローカル LLM 対応（Ollama）
-- [ ] 監査ログ
-- [ ] API 利用制限
+- [ ] **RAG チャット**
+  - [ ] チャット UI（ストリーミングレスポンス）
+  - [ ] 引用元ドキュメントへのリンク
+  - [ ] チャット履歴（会話ごと）
+  - [ ] コードブロックのコピー機能
+- [ ] **検索機能**
+  - [ ] ベクトル検索（pgvector）
+  - [ ] ハイブリッド検索（ベクトル + キーワード）
+  - [ ] 検索結果ハイライト
+- [ ] **LLM 連携**
+  - [ ] LLM プロバイダー抽象化（共通インターフェース）
+  - [ ] OpenAI プロバイダー対応
+  - [ ] OpenAI 互換 API 対応（vLLM, Ollama, Azure OpenAI, LocalAI 等）
+  - [ ] プロジェクト単位でのチャット有効/無効設定
+- [ ] **テスト**
+  - [ ] フロントエンド E2E テスト
 
-### Phase 4: 高度な機能（v1.0.0）
+### Phase 3: グループ・権限管理（v0.3.0）
 
-- [ ] 追加言語対応（中国語、韓国語等）
-- [ ] アナリティクス
-- [ ] カスタムドメイン
-- [ ] プラグインシステム
+チーム・組織での利用を可能にする権限管理機能。
+
+**スコープ:**
+
+- [ ] **グループ管理**
+  - [ ] グループ作成・編集・削除
+  - [ ] グループメンバー管理
+  - [ ] プロジェクトへのグループ単位アクセス権設定
+- [ ] **権限拡張**
+  - [ ] プロジェクトロール拡張（admin 追加）
+  - [ ] ロール別の機能制限
+
+### Phase 4: 外部連携（v0.4.0）
+
+外部サービスとの連携機能。
+
+**スコープ:**
+
+- [ ] **Git 連携**
+  - [ ] Git 連携モード（リポジトリ URL 指定）
+  - [ ] ブランチ選択・ドキュメントルート指定
+  - [ ] 手動 Pull / Webhook 自動同期
+  - [ ] GitHub App 認証
+- [ ] **OAuth 認証**
+  - [ ] Google 認証
+  - [ ] GitHub 認証
+
+### Phase 5: エンタープライズ（v1.0.0）
+
+大規模組織・オンプレミス環境向けの機能。
+
+**スコープ:**
+
+- [ ] **エンタープライズ認証**
+  - [ ] LDAP 対応
+- [ ] **運用機能**
+  - [ ] 監査ログ
+  - [ ] API 利用制限（レート制限設定）
+  - [ ] ユーザー一覧・管理画面
+  - [ ] LLM プロバイダー管理 UI
 
 ---
 
