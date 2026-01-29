@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AddMemberData, AddMemberErrors, AddMemberResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteDocumentData, DeleteDocumentErrors, DeleteDocumentResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, GetCurrentUserInfoData, GetCurrentUserInfoResponses, GetDocumentData, GetDocumentErrors, GetDocumentHistoryData, GetDocumentHistoryErrors, GetDocumentHistoryResponses, GetDocumentResponses, GetDocumentTreeData, GetDocumentTreeErrors, GetDocumentTreeResponses, GetProjectActivityData, GetProjectActivityErrors, GetProjectActivityResponses, GetProjectData, GetProjectErrors, GetProjectResponses, HealthCheckData, HealthCheckResponses, ListMembersData, ListMembersErrors, ListMembersResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PutDocumentData, PutDocumentErrors, PutDocumentResponses, RefreshData, RefreshErrors, RefreshResponses, RegisterData, RegisterErrors, RegisterResponses, RemoveMemberData, RemoveMemberErrors, RemoveMemberResponses, UpdateMemberRoleData, UpdateMemberRoleErrors, UpdateMemberRoleResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses } from './types.gen';
+import type { AddMemberData, AddMemberErrors, AddMemberResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteDocumentData, DeleteDocumentErrors, DeleteDocumentResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, GetCurrentUserInfoData, GetCurrentUserInfoResponses, GetDocumentData, GetDocumentErrors, GetDocumentHistoryData, GetDocumentHistoryErrors, GetDocumentHistoryResponses, GetDocumentResponses, GetDocumentTreeData, GetDocumentTreeErrors, GetDocumentTreeResponses, GetProjectActivityData, GetProjectActivityErrors, GetProjectActivityResponses, GetProjectData, GetProjectErrors, GetProjectResponses, HealthCheckData, HealthCheckResponses, ListMembersData, ListMembersErrors, ListMembersResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PutDocumentData, PutDocumentErrors, PutDocumentResponses, RefreshData, RefreshErrors, RefreshResponses, RegisterData, RegisterErrors, RegisterResponses, RemoveMemberData, RemoveMemberErrors, RemoveMemberResponses, UpdateMemberRoleData, UpdateMemberRoleErrors, UpdateMemberRoleResponses, UpdateMyProfileData, UpdateMyProfileErrors, UpdateMyProfileResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -143,6 +143,30 @@ export class Auth {
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/api/v1/auth/me',
             ...options
+        });
+    }
+}
+
+export class Users {
+    /**
+     * Update My Profile
+     *
+     * Update current user's profile.
+     *
+     * Allows updating:
+     * - name: Display name (1-100 characters)
+     * - avatar_url: URL to avatar image (max 500 characters)
+     * - preferred_locale: Preferred locale code (2-10 characters, e.g., "en", "ja")
+     */
+    public static updateMyProfile<ThrowOnError extends boolean = false>(options: Options<UpdateMyProfileData, ThrowOnError>) {
+        return (options.client ?? client).patch<UpdateMyProfileResponses, UpdateMyProfileErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/users/me',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
         });
     }
 }
