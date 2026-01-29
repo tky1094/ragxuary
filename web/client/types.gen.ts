@@ -207,6 +207,13 @@ export type LoginRequest = {
 };
 
 /**
+ * MemberRole
+ *
+ * Project member role enum.
+ */
+export type MemberRole = 'viewer' | 'editor' | 'admin';
+
+/**
  * ProjectCreate
  *
  * Schema for creating a project.
@@ -241,6 +248,98 @@ export type ProjectCreate = {
      * Chat Enabled
      */
     chat_enabled?: boolean;
+};
+
+/**
+ * ProjectMemberCreate
+ *
+ * Schema for adding a project member.
+ */
+export type ProjectMemberCreate = {
+    /**
+     * User Id
+     */
+    user_id: string;
+    role?: MemberRole;
+};
+
+/**
+ * ProjectMemberRead
+ *
+ * Schema for reading a project member.
+ */
+export type ProjectMemberRead = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Project Id
+     */
+    project_id: string;
+    /**
+     * User Id
+     */
+    user_id: string;
+    role: MemberRole;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+};
+
+/**
+ * ProjectMemberUpdate
+ *
+ * Schema for updating a project member's role.
+ */
+export type ProjectMemberUpdate = {
+    role: MemberRole;
+};
+
+/**
+ * ProjectMemberWithUserRead
+ *
+ * Schema for reading a project member with user details.
+ */
+export type ProjectMemberWithUserRead = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Project Id
+     */
+    project_id: string;
+    /**
+     * User Id
+     */
+    user_id: string;
+    role: MemberRole;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
+    /**
+     * User Name
+     */
+    user_name?: string | null;
+    /**
+     * User Email
+     */
+    user_email?: string | null;
+    /**
+     * User Avatar Url
+     */
+    user_avatar_url?: string | null;
 };
 
 /**
@@ -1044,3 +1143,142 @@ export type GetProjectActivityResponses = {
 };
 
 export type GetProjectActivityResponse = GetProjectActivityResponses[keyof GetProjectActivityResponses];
+
+export type ListMembersData = {
+    body?: never;
+    path: {
+        /**
+         * Slug
+         */
+        slug: string;
+    };
+    query?: {
+        /**
+         * Skip
+         */
+        skip?: number;
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
+    url: '/api/v1/projects/{slug}/members';
+};
+
+export type ListMembersErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListMembersError = ListMembersErrors[keyof ListMembersErrors];
+
+export type ListMembersResponses = {
+    /**
+     * Response List Members
+     *
+     * Successful Response
+     */
+    200: Array<ProjectMemberWithUserRead>;
+};
+
+export type ListMembersResponse = ListMembersResponses[keyof ListMembersResponses];
+
+export type AddMemberData = {
+    body: ProjectMemberCreate;
+    path: {
+        /**
+         * Slug
+         */
+        slug: string;
+    };
+    query?: never;
+    url: '/api/v1/projects/{slug}/members';
+};
+
+export type AddMemberErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AddMemberError = AddMemberErrors[keyof AddMemberErrors];
+
+export type AddMemberResponses = {
+    /**
+     * Successful Response
+     */
+    201: ProjectMemberRead;
+};
+
+export type AddMemberResponse = AddMemberResponses[keyof AddMemberResponses];
+
+export type RemoveMemberData = {
+    body?: never;
+    path: {
+        /**
+         * Slug
+         */
+        slug: string;
+        /**
+         * Member Id
+         */
+        member_id: string;
+    };
+    query?: never;
+    url: '/api/v1/projects/{slug}/members/{member_id}';
+};
+
+export type RemoveMemberErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RemoveMemberError = RemoveMemberErrors[keyof RemoveMemberErrors];
+
+export type RemoveMemberResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type RemoveMemberResponse = RemoveMemberResponses[keyof RemoveMemberResponses];
+
+export type UpdateMemberRoleData = {
+    body: ProjectMemberUpdate;
+    path: {
+        /**
+         * Slug
+         */
+        slug: string;
+        /**
+         * Member Id
+         */
+        member_id: string;
+    };
+    query?: never;
+    url: '/api/v1/projects/{slug}/members/{member_id}';
+};
+
+export type UpdateMemberRoleErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateMemberRoleError = UpdateMemberRoleErrors[keyof UpdateMemberRoleErrors];
+
+export type UpdateMemberRoleResponses = {
+    /**
+     * Successful Response
+     */
+    200: ProjectMemberRead;
+};
+
+export type UpdateMemberRoleResponse = UpdateMemberRoleResponses[keyof UpdateMemberRoleResponses];

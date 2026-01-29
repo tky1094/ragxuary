@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteDocumentData, DeleteDocumentErrors, DeleteDocumentResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, GetCurrentUserInfoData, GetCurrentUserInfoResponses, GetDocumentData, GetDocumentErrors, GetDocumentHistoryData, GetDocumentHistoryErrors, GetDocumentHistoryResponses, GetDocumentResponses, GetDocumentTreeData, GetDocumentTreeErrors, GetDocumentTreeResponses, GetProjectActivityData, GetProjectActivityErrors, GetProjectActivityResponses, GetProjectData, GetProjectErrors, GetProjectResponses, HealthCheckData, HealthCheckResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PutDocumentData, PutDocumentErrors, PutDocumentResponses, RefreshData, RefreshErrors, RefreshResponses, RegisterData, RegisterErrors, RegisterResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses } from './types.gen';
+import type { AddMemberData, AddMemberErrors, AddMemberResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteDocumentData, DeleteDocumentErrors, DeleteDocumentResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, GetCurrentUserInfoData, GetCurrentUserInfoResponses, GetDocumentData, GetDocumentErrors, GetDocumentHistoryData, GetDocumentHistoryErrors, GetDocumentHistoryResponses, GetDocumentResponses, GetDocumentTreeData, GetDocumentTreeErrors, GetDocumentTreeResponses, GetProjectActivityData, GetProjectActivityErrors, GetProjectActivityResponses, GetProjectData, GetProjectErrors, GetProjectResponses, HealthCheckData, HealthCheckResponses, ListMembersData, ListMembersErrors, ListMembersResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PutDocumentData, PutDocumentErrors, PutDocumentResponses, RefreshData, RefreshErrors, RefreshResponses, RegisterData, RegisterErrors, RegisterResponses, RemoveMemberData, RemoveMemberErrors, RemoveMemberResponses, UpdateMemberRoleData, UpdateMemberRoleErrors, UpdateMemberRoleResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -228,12 +228,13 @@ export class Projects {
      * slug: The project slug.
      * current_user: The authenticated user.
      * project_service: Project service.
+     * member_repo: Project member repository.
      *
      * Returns:
      * The project.
      *
      * Raises:
-     * HTTPException: If project is not found or user is not the owner.
+     * HTTPException: If project is not found or user does not have access.
      */
     public static getProject<ThrowOnError extends boolean = false>(options: Options<GetProjectData, ThrowOnError>) {
         return (options.client ?? client).get<GetProjectResponses, GetProjectErrors, ThrowOnError>({
@@ -408,6 +409,113 @@ export class Documents {
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/api/v1/projects/{slug}/activity',
             ...options
+        });
+    }
+}
+
+export class ProjectMembers {
+    /**
+     * List Members
+     *
+     * List all members of a project.
+     *
+     * All project members (viewer+) can view the member list.
+     *
+     * Args:
+     * slug: The project slug.
+     * current_user: The authenticated user.
+     * member_service: Project member service.
+     * skip: Number of records to skip (pagination).
+     * limit: Maximum number of records to return.
+     *
+     * Returns:
+     * List of project members with user details.
+     */
+    public static listMembers<ThrowOnError extends boolean = false>(options: Options<ListMembersData, ThrowOnError>) {
+        return (options.client ?? client).get<ListMembersResponses, ListMembersErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects/{slug}/members',
+            ...options
+        });
+    }
+    
+    /**
+     * Add Member
+     *
+     * Add a member to a project.
+     *
+     * Only project admins and owners can add members.
+     *
+     * Args:
+     * slug: The project slug.
+     * request: Member creation data.
+     * current_user: The authenticated user.
+     * member_service: Project member service.
+     *
+     * Returns:
+     * The created project member.
+     */
+    public static addMember<ThrowOnError extends boolean = false>(options: Options<AddMemberData, ThrowOnError>) {
+        return (options.client ?? client).post<AddMemberResponses, AddMemberErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects/{slug}/members',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
+        });
+    }
+    
+    /**
+     * Remove Member
+     *
+     * Remove a member from a project.
+     *
+     * Only project admins and owners can remove members.
+     * Members can also remove themselves (leave the project).
+     *
+     * Args:
+     * slug: The project slug.
+     * member_id: UUID of the member record.
+     * current_user: The authenticated user.
+     * member_service: Project member service.
+     */
+    public static removeMember<ThrowOnError extends boolean = false>(options: Options<RemoveMemberData, ThrowOnError>) {
+        return (options.client ?? client).delete<RemoveMemberResponses, RemoveMemberErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects/{slug}/members/{member_id}',
+            ...options
+        });
+    }
+    
+    /**
+     * Update Member Role
+     *
+     * Update a member's role.
+     *
+     * Only project admins and owners can update roles.
+     * Admins cannot modify their own role.
+     *
+     * Args:
+     * slug: The project slug.
+     * member_id: UUID of the member record.
+     * request: Member update data.
+     * current_user: The authenticated user.
+     * member_service: Project member service.
+     *
+     * Returns:
+     * The updated project member.
+     */
+    public static updateMemberRole<ThrowOnError extends boolean = false>(options: Options<UpdateMemberRoleData, ThrowOnError>) {
+        return (options.client ?? client).patch<UpdateMemberRoleResponses, UpdateMemberRoleErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects/{slug}/members/{member_id}',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
         });
     }
 }

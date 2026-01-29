@@ -95,3 +95,42 @@ class PathAlreadyExistsError(DocumentServiceError):
     """Raised when document path already exists."""
 
     pass
+
+
+# --- Project Member Service Exceptions ---
+
+
+class ProjectMemberServiceError(ServiceError):
+    """Base exception for project member service errors."""
+
+    pass
+
+
+class MemberNotFoundError(ProjectMemberServiceError):
+    """Raised when project member is not found."""
+
+    pass
+
+
+class MemberAlreadyExistsError(ProjectMemberServiceError):
+    """Raised when user is already a member of the project."""
+
+    pass
+
+
+class CannotModifyOwnerError(ProjectMemberServiceError):
+    """Raised when trying to add/modify/remove the project owner as a member."""
+
+    pass
+
+
+class CannotModifySelfError(ProjectMemberServiceError):
+    """Raised when admin tries to modify their own role."""
+
+    pass
+
+
+class UserNotFoundError(ProjectMemberServiceError):
+    """Raised when the target user does not exist."""
+
+    pass

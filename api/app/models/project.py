@@ -13,6 +13,7 @@ from app.models.base import Base
 
 if TYPE_CHECKING:
     from app.models.document import Document
+    from app.models.project_member import ProjectMember
     from app.models.revision_batch import RevisionBatch
     from app.models.user import User
 
@@ -58,3 +59,4 @@ class Project(Base):
     revision_batches: Mapped[list["RevisionBatch"]] = relationship(
         back_populates="project"
     )
+    members: Mapped[list["ProjectMember"]] = relationship(back_populates="project")

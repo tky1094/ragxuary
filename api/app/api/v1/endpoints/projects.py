@@ -9,6 +9,7 @@ from app.api.deps import get_current_active_user
 from app.core.database import get_db
 from app.models.user import User
 from app.repositories.project import ProjectRepository
+from app.repositories.project_member import ProjectMemberRepository
 from app.schemas.project import ProjectCreate, ProjectRead, ProjectUpdate
 from app.services import (
     PermissionDeniedError,
@@ -16,6 +17,7 @@ from app.services import (
     ProjectService,
     SlugAlreadyExistsError,
 )
+from app.services.authorization import Permission, check_project_permission
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -30,6 +32,18 @@ def get_project_service(db: AsyncSession = Depends(get_db)) -> ProjectService:
         ProjectService instance with ProjectRepository.
     """
     return ProjectService(ProjectRepository(db))
+
+
+def get_member_repo(db: AsyncSession = Depends(get_db)) -> ProjectMemberRepository:
+    """Dependency to get ProjectMemberRepository instance.
+
+    Args:
+        db: Database session.
+
+    Returns:
+        ProjectMemberRepository instance.
+    """
+    return ProjectMemberRepository(db)
 
 
 @router.get("", response_model=list[ProjectRead])
@@ -90,6 +104,7 @@ async def get_project(
     slug: str,
     current_user: Annotated[User, Depends(get_current_active_user)],
     project_service: Annotated[ProjectService, Depends(get_project_service)],
+    member_repo: Annotated[ProjectMemberRepository, Depends(get_member_repo)],
 ) -> ProjectRead:
     """Get a project by slug.
 
@@ -97,24 +112,27 @@ async def get_project(
         slug: The project slug.
         current_user: The authenticated user.
         project_service: Project service.
+        member_repo: Project member repository.
 
     Returns:
         The project.
 
     Raises:
-        HTTPException: If project is not found or user is not the owner.
+        HTTPException: If project is not found or user does not have access.
     """
     try:
         project = await project_service.get_project_by_slug(slug)
-        # Private projects are only visible to the owner
-        if (
-            project.visibility.value == "private"
-            and project.owner_id != current_user.id
-        ):
+
+        # Check view permission using authorization helper
+        has_permission = await check_project_permission(
+            project, current_user.id, Permission.VIEW, member_repo
+        )
+        if not has_permission:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="You do not have permission to view this project",
             )
+
         return ProjectRead.model_validate(project)
     except ProjectNotFoundError as e:
         raise HTTPException(

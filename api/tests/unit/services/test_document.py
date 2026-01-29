@@ -36,17 +36,26 @@ class TestDocumentServiceGetTree:
         return MagicMock()
 
     @pytest.fixture
+    def mock_member_repo(self) -> MagicMock:
+        """Create mock member repository."""
+        mock = MagicMock()
+        mock.get_user_role = AsyncMock(return_value=None)
+        return mock
+
+    @pytest.fixture
     def document_service(
         self,
         mock_document_repo: MagicMock,
         mock_revision_repo: MagicMock,
         mock_project_repo: MagicMock,
+        mock_member_repo: MagicMock,
     ) -> DocumentService:
         """Create DocumentService with mocked repositories."""
         return DocumentService(
             mock_document_repo,
             mock_revision_repo,
             mock_project_repo,
+            mock_member_repo,
         )
 
     @pytest.mark.asyncio
@@ -116,7 +125,7 @@ class TestDocumentServiceParsePath:
     @pytest.fixture
     def document_service(self) -> DocumentService:
         """Create DocumentService with mocked repositories."""
-        return DocumentService(MagicMock(), MagicMock(), MagicMock())
+        return DocumentService(MagicMock(), MagicMock(), MagicMock(), MagicMock())
 
     def test_parse_path_root_level(self, document_service: DocumentService) -> None:
         """Test parsing root level path."""
@@ -150,7 +159,7 @@ class TestDocumentServiceDetermineChangeType:
     @pytest.fixture
     def document_service(self) -> DocumentService:
         """Create DocumentService with mocked repositories."""
-        return DocumentService(MagicMock(), MagicMock(), MagicMock())
+        return DocumentService(MagicMock(), MagicMock(), MagicMock(), MagicMock())
 
     def test_rename_only(self, document_service: DocumentService) -> None:
         """Test rename detection when only title changes."""
@@ -205,17 +214,26 @@ class TestDocumentServicePutDocument:
         return MagicMock()
 
     @pytest.fixture
+    def mock_member_repo(self) -> MagicMock:
+        """Create mock member repository."""
+        mock = MagicMock()
+        mock.get_user_role = AsyncMock(return_value=None)
+        return mock
+
+    @pytest.fixture
     def document_service(
         self,
         mock_document_repo: MagicMock,
         mock_revision_repo: MagicMock,
         mock_project_repo: MagicMock,
+        mock_member_repo: MagicMock,
     ) -> DocumentService:
         """Create DocumentService with mocked repositories."""
         return DocumentService(
             mock_document_repo,
             mock_revision_repo,
             mock_project_repo,
+            mock_member_repo,
         )
 
     @pytest.mark.asyncio
