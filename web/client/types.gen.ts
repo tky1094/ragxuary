@@ -556,6 +556,26 @@ export type TokenResponse = {
 };
 
 /**
+ * UserProfileUpdate
+ *
+ * Schema for user self-profile update.
+ */
+export type UserProfileUpdate = {
+    /**
+     * Name
+     */
+    name?: string | null;
+    /**
+     * Avatar Url
+     */
+    avatar_url?: string | null;
+    /**
+     * Preferred Locale
+     */
+    preferred_locale?: string | null;
+};
+
+/**
  * UserRead
  *
  * Schema for reading a user.
@@ -747,6 +767,31 @@ export type GetCurrentUserInfoResponses = {
 };
 
 export type GetCurrentUserInfoResponse = GetCurrentUserInfoResponses[keyof GetCurrentUserInfoResponses];
+
+export type UpdateMyProfileData = {
+    body: UserProfileUpdate;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/me';
+};
+
+export type UpdateMyProfileErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UpdateMyProfileError = UpdateMyProfileErrors[keyof UpdateMyProfileErrors];
+
+export type UpdateMyProfileResponses = {
+    /**
+     * Successful Response
+     */
+    200: UserRead;
+};
+
+export type UpdateMyProfileResponse = UpdateMyProfileResponses[keyof UpdateMyProfileResponses];
 
 export type ListProjectsData = {
     body?: never;

@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { Auth, Documents, Health, type Options, ProjectMembers, Projects } from '../sdk.gen';
-import type { AddMemberData, AddMemberError, AddMemberResponse, CreateProjectData, CreateProjectError, CreateProjectResponse, DeleteDocumentData, DeleteDocumentError, DeleteDocumentResponse, DeleteProjectData, DeleteProjectError, DeleteProjectResponse, GetCurrentUserInfoData, GetCurrentUserInfoResponse, GetDocumentData, GetDocumentError, GetDocumentHistoryData, GetDocumentHistoryError, GetDocumentHistoryResponse, GetDocumentResponse, GetDocumentTreeData, GetDocumentTreeError, GetDocumentTreeResponse, GetProjectActivityData, GetProjectActivityError, GetProjectActivityResponse, GetProjectData, GetProjectError, GetProjectResponse, HealthCheckData, HealthCheckResponse, ListMembersData, ListMembersError, ListMembersResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, PutDocumentData, PutDocumentError, PutDocumentResponse, RefreshData, RefreshError, RefreshResponse, RegisterData, RegisterError, RegisterResponse, RemoveMemberData, RemoveMemberError, RemoveMemberResponse, UpdateMemberRoleData, UpdateMemberRoleError, UpdateMemberRoleResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse } from '../types.gen';
+import { Auth, Documents, Health, type Options, ProjectMembers, Projects, Users } from '../sdk.gen';
+import type { AddMemberData, AddMemberError, AddMemberResponse, CreateProjectData, CreateProjectError, CreateProjectResponse, DeleteDocumentData, DeleteDocumentError, DeleteDocumentResponse, DeleteProjectData, DeleteProjectError, DeleteProjectResponse, GetCurrentUserInfoData, GetCurrentUserInfoResponse, GetDocumentData, GetDocumentError, GetDocumentHistoryData, GetDocumentHistoryError, GetDocumentHistoryResponse, GetDocumentResponse, GetDocumentTreeData, GetDocumentTreeError, GetDocumentTreeResponse, GetProjectActivityData, GetProjectActivityError, GetProjectActivityResponse, GetProjectData, GetProjectError, GetProjectResponse, HealthCheckData, HealthCheckResponse, ListMembersData, ListMembersError, ListMembersResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, PutDocumentData, PutDocumentError, PutDocumentResponse, RefreshData, RefreshError, RefreshResponse, RegisterData, RegisterError, RegisterResponse, RemoveMemberData, RemoveMemberError, RemoveMemberResponse, UpdateMemberRoleData, UpdateMemberRoleError, UpdateMemberRoleResponse, UpdateMyProfileData, UpdateMyProfileError, UpdateMyProfileResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -196,6 +196,30 @@ export const getCurrentUserInfoOptions = (options?: Options<GetCurrentUserInfoDa
     },
     queryKey: getCurrentUserInfoQueryKey(options)
 });
+
+/**
+ * Update My Profile
+ *
+ * Update current user's profile.
+ *
+ * Allows updating:
+ * - name: Display name (1-100 characters)
+ * - avatar_url: URL to avatar image (max 500 characters)
+ * - preferred_locale: Preferred locale code (2-10 characters, e.g., "en", "ja")
+ */
+export const updateMyProfileMutation = (options?: Partial<Options<UpdateMyProfileData>>): UseMutationOptions<UpdateMyProfileResponse, UpdateMyProfileError, Options<UpdateMyProfileData>> => {
+    const mutationOptions: UseMutationOptions<UpdateMyProfileResponse, UpdateMyProfileError, Options<UpdateMyProfileData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Users.updateMyProfile({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
 
 export const listProjectsQueryKey = (options?: Options<ListProjectsData>) => createQueryKey('listProjects', options);
 
