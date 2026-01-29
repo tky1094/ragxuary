@@ -53,7 +53,12 @@ async def list_projects(
     skip: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(ge=1, le=100)] = 100,
 ) -> list[ProjectRead]:
-    """List all projects owned by the current user.
+    """List all projects accessible by the current user.
+
+    Includes:
+    - Projects owned by the user
+    - Projects where user is a member
+    - Public projects
 
     Args:
         current_user: The authenticated user.
@@ -62,9 +67,9 @@ async def list_projects(
         limit: Maximum number of records to return.
 
     Returns:
-        List of projects owned by the current user.
+        List of accessible projects.
     """
-    projects = await project_service.get_projects_by_owner(
+    projects = await project_service.get_accessible_projects(
         current_user.id, skip=skip, limit=limit
     )
     return [ProjectRead.model_validate(p) for p in projects]
