@@ -64,8 +64,8 @@ export function ProjectTabs() {
   };
 
   return (
-    <nav className="border-border border-b bg-card">
-      <div className="container mx-auto px-4">
+    <nav className="-mx-6 border-border border-b bg-card">
+      <div className="px-6">
         <div className="-mb-px flex gap-1">
           {tabs.map((tab) => {
             const Icon = tab.icon;
