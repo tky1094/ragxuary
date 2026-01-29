@@ -7,6 +7,7 @@ from app.models.document_revision import ChangeType
 from app.models.project import Project
 from app.repositories.document import DocumentRepository
 from app.repositories.project import ProjectRepository
+from app.repositories.project_member import ProjectMemberRepository
 from app.repositories.revision import RevisionRepository
 from app.schemas.document import (
     DocumentPutRequest,
@@ -15,6 +16,7 @@ from app.schemas.document import (
     RevisionBatchRead,
     RevisionDocumentSummary,
 )
+from app.services.authorization import Permission, check_project_permission
 from app.services.exceptions import (
     DocumentNotFoundError,
     InvalidPathError,
@@ -32,6 +34,7 @@ class DocumentService:
         document_repo: DocumentRepository,
         revision_repo: RevisionRepository,
         project_repo: ProjectRepository,
+        member_repo: ProjectMemberRepository,
     ) -> None:
         """Initialize the service with repositories.
 
@@ -39,10 +42,12 @@ class DocumentService:
             document_repo: Repository for document database operations.
             revision_repo: Repository for revision database operations.
             project_repo: Repository for project database operations.
+            member_repo: Repository for project member database operations.
         """
         self.document_repo = document_repo
         self.revision_repo = revision_repo
         self.project_repo = project_repo
+        self.member_repo = member_repo
 
     async def get_document_tree(
         self, project_slug: str, user_id: UUID
@@ -362,21 +367,20 @@ class DocumentService:
         if project is None:
             raise ProjectNotFoundError(f"Project with slug '{project_slug}' not found")
 
-        # Check access
-        is_owner = project.owner_id == user_id
-        is_public = project.visibility.value == "public"
+        # Determine required permission
+        permission = Permission.EDIT if require_write else Permission.VIEW
 
-        if require_write:
-            # Write access requires being the owner
-            # TODO: Add project_members check for editor/admin role
-            if not is_owner:
+        # Check permission using authorization helper
+        has_permission = await check_project_permission(
+            project, user_id, permission, self.member_repo
+        )
+
+        if not has_permission:
+            if require_write:
                 raise PermissionDeniedError(
                     "You do not have permission to modify documents in this project"
                 )
-        else:
-            # Read access for owner or public projects
-            # TODO: Add project_members check for viewer role
-            if not is_owner and not is_public:
+            else:
                 raise PermissionDeniedError(
                     "You do not have permission to view this project"
                 )

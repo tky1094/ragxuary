@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import auth, documents, health, projects
+from app.api.v1.endpoints import auth, documents, health, project_members, projects
 
 api_router = APIRouter()
 
@@ -17,3 +17,6 @@ api_router.include_router(projects.router)
 
 # Include documents endpoints
 api_router.include_router(documents.router)
+
+# Include project members endpoints
+api_router.include_router(project_members.router)

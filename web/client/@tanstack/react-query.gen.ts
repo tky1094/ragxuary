@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { Auth, Documents, Health, type Options, Projects } from '../sdk.gen';
-import type { CreateProjectData, CreateProjectError, CreateProjectResponse, DeleteDocumentData, DeleteDocumentError, DeleteDocumentResponse, DeleteProjectData, DeleteProjectError, DeleteProjectResponse, GetCurrentUserInfoData, GetCurrentUserInfoResponse, GetDocumentData, GetDocumentError, GetDocumentHistoryData, GetDocumentHistoryError, GetDocumentHistoryResponse, GetDocumentResponse, GetDocumentTreeData, GetDocumentTreeError, GetDocumentTreeResponse, GetProjectActivityData, GetProjectActivityError, GetProjectActivityResponse, GetProjectData, GetProjectError, GetProjectResponse, HealthCheckData, HealthCheckResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, PutDocumentData, PutDocumentError, PutDocumentResponse, RefreshData, RefreshError, RefreshResponse, RegisterData, RegisterError, RegisterResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse } from '../types.gen';
+import { Auth, Documents, Health, type Options, ProjectMembers, Projects } from '../sdk.gen';
+import type { AddMemberData, AddMemberError, AddMemberResponse, CreateProjectData, CreateProjectError, CreateProjectResponse, DeleteDocumentData, DeleteDocumentError, DeleteDocumentResponse, DeleteProjectData, DeleteProjectError, DeleteProjectResponse, GetCurrentUserInfoData, GetCurrentUserInfoResponse, GetDocumentData, GetDocumentError, GetDocumentHistoryData, GetDocumentHistoryError, GetDocumentHistoryResponse, GetDocumentResponse, GetDocumentTreeData, GetDocumentTreeError, GetDocumentTreeResponse, GetProjectActivityData, GetProjectActivityError, GetProjectActivityResponse, GetProjectData, GetProjectError, GetProjectResponse, HealthCheckData, HealthCheckResponse, ListMembersData, ListMembersError, ListMembersResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, PutDocumentData, PutDocumentError, PutDocumentResponse, RefreshData, RefreshError, RefreshResponse, RegisterData, RegisterError, RegisterResponse, RemoveMemberData, RemoveMemberError, RemoveMemberResponse, UpdateMemberRoleData, UpdateMemberRoleError, UpdateMemberRoleResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -294,12 +294,13 @@ export const getProjectQueryKey = (options: Options<GetProjectData>) => createQu
  * slug: The project slug.
  * current_user: The authenticated user.
  * project_service: Project service.
+ * member_repo: Project member repository.
  *
  * Returns:
  * The project.
  *
  * Raises:
- * HTTPException: If project is not found or user is not the owner.
+ * HTTPException: If project is not found or user does not have access.
  */
 export const getProjectOptions = (options: Options<GetProjectData>) => queryOptions<GetProjectResponse, GetProjectError, GetProjectResponse, ReturnType<typeof getProjectQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {
@@ -517,3 +518,125 @@ export const getProjectActivityOptions = (options: Options<GetProjectActivityDat
     },
     queryKey: getProjectActivityQueryKey(options)
 });
+
+export const listMembersQueryKey = (options: Options<ListMembersData>) => createQueryKey('listMembers', options);
+
+/**
+ * List Members
+ *
+ * List all members of a project.
+ *
+ * All project members (viewer+) can view the member list.
+ *
+ * Args:
+ * slug: The project slug.
+ * current_user: The authenticated user.
+ * member_service: Project member service.
+ * skip: Number of records to skip (pagination).
+ * limit: Maximum number of records to return.
+ *
+ * Returns:
+ * List of project members with user details.
+ */
+export const listMembersOptions = (options: Options<ListMembersData>) => queryOptions<ListMembersResponse, ListMembersError, ListMembersResponse, ReturnType<typeof listMembersQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await ProjectMembers.listMembers({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listMembersQueryKey(options)
+});
+
+/**
+ * Add Member
+ *
+ * Add a member to a project.
+ *
+ * Only project admins and owners can add members.
+ *
+ * Args:
+ * slug: The project slug.
+ * request: Member creation data.
+ * current_user: The authenticated user.
+ * member_service: Project member service.
+ *
+ * Returns:
+ * The created project member.
+ */
+export const addMemberMutation = (options?: Partial<Options<AddMemberData>>): UseMutationOptions<AddMemberResponse, AddMemberError, Options<AddMemberData>> => {
+    const mutationOptions: UseMutationOptions<AddMemberResponse, AddMemberError, Options<AddMemberData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await ProjectMembers.addMember({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Remove Member
+ *
+ * Remove a member from a project.
+ *
+ * Only project admins and owners can remove members.
+ * Members can also remove themselves (leave the project).
+ *
+ * Args:
+ * slug: The project slug.
+ * member_id: UUID of the member record.
+ * current_user: The authenticated user.
+ * member_service: Project member service.
+ */
+export const removeMemberMutation = (options?: Partial<Options<RemoveMemberData>>): UseMutationOptions<RemoveMemberResponse, RemoveMemberError, Options<RemoveMemberData>> => {
+    const mutationOptions: UseMutationOptions<RemoveMemberResponse, RemoveMemberError, Options<RemoveMemberData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await ProjectMembers.removeMember({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Update Member Role
+ *
+ * Update a member's role.
+ *
+ * Only project admins and owners can update roles.
+ * Admins cannot modify their own role.
+ *
+ * Args:
+ * slug: The project slug.
+ * member_id: UUID of the member record.
+ * request: Member update data.
+ * current_user: The authenticated user.
+ * member_service: Project member service.
+ *
+ * Returns:
+ * The updated project member.
+ */
+export const updateMemberRoleMutation = (options?: Partial<Options<UpdateMemberRoleData>>): UseMutationOptions<UpdateMemberRoleResponse, UpdateMemberRoleError, Options<UpdateMemberRoleData>> => {
+    const mutationOptions: UseMutationOptions<UpdateMemberRoleResponse, UpdateMemberRoleError, Options<UpdateMemberRoleData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await ProjectMembers.updateMemberRole({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};

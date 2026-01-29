@@ -10,6 +10,7 @@ from app.core.database import get_db
 from app.models.user import User
 from app.repositories.document import DocumentRepository
 from app.repositories.project import ProjectRepository
+from app.repositories.project_member import ProjectMemberRepository
 from app.repositories.revision import RevisionRepository
 from app.schemas.document import (
     DocumentPutRequest,
@@ -43,6 +44,7 @@ def get_document_service(db: AsyncSession = Depends(get_db)) -> DocumentService:
         DocumentRepository(db),
         RevisionRepository(db),
         ProjectRepository(db),
+        ProjectMemberRepository(db),
     )
 
 
