@@ -77,6 +77,142 @@ class TestListProjects:
         response = await client.get("/api/v1/projects")
         assert response.status_code == 401
 
+    async def test_list_projects_includes_public_projects(
+        self,
+        client: AsyncClient,
+        auth_headers: dict[str, str],
+    ) -> None:
+        """Test that public projects from other users are included."""
+        with patch(
+            "app.api.deps.is_token_blacklisted",
+            new_callable=AsyncMock,
+            return_value=False,
+        ):
+            with patch(
+                "app.services.auth.add_token_to_blacklist", new_callable=AsyncMock
+            ):
+                # Create a public project as first user
+                await client.post(
+                    "/api/v1/projects",
+                    json={
+                        "slug": "public-project",
+                        "name": "Public Project",
+                        "visibility": "public",
+                    },
+                    headers=auth_headers,
+                )
+
+                # Register second user
+                other_response = await client.post(
+                    "/api/v1/auth/register",
+                    json={
+                        "email": "other@example.com",
+                        "name": "Other User",
+                        "password": "OtherPassword123",
+                    },
+                )
+                other_token = other_response.json()["access_token"]
+                other_headers = {"Authorization": f"Bearer {other_token}"}
+
+                # List projects as second user - should see public project
+                response = await client.get("/api/v1/projects", headers=other_headers)
+
+        assert response.status_code == 200
+        data = response.json()
+        slugs = [p["slug"] for p in data]
+        assert "public-project" in slugs
+
+    async def test_list_projects_includes_member_projects(
+        self,
+        client: AsyncClient,
+        auth_headers: dict[str, str],
+        test_project_data: dict[str, Any],
+    ) -> None:
+        """Test that projects where user is a member are included."""
+        with patch(
+            "app.api.deps.is_token_blacklisted",
+            new_callable=AsyncMock,
+            return_value=False,
+        ):
+            with patch(
+                "app.services.auth.add_token_to_blacklist", new_callable=AsyncMock
+            ):
+                # Create a private project as first user
+                await client.post(
+                    "/api/v1/projects", json=test_project_data, headers=auth_headers
+                )
+
+                # Register second user
+                other_response = await client.post(
+                    "/api/v1/auth/register",
+                    json={
+                        "email": "member@example.com",
+                        "name": "Member User",
+                        "password": "MemberPassword123",
+                    },
+                )
+                other_token = other_response.json()["access_token"]
+                other_headers = {"Authorization": f"Bearer {other_token}"}
+
+                # Get second user's ID
+                me_response = await client.get("/api/v1/auth/me", headers=other_headers)
+                other_user_id = me_response.json()["id"]
+
+                # Add second user as member
+                await client.post(
+                    "/api/v1/projects/test-project/members",
+                    json={"user_id": other_user_id, "role": "viewer"},
+                    headers=auth_headers,
+                )
+
+                # List projects as second user - should see member project
+                response = await client.get("/api/v1/projects", headers=other_headers)
+
+        assert response.status_code == 200
+        data = response.json()
+        slugs = [p["slug"] for p in data]
+        assert "test-project" in slugs
+
+    async def test_list_projects_excludes_private_unrelated(
+        self,
+        client: AsyncClient,
+        auth_headers: dict[str, str],
+        test_project_data: dict[str, Any],
+    ) -> None:
+        """Test that private projects from other users are excluded."""
+        with patch(
+            "app.api.deps.is_token_blacklisted",
+            new_callable=AsyncMock,
+            return_value=False,
+        ):
+            with patch(
+                "app.services.auth.add_token_to_blacklist", new_callable=AsyncMock
+            ):
+                # Create a private project as first user
+                await client.post(
+                    "/api/v1/projects", json=test_project_data, headers=auth_headers
+                )
+
+                # Register second user
+                other_response = await client.post(
+                    "/api/v1/auth/register",
+                    json={
+                        "email": "stranger@example.com",
+                        "name": "Stranger User",
+                        "password": "StrangerPassword123",
+                    },
+                )
+                other_token = other_response.json()["access_token"]
+                other_headers = {"Authorization": f"Bearer {other_token}"}
+
+                # List projects as second user - should NOT see private project
+                response = await client.get("/api/v1/projects", headers=other_headers)
+
+        assert response.status_code == 200
+        data = response.json()
+        slugs = [p["slug"] for p in data]
+        assert "test-project" not in slugs
+
 
 @pytest.mark.asyncio
 class TestCreateProject:

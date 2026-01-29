@@ -2,10 +2,11 @@
 
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.project import Project
+from app.models.project import Project, ProjectVisibility
+from app.models.project_member import ProjectMember
 from app.schemas.project import ProjectCreate, ProjectUpdate
 
 
@@ -128,3 +129,43 @@ class ProjectRepository:
         """
         project = await self.get_by_slug(slug)
         return project is not None
+
+    async def get_accessible_projects(
+        self, user_id: UUID, skip: int = 0, limit: int = 100
+    ) -> list[Project]:
+        """Get all projects accessible by a user.
+
+        Includes:
+        - Projects owned by the user
+        - Projects where user is a member
+        - Public projects
+
+        Args:
+            user_id: The UUID of the user.
+            skip: Number of records to skip (pagination).
+            limit: Maximum number of records to return.
+
+        Returns:
+            List of accessible projects.
+        """
+        # Subquery for projects where user is a member
+        member_subquery = select(ProjectMember.project_id).where(
+            ProjectMember.user_id == user_id
+        )
+
+        stmt = (
+            select(Project)
+            .where(
+                or_(
+                    Project.owner_id == user_id,
+                    Project.id.in_(member_subquery),
+                    Project.visibility == ProjectVisibility.PUBLIC,
+                )
+            )
+            .distinct()
+            .offset(skip)
+            .limit(limit)
+            .order_by(Project.created_at.desc())
+        )
+        result = await self.db.execute(stmt)
+        return list(result.scalars().all())

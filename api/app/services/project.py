@@ -77,6 +77,26 @@ class ProjectService:
         """
         return await self.project_repo.get_by_owner(owner_id, skip, limit)
 
+    async def get_accessible_projects(
+        self, user_id: UUID, skip: int = 0, limit: int = 100
+    ) -> list[Project]:
+        """Get all projects accessible by a user.
+
+        Includes:
+        - Projects owned by the user
+        - Projects where user is a member
+        - Public projects
+
+        Args:
+            user_id: The UUID of the user.
+            skip: Number of records to skip (pagination).
+            limit: Maximum number of records to return.
+
+        Returns:
+            List of accessible projects.
+        """
+        return await self.project_repo.get_accessible_projects(user_id, skip, limit)
+
     async def update_project(
         self, slug: str, update_data: ProjectUpdate, user_id: UUID
     ) -> Project:
