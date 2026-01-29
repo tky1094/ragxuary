@@ -1,5 +1,6 @@
 """User repository for database operations."""
 
+from typing import Any
 from uuid import UUID
 
 from sqlalchemy import select
@@ -81,3 +82,20 @@ class UserRepository:
         """
         user = await self.get_by_email(email)
         return user is not None
+
+    async def update(self, user: User, data: dict[str, Any]) -> User:
+        """Update user with given data.
+
+        Args:
+            user: The user to update.
+            data: Dictionary of fields to update.
+
+        Returns:
+            The updated user.
+        """
+        for key, value in data.items():
+            if hasattr(user, key):
+                setattr(user, key, value)
+        await self.db.commit()
+        await self.db.refresh(user)
+        return user

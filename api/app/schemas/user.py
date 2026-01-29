@@ -3,7 +3,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class UserBase(BaseModel):
@@ -21,7 +21,7 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(BaseModel):
-    """Schema for updating a user."""
+    """Schema for updating a user (admin use)."""
 
     email: EmailStr | None = None
     name: str | None = None
@@ -30,6 +30,16 @@ class UserUpdate(BaseModel):
     is_active: bool | None = None
     api_limit: int | None = None
     preferred_locale: str | None = None
+
+
+class UserProfileUpdate(BaseModel):
+    """Schema for user self-profile update."""
+
+    name: str | None = Field(None, min_length=1, max_length=100)
+    avatar_url: str | None = Field(None, max_length=500)
+    preferred_locale: str | None = Field(None, min_length=2, max_length=10)
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserRead(UserBase):
