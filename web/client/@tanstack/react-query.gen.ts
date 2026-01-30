@@ -226,7 +226,12 @@ export const listProjectsQueryKey = (options?: Options<ListProjectsData>) => cre
 /**
  * List Projects
  *
- * List all projects owned by the current user.
+ * List all projects accessible by the current user.
+ *
+ * Includes:
+ * - Projects owned by the user
+ * - Projects where user is a member
+ * - Public projects
  *
  * Args:
  * current_user: The authenticated user.
@@ -235,7 +240,7 @@ export const listProjectsQueryKey = (options?: Options<ListProjectsData>) => cre
  * limit: Maximum number of records to return.
  *
  * Returns:
- * List of projects owned by the current user.
+ * List of accessible projects.
  */
 export const listProjectsOptions = (options?: Options<ListProjectsData>) => queryOptions<ListProjectsResponse, ListProjectsError, ListProjectsResponse, ReturnType<typeof listProjectsQueryKey>>({
     queryFn: async ({ queryKey, signal }) => {

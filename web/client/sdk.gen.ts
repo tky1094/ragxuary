@@ -175,7 +175,12 @@ export class Projects {
     /**
      * List Projects
      *
-     * List all projects owned by the current user.
+     * List all projects accessible by the current user.
+     *
+     * Includes:
+     * - Projects owned by the user
+     * - Projects where user is a member
+     * - Public projects
      *
      * Args:
      * current_user: The authenticated user.
@@ -184,7 +189,7 @@ export class Projects {
      * limit: Maximum number of records to return.
      *
      * Returns:
-     * List of projects owned by the current user.
+     * List of accessible projects.
      */
     public static listProjects<ThrowOnError extends boolean = false>(options?: Options<ListProjectsData, ThrowOnError>) {
         return (options?.client ?? client).get<ListProjectsResponses, ListProjectsErrors, ThrowOnError>({
