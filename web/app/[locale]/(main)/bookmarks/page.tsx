@@ -1,16 +1,14 @@
-import { Bookmark } from 'lucide-react';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
-import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { auth } from '@/auth';
 import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from '@/shared/components/ui/empty';
+  BookmarksPageContent,
+  prefetchBookmarkList,
+} from '@/features/bookmarks';
+import { ProjectListSkeleton } from '@/features/projects';
 
 interface BookmarksPageProps {
   params: Promise<{ locale: string }>;
@@ -25,26 +23,14 @@ export default async function BookmarksPage({ params }: BookmarksPageProps) {
     redirect(`/${locale}/login`);
   }
 
-  // TODO: Fetch bookmarks
-  const bookmarks: unknown[] = [];
+  // Prefetch bookmarks on the server for faster initial render
+  const queryClient = await prefetchBookmarkList();
 
-  return <BookmarksContent bookmarks={bookmarks} />;
-}
-
-function BookmarksContent({ bookmarks }: { bookmarks: unknown[] }) {
-  const t = useTranslations('bookmarks');
-
-  return bookmarks.length === 0 ? (
-    <Empty className="border">
-      <EmptyHeader>
-        <EmptyMedia variant="icon">
-          <Bookmark />
-        </EmptyMedia>
-        <EmptyTitle>{t('noBookmarks')}</EmptyTitle>
-        <EmptyDescription>{t('noBookmarksDescription')}</EmptyDescription>
-      </EmptyHeader>
-    </Empty>
-  ) : (
-    <div>{/* TODO: Render bookmarks list */}</div>
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Suspense fallback={<ProjectListSkeleton />}>
+        <BookmarksPageContent />
+      </Suspense>
+    </HydrationBoundary>
   );
 }

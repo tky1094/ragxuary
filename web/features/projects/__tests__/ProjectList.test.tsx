@@ -7,17 +7,47 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ProjectList } from '../components/ProjectList';
 import * as useProjectsModule from '../hooks/useProjects';
 
-// Mock next-intl
-vi.mock('next-intl', () => ({
-  useTranslations: () => (key: string) => {
-    const translations: Record<string, string> = {
-      noProjects: 'No projects found',
-      loadError: 'Failed to load projects',
-      noDescription: 'No description',
-    };
-    return translations[key] || key;
-  },
+// Mock next-auth/react
+vi.mock('next-auth/react', () => ({
+  useSession: vi.fn(() => ({
+    status: 'authenticated',
+    data: { user: { id: '1', email: 'test@example.com' } },
+  })),
 }));
+
+// Mock bookmark hooks
+vi.mock('@/shared/hooks', () => ({
+  useBookmarkStatus: vi.fn(() => ({
+    data: { is_bookmarked: false },
+    isLoading: false,
+  })),
+  useAddBookmark: vi.fn(() => ({
+    mutate: vi.fn(),
+    isPending: false,
+  })),
+  useRemoveBookmark: vi.fn(() => ({
+    mutate: vi.fn(),
+    isPending: false,
+  })),
+}));
+
+// Mock next-intl
+vi.mock('next-intl', async () => {
+  const actual = await vi.importActual('next-intl');
+  return {
+    ...actual,
+    useTranslations: () => (key: string) => {
+      const translations: Record<string, string> = {
+        noProjects: 'No projects found',
+        loadError: 'Failed to load projects',
+        noDescription: 'No description',
+        addBookmark: 'Add to bookmarks',
+        removeBookmark: 'Remove from bookmarks',
+      };
+      return translations[key] || key;
+    },
+  };
+});
 
 // Mock next/navigation
 vi.mock('next/navigation', () => ({

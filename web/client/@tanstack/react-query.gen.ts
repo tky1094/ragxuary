@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { Auth, Documents, Health, type Options, ProjectMembers, Projects, Users } from '../sdk.gen';
-import type { AddMemberData, AddMemberError, AddMemberResponse, CreateProjectData, CreateProjectError, CreateProjectResponse, DeleteDocumentData, DeleteDocumentError, DeleteDocumentResponse, DeleteProjectData, DeleteProjectError, DeleteProjectResponse, GetCurrentUserInfoData, GetCurrentUserInfoResponse, GetDocumentData, GetDocumentError, GetDocumentHistoryData, GetDocumentHistoryError, GetDocumentHistoryResponse, GetDocumentResponse, GetDocumentTreeData, GetDocumentTreeError, GetDocumentTreeResponse, GetProjectActivityData, GetProjectActivityError, GetProjectActivityResponse, GetProjectData, GetProjectError, GetProjectResponse, HealthCheckData, HealthCheckResponse, ListMembersData, ListMembersError, ListMembersResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, PutDocumentData, PutDocumentError, PutDocumentResponse, RefreshData, RefreshError, RefreshResponse, RegisterData, RegisterError, RegisterResponse, RemoveMemberData, RemoveMemberError, RemoveMemberResponse, UpdateMemberRoleData, UpdateMemberRoleError, UpdateMemberRoleResponse, UpdateMyProfileData, UpdateMyProfileError, UpdateMyProfileResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse } from '../types.gen';
+import { Auth, Bookmarks, Documents, Health, type Options, ProjectMembers, Projects, Users } from '../sdk.gen';
+import type { AddBookmarkData, AddBookmarkError, AddBookmarkResponse, AddMemberData, AddMemberError, AddMemberResponse, CreateProjectData, CreateProjectError, CreateProjectResponse, DeleteDocumentData, DeleteDocumentError, DeleteDocumentResponse, DeleteProjectData, DeleteProjectError, DeleteProjectResponse, GetBookmarkStatusData, GetBookmarkStatusError, GetBookmarkStatusResponse, GetCurrentUserInfoData, GetCurrentUserInfoResponse, GetDocumentData, GetDocumentError, GetDocumentHistoryData, GetDocumentHistoryError, GetDocumentHistoryResponse, GetDocumentResponse, GetDocumentTreeData, GetDocumentTreeError, GetDocumentTreeResponse, GetProjectActivityData, GetProjectActivityError, GetProjectActivityResponse, GetProjectData, GetProjectError, GetProjectResponse, HealthCheckData, HealthCheckResponse, ListBookmarksData, ListBookmarksError, ListBookmarksResponse, ListMembersData, ListMembersError, ListMembersResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, PutDocumentData, PutDocumentError, PutDocumentResponse, RefreshData, RefreshError, RefreshResponse, RegisterData, RegisterError, RegisterResponse, RemoveBookmarkData, RemoveBookmarkError, RemoveBookmarkResponse, RemoveMemberData, RemoveMemberError, RemoveMemberResponse, UpdateMemberRoleData, UpdateMemberRoleError, UpdateMemberRoleResponse, UpdateMyProfileData, UpdateMyProfileError, UpdateMyProfileResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -660,6 +660,129 @@ export const updateMemberRoleMutation = (options?: Partial<Options<UpdateMemberR
     const mutationOptions: UseMutationOptions<UpdateMemberRoleResponse, UpdateMemberRoleError, Options<UpdateMemberRoleData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await ProjectMembers.updateMemberRole({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const listBookmarksQueryKey = (options?: Options<ListBookmarksData>) => createQueryKey('listBookmarks', options);
+
+/**
+ * List Bookmarks
+ *
+ * List all bookmarked projects for the current user.
+ *
+ * Args:
+ * current_user: The authenticated user.
+ * bookmark_service: Bookmark service.
+ * skip: Number of records to skip (pagination).
+ * limit: Maximum number of records to return.
+ *
+ * Returns:
+ * List of bookmarked projects with details.
+ */
+export const listBookmarksOptions = (options?: Options<ListBookmarksData>) => queryOptions<ListBookmarksResponse, ListBookmarksError, ListBookmarksResponse, ReturnType<typeof listBookmarksQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Bookmarks.listBookmarks({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: listBookmarksQueryKey(options)
+});
+
+/**
+ * Remove Bookmark
+ *
+ * Remove a bookmark for a project.
+ *
+ * This operation is idempotent - calling it when no bookmark
+ * exists returns 204 without error.
+ *
+ * Args:
+ * slug: The project slug.
+ * current_user: The authenticated user.
+ * bookmark_service: Bookmark service.
+ *
+ * Raises:
+ * HTTPException: If project is not found.
+ */
+export const removeBookmarkMutation = (options?: Partial<Options<RemoveBookmarkData>>): UseMutationOptions<RemoveBookmarkResponse, RemoveBookmarkError, Options<RemoveBookmarkData>> => {
+    const mutationOptions: UseMutationOptions<RemoveBookmarkResponse, RemoveBookmarkError, Options<RemoveBookmarkData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Bookmarks.removeBookmark({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getBookmarkStatusQueryKey = (options: Options<GetBookmarkStatusData>) => createQueryKey('getBookmarkStatus', options);
+
+/**
+ * Get Bookmark Status
+ *
+ * Check if a project is bookmarked by the current user.
+ *
+ * Args:
+ * slug: The project slug.
+ * current_user: The authenticated user.
+ * bookmark_service: Bookmark service.
+ *
+ * Returns:
+ * Bookmark status.
+ *
+ * Raises:
+ * HTTPException: If project is not found.
+ */
+export const getBookmarkStatusOptions = (options: Options<GetBookmarkStatusData>) => queryOptions<GetBookmarkStatusResponse, GetBookmarkStatusError, GetBookmarkStatusResponse, ReturnType<typeof getBookmarkStatusQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Bookmarks.getBookmarkStatus({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getBookmarkStatusQueryKey(options)
+});
+
+/**
+ * Add Bookmark
+ *
+ * Add a bookmark for a project.
+ *
+ * This operation is idempotent - calling it multiple times
+ * returns the same bookmark without error.
+ *
+ * Args:
+ * slug: The project slug.
+ * current_user: The authenticated user.
+ * bookmark_service: Bookmark service.
+ *
+ * Returns:
+ * The bookmark.
+ *
+ * Raises:
+ * HTTPException: If project is not found or user does not have access.
+ */
+export const addBookmarkMutation = (options?: Partial<Options<AddBookmarkData>>): UseMutationOptions<AddBookmarkResponse, AddBookmarkError, Options<AddBookmarkData>> => {
+    const mutationOptions: UseMutationOptions<AddBookmarkResponse, AddBookmarkError, Options<AddBookmarkData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Bookmarks.addBookmark({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

@@ -160,7 +160,12 @@
   "bookmarks": {
     "title": "Bookmarks",
     "noBookmarks": "No bookmarks",
-    "noBookmarksDescription": "Documents you bookmark will appear here for quick access."
+    "noBookmarksDescription": "Projects you bookmark will appear here for quick access.",
+    "addBookmark": "Add to bookmarks",
+    "removeBookmark": "Remove from bookmarks",
+    "added": "Added to bookmarks",
+    "removed": "Removed from bookmarks",
+    "loadError": "Failed to load bookmarks"
   },
   "notifications": {
     "title": "Notifications",

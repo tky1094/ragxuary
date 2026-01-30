@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AddMemberData, AddMemberErrors, AddMemberResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteDocumentData, DeleteDocumentErrors, DeleteDocumentResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, GetCurrentUserInfoData, GetCurrentUserInfoResponses, GetDocumentData, GetDocumentErrors, GetDocumentHistoryData, GetDocumentHistoryErrors, GetDocumentHistoryResponses, GetDocumentResponses, GetDocumentTreeData, GetDocumentTreeErrors, GetDocumentTreeResponses, GetProjectActivityData, GetProjectActivityErrors, GetProjectActivityResponses, GetProjectData, GetProjectErrors, GetProjectResponses, HealthCheckData, HealthCheckResponses, ListMembersData, ListMembersErrors, ListMembersResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PutDocumentData, PutDocumentErrors, PutDocumentResponses, RefreshData, RefreshErrors, RefreshResponses, RegisterData, RegisterErrors, RegisterResponses, RemoveMemberData, RemoveMemberErrors, RemoveMemberResponses, UpdateMemberRoleData, UpdateMemberRoleErrors, UpdateMemberRoleResponses, UpdateMyProfileData, UpdateMyProfileErrors, UpdateMyProfileResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses } from './types.gen';
+import type { AddBookmarkData, AddBookmarkErrors, AddBookmarkResponses, AddMemberData, AddMemberErrors, AddMemberResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteDocumentData, DeleteDocumentErrors, DeleteDocumentResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, GetBookmarkStatusData, GetBookmarkStatusErrors, GetBookmarkStatusResponses, GetCurrentUserInfoData, GetCurrentUserInfoResponses, GetDocumentData, GetDocumentErrors, GetDocumentHistoryData, GetDocumentHistoryErrors, GetDocumentHistoryResponses, GetDocumentResponses, GetDocumentTreeData, GetDocumentTreeErrors, GetDocumentTreeResponses, GetProjectActivityData, GetProjectActivityErrors, GetProjectActivityResponses, GetProjectData, GetProjectErrors, GetProjectResponses, HealthCheckData, HealthCheckResponses, ListBookmarksData, ListBookmarksErrors, ListBookmarksResponses, ListMembersData, ListMembersErrors, ListMembersResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PutDocumentData, PutDocumentErrors, PutDocumentResponses, RefreshData, RefreshErrors, RefreshResponses, RegisterData, RegisterErrors, RegisterResponses, RemoveBookmarkData, RemoveBookmarkErrors, RemoveBookmarkResponses, RemoveMemberData, RemoveMemberErrors, RemoveMemberResponses, UpdateMemberRoleData, UpdateMemberRoleErrors, UpdateMemberRoleResponses, UpdateMyProfileData, UpdateMyProfileErrors, UpdateMyProfileResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -545,6 +545,105 @@ export class ProjectMembers {
                 'Content-Type': 'application/json',
                 ...options.headers
             }
+        });
+    }
+}
+
+export class Bookmarks {
+    /**
+     * List Bookmarks
+     *
+     * List all bookmarked projects for the current user.
+     *
+     * Args:
+     * current_user: The authenticated user.
+     * bookmark_service: Bookmark service.
+     * skip: Number of records to skip (pagination).
+     * limit: Maximum number of records to return.
+     *
+     * Returns:
+     * List of bookmarked projects with details.
+     */
+    public static listBookmarks<ThrowOnError extends boolean = false>(options?: Options<ListBookmarksData, ThrowOnError>) {
+        return (options?.client ?? client).get<ListBookmarksResponses, ListBookmarksErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/bookmarks',
+            ...options
+        });
+    }
+    
+    /**
+     * Remove Bookmark
+     *
+     * Remove a bookmark for a project.
+     *
+     * This operation is idempotent - calling it when no bookmark
+     * exists returns 204 without error.
+     *
+     * Args:
+     * slug: The project slug.
+     * current_user: The authenticated user.
+     * bookmark_service: Bookmark service.
+     *
+     * Raises:
+     * HTTPException: If project is not found.
+     */
+    public static removeBookmark<ThrowOnError extends boolean = false>(options: Options<RemoveBookmarkData, ThrowOnError>) {
+        return (options.client ?? client).delete<RemoveBookmarkResponses, RemoveBookmarkErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects/{slug}/bookmark',
+            ...options
+        });
+    }
+    
+    /**
+     * Get Bookmark Status
+     *
+     * Check if a project is bookmarked by the current user.
+     *
+     * Args:
+     * slug: The project slug.
+     * current_user: The authenticated user.
+     * bookmark_service: Bookmark service.
+     *
+     * Returns:
+     * Bookmark status.
+     *
+     * Raises:
+     * HTTPException: If project is not found.
+     */
+    public static getBookmarkStatus<ThrowOnError extends boolean = false>(options: Options<GetBookmarkStatusData, ThrowOnError>) {
+        return (options.client ?? client).get<GetBookmarkStatusResponses, GetBookmarkStatusErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects/{slug}/bookmark',
+            ...options
+        });
+    }
+    
+    /**
+     * Add Bookmark
+     *
+     * Add a bookmark for a project.
+     *
+     * This operation is idempotent - calling it multiple times
+     * returns the same bookmark without error.
+     *
+     * Args:
+     * slug: The project slug.
+     * current_user: The authenticated user.
+     * bookmark_service: Bookmark service.
+     *
+     * Returns:
+     * The bookmark.
+     *
+     * Raises:
+     * HTTPException: If project is not found or user does not have access.
+     */
+    public static addBookmark<ThrowOnError extends boolean = false>(options: Options<AddBookmarkData, ThrowOnError>) {
+        return (options.client ?? client).post<AddBookmarkResponses, AddBookmarkErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects/{slug}/bookmark',
+            ...options
         });
     }
 }

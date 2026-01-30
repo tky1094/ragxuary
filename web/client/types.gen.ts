@@ -5,6 +5,39 @@ export type ClientOptions = {
 };
 
 /**
+ * BookmarkStatusRead
+ *
+ * Schema for bookmark status check response.
+ */
+export type BookmarkStatusRead = {
+    /**
+     * Is Bookmarked
+     */
+    is_bookmarked: boolean;
+};
+
+/**
+ * BookmarkedProjectRead
+ *
+ * Schema for reading a bookmark with project details.
+ */
+export type BookmarkedProjectRead = {
+    /**
+     * User Id
+     */
+    user_id: string;
+    /**
+     * Project Id
+     */
+    project_id: string;
+    /**
+     * Created At
+     */
+    created_at: string;
+    project: ProjectRead;
+};
+
+/**
  * DocumentPutRequest
  *
  * Schema for PUT document (create or update).
@@ -212,6 +245,26 @@ export type LoginRequest = {
  * Project member role enum.
  */
 export type MemberRole = 'viewer' | 'editor' | 'admin';
+
+/**
+ * ProjectBookmarkRead
+ *
+ * Schema for reading a bookmark.
+ */
+export type ProjectBookmarkRead = {
+    /**
+     * User Id
+     */
+    user_id: string;
+    /**
+     * Project Id
+     */
+    project_id: string;
+    /**
+     * Created At
+     */
+    created_at: string;
+};
 
 /**
  * ProjectCreate
@@ -1327,3 +1380,129 @@ export type UpdateMemberRoleResponses = {
 };
 
 export type UpdateMemberRoleResponse = UpdateMemberRoleResponses[keyof UpdateMemberRoleResponses];
+
+export type ListBookmarksData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Skip
+         */
+        skip?: number;
+        /**
+         * Limit
+         */
+        limit?: number;
+    };
+    url: '/api/v1/bookmarks';
+};
+
+export type ListBookmarksErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ListBookmarksError = ListBookmarksErrors[keyof ListBookmarksErrors];
+
+export type ListBookmarksResponses = {
+    /**
+     * Response List Bookmarks
+     *
+     * Successful Response
+     */
+    200: Array<BookmarkedProjectRead>;
+};
+
+export type ListBookmarksResponse = ListBookmarksResponses[keyof ListBookmarksResponses];
+
+export type RemoveBookmarkData = {
+    body?: never;
+    path: {
+        /**
+         * Slug
+         */
+        slug: string;
+    };
+    query?: never;
+    url: '/api/v1/projects/{slug}/bookmark';
+};
+
+export type RemoveBookmarkErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type RemoveBookmarkError = RemoveBookmarkErrors[keyof RemoveBookmarkErrors];
+
+export type RemoveBookmarkResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type RemoveBookmarkResponse = RemoveBookmarkResponses[keyof RemoveBookmarkResponses];
+
+export type GetBookmarkStatusData = {
+    body?: never;
+    path: {
+        /**
+         * Slug
+         */
+        slug: string;
+    };
+    query?: never;
+    url: '/api/v1/projects/{slug}/bookmark';
+};
+
+export type GetBookmarkStatusErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetBookmarkStatusError = GetBookmarkStatusErrors[keyof GetBookmarkStatusErrors];
+
+export type GetBookmarkStatusResponses = {
+    /**
+     * Successful Response
+     */
+    200: BookmarkStatusRead;
+};
+
+export type GetBookmarkStatusResponse = GetBookmarkStatusResponses[keyof GetBookmarkStatusResponses];
+
+export type AddBookmarkData = {
+    body?: never;
+    path: {
+        /**
+         * Slug
+         */
+        slug: string;
+    };
+    query?: never;
+    url: '/api/v1/projects/{slug}/bookmark';
+};
+
+export type AddBookmarkErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AddBookmarkError = AddBookmarkErrors[keyof AddBookmarkErrors];
+
+export type AddBookmarkResponses = {
+    /**
+     * Successful Response
+     */
+    201: ProjectBookmarkRead;
+};
+
+export type AddBookmarkResponse = AddBookmarkResponses[keyof AddBookmarkResponses];

@@ -160,7 +160,12 @@
   "bookmarks": {
     "title": "ブックマーク",
     "noBookmarks": "ブックマークがありません",
-    "noBookmarksDescription": "ブックマークしたドキュメントがここに表示されます。"
+    "noBookmarksDescription": "プロジェクトをブックマークするとここに表示されます。",
+    "addBookmark": "ブックマークに追加",
+    "removeBookmark": "ブックマークを削除",
+    "added": "ブックマークに追加しました",
+    "removed": "ブックマークを削除しました",
+    "loadError": "ブックマークの読み込みに失敗しました"
   },
   "notifications": {
     "title": "通知",
