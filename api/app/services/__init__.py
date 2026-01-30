@@ -26,6 +26,7 @@ from app.services.exceptions import (
     UserNotFoundError,
 )
 from app.services.project import ProjectService
+from app.services.project_bookmark import ProjectBookmarkService
 from app.services.project_member import ProjectMemberService
 
 __all__ = [
@@ -45,6 +46,7 @@ __all__ = [
     "ParentNotFoundError",
     "PathAlreadyExistsError",
     "PermissionDeniedError",
+    "ProjectBookmarkService",
     "ProjectMemberService",
     "ProjectMemberServiceError",
     "ProjectNotFoundError",

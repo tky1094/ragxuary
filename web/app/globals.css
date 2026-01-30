@@ -98,6 +98,9 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.92 0.01 85);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Bookmark accent color - warm amber */
+  --bookmark-active: oklch(0.75 0.18 55);
 }
 
 .dark {
@@ -133,6 +136,9 @@
   --sidebar-accent-foreground: oklch(0.93 0.01 85);
   --sidebar-border: oklch(0.35 0.015 75);
   --sidebar-ring: oklch(0.5 0.01 75);
+
+  /* Bookmark accent color - warm amber (brighter for dark mode) */
+  --bookmark-active: oklch(0.80 0.16 55);
 }
 
 @layer base {
@@ -225,4 +231,15 @@ button, [role="button"] {
 
 .animate-pulse-slow {
   animation: pulse-slow 6s ease-in-out infinite;
+}
+
+/* Bookmark button animations */
+@keyframes bookmark-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.animate-bookmark-pop {
+  animation: bookmark-pop 250ms ease-out;
 }

@@ -4,6 +4,7 @@ from fastapi import APIRouter
 
 from app.api.v1.endpoints import (
     auth,
+    bookmarks,
     documents,
     health,
     project_members,
@@ -30,3 +31,6 @@ api_router.include_router(documents.router)
 
 # Include project members endpoints
 api_router.include_router(project_members.router)
+
+# Include bookmarks endpoints
+api_router.include_router(bookmarks.router)

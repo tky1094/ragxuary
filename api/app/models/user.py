@@ -12,6 +12,7 @@ from app.models.base import Base
 
 if TYPE_CHECKING:
     from app.models.project import Project
+    from app.models.project_bookmark import ProjectBookmark
     from app.models.project_member import ProjectMember
     from app.models.revision_batch import RevisionBatch
 
@@ -50,3 +51,4 @@ class User(Base):
     project_memberships: Mapped[list["ProjectMember"]] = relationship(
         back_populates="user"
     )
+    bookmarks: Mapped[list["ProjectBookmark"]] = relationship(back_populates="user")
