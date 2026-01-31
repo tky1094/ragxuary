@@ -10,14 +10,23 @@ from app.core.database import get_db
 from app.models.user import User
 from app.repositories.project import ProjectRepository
 from app.repositories.project_member import ProjectMemberRepository
-from app.schemas.project import ProjectCreate, ProjectRead, ProjectUpdate
+from app.schemas.project import (
+    ProjectCreate,
+    ProjectPermissionsRead,
+    ProjectRead,
+    ProjectUpdate,
+)
 from app.services import (
     PermissionDeniedError,
     ProjectNotFoundError,
     ProjectService,
     SlugAlreadyExistsError,
 )
-from app.services.authorization import Permission, check_project_permission
+from app.services.authorization import (
+    Permission,
+    check_project_permission,
+    get_user_permissions,
+)
 
 router = APIRouter(prefix="/projects", tags=["projects"])
 
@@ -208,5 +217,55 @@ async def delete_project(
     except PermissionDeniedError as e:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
+            detail=str(e),
+        ) from e
+
+
+@router.get("/{slug}/permissions", response_model=ProjectPermissionsRead)
+async def get_project_permissions(
+    slug: str,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    project_service: Annotated[ProjectService, Depends(get_project_service)],
+    member_repo: Annotated[ProjectMemberRepository, Depends(get_member_repo)],
+) -> ProjectPermissionsRead:
+    """Get the current user's permissions on a project.
+
+    Returns the list of permissions the authenticated user has on the project,
+    along with their role (owner, admin, editor, viewer, or null for non-members).
+
+    For public projects, non-members will have view permission with null role.
+
+    Args:
+        slug: The project slug.
+        current_user: The authenticated user.
+        project_service: Project service.
+        member_repo: Project member repository.
+
+    Returns:
+        User's permissions and role on the project.
+
+    Raises:
+        HTTPException: If project is not found.
+    """
+    try:
+        project = await project_service.get_project_by_slug(slug)
+
+        # Get user permissions using authorization helper
+        permissions = await get_user_permissions(project, current_user.id, member_repo)
+
+        # Determine user's role
+        if project.owner_id == current_user.id:
+            role = "owner"
+        else:
+            member_role = await member_repo.get_user_role(project.id, current_user.id)
+            role = member_role.value if member_role else None
+
+        return ProjectPermissionsRead(
+            permissions=[p.value for p in permissions],
+            role=role,
+        )
+    except ProjectNotFoundError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
             detail=str(e),
         ) from e

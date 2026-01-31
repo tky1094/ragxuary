@@ -176,6 +176,8 @@
     "notFound": "Page not found",
     "unauthorized": "Authentication required",
     "forbidden": "Access denied",
+    "forbiddenDescription": "You don't have permission to view this page. Please contact the project administrator.",
+    "backToProjects": "Back to Projects",
     "serverError": "Server error occurred",
     "networkError": "Network error occurred",
     "validationError": "Validation error"

@@ -4,7 +4,7 @@ import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanst
 
 import { client } from '../client.gen';
 import { Auth, Bookmarks, Documents, Health, type Options, ProjectMembers, Projects, Users } from '../sdk.gen';
-import type { AddBookmarkData, AddBookmarkError, AddBookmarkResponse, AddMemberData, AddMemberError, AddMemberResponse, CreateProjectData, CreateProjectError, CreateProjectResponse, DeleteDocumentData, DeleteDocumentError, DeleteDocumentResponse, DeleteProjectData, DeleteProjectError, DeleteProjectResponse, GetBookmarkStatusData, GetBookmarkStatusError, GetBookmarkStatusResponse, GetCurrentUserInfoData, GetCurrentUserInfoResponse, GetDocumentData, GetDocumentError, GetDocumentHistoryData, GetDocumentHistoryError, GetDocumentHistoryResponse, GetDocumentResponse, GetDocumentTreeData, GetDocumentTreeError, GetDocumentTreeResponse, GetProjectActivityData, GetProjectActivityError, GetProjectActivityResponse, GetProjectData, GetProjectError, GetProjectResponse, HealthCheckData, HealthCheckResponse, ListBookmarksData, ListBookmarksError, ListBookmarksResponse, ListMembersData, ListMembersError, ListMembersResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, PutDocumentData, PutDocumentError, PutDocumentResponse, RefreshData, RefreshError, RefreshResponse, RegisterData, RegisterError, RegisterResponse, RemoveBookmarkData, RemoveBookmarkError, RemoveBookmarkResponse, RemoveMemberData, RemoveMemberError, RemoveMemberResponse, UpdateMemberRoleData, UpdateMemberRoleError, UpdateMemberRoleResponse, UpdateMyProfileData, UpdateMyProfileError, UpdateMyProfileResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse } from '../types.gen';
+import type { AddBookmarkData, AddBookmarkError, AddBookmarkResponse, AddMemberData, AddMemberError, AddMemberResponse, CreateProjectData, CreateProjectError, CreateProjectResponse, DeleteDocumentData, DeleteDocumentError, DeleteDocumentResponse, DeleteProjectData, DeleteProjectError, DeleteProjectResponse, GetBookmarkStatusData, GetBookmarkStatusError, GetBookmarkStatusResponse, GetCurrentUserInfoData, GetCurrentUserInfoResponse, GetDocumentData, GetDocumentError, GetDocumentHistoryData, GetDocumentHistoryError, GetDocumentHistoryResponse, GetDocumentResponse, GetDocumentTreeData, GetDocumentTreeError, GetDocumentTreeResponse, GetProjectActivityData, GetProjectActivityError, GetProjectActivityResponse, GetProjectData, GetProjectError, GetProjectPermissionsData, GetProjectPermissionsError, GetProjectPermissionsResponse, GetProjectResponse, HealthCheckData, HealthCheckResponse, ListBookmarksData, ListBookmarksError, ListBookmarksResponse, ListMembersData, ListMembersError, ListMembersResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, PutDocumentData, PutDocumentError, PutDocumentResponse, RefreshData, RefreshError, RefreshResponse, RegisterData, RegisterError, RegisterResponse, RemoveBookmarkData, RemoveBookmarkError, RemoveBookmarkResponse, RemoveMemberData, RemoveMemberError, RemoveMemberResponse, UpdateMemberRoleData, UpdateMemberRoleError, UpdateMemberRoleResponse, UpdateMyProfileData, UpdateMyProfileError, UpdateMyProfileResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -374,6 +374,43 @@ export const updateProjectMutation = (options?: Partial<Options<UpdateProjectDat
     };
     return mutationOptions;
 };
+
+export const getProjectPermissionsQueryKey = (options: Options<GetProjectPermissionsData>) => createQueryKey('getProjectPermissions', options);
+
+/**
+ * Get Project Permissions
+ *
+ * Get the current user's permissions on a project.
+ *
+ * Returns the list of permissions the authenticated user has on the project,
+ * along with their role (owner, admin, editor, viewer, or null for non-members).
+ *
+ * For public projects, non-members will have view permission with null role.
+ *
+ * Args:
+ * slug: The project slug.
+ * current_user: The authenticated user.
+ * project_service: Project service.
+ * member_repo: Project member repository.
+ *
+ * Returns:
+ * User's permissions and role on the project.
+ *
+ * Raises:
+ * HTTPException: If project is not found.
+ */
+export const getProjectPermissionsOptions = (options: Options<GetProjectPermissionsData>) => queryOptions<GetProjectPermissionsResponse, GetProjectPermissionsError, GetProjectPermissionsResponse, ReturnType<typeof getProjectPermissionsQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Projects.getProjectPermissions({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getProjectPermissionsQueryKey(options)
+});
 
 export const getDocumentTreeQueryKey = (options: Options<GetDocumentTreeData>) => createQueryKey('getDocumentTree', options);
 

@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation';
+
 import { auth } from '@/auth';
-import { ProjectTabs } from '@/features/projects';
+
+import { ProjectLayoutContent } from './ProjectLayoutContent';
 
 interface ProjectLayoutProps {
   children: React.ReactNode;
@@ -14,7 +16,7 @@ export default async function ProjectLayout({
   children,
   params,
 }: ProjectLayoutProps) {
-  const { locale } = await params;
+  const { locale, projectSlug } = await params;
 
   const session = await auth();
   if (!session) {
@@ -22,9 +24,8 @@ export default async function ProjectLayout({
   }
 
   return (
-    <div className="-my-8">
-      <ProjectTabs />
-      <div className="py-8">{children}</div>
-    </div>
+    <ProjectLayoutContent projectSlug={projectSlug}>
+      {children}
+    </ProjectLayoutContent>
   );
 }

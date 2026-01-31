@@ -396,6 +396,27 @@ export type ProjectMemberWithUserRead = {
 };
 
 /**
+ * ProjectPermissionsRead
+ *
+ * Schema for reading user permissions on a project.
+ *
+ * Returns the list of permissions the current user has on the project,
+ * along with their role (if they are a member or owner).
+ */
+export type ProjectPermissionsRead = {
+    /**
+     * Permissions
+     */
+    permissions: Array<string>;
+    /**
+     * Role
+     *
+     * User's role: 'owner', 'admin', 'editor', 'viewer', or null for non-members
+     */
+    role?: string | null;
+};
+
+/**
  * ProjectRead
  *
  * Schema for reading a project.
@@ -996,6 +1017,36 @@ export type UpdateProjectResponses = {
 };
 
 export type UpdateProjectResponse = UpdateProjectResponses[keyof UpdateProjectResponses];
+
+export type GetProjectPermissionsData = {
+    body?: never;
+    path: {
+        /**
+         * Slug
+         */
+        slug: string;
+    };
+    query?: never;
+    url: '/api/v1/projects/{slug}/permissions';
+};
+
+export type GetProjectPermissionsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetProjectPermissionsError = GetProjectPermissionsErrors[keyof GetProjectPermissionsErrors];
+
+export type GetProjectPermissionsResponses = {
+    /**
+     * Successful Response
+     */
+    200: ProjectPermissionsRead;
+};
+
+export type GetProjectPermissionsResponse = GetProjectPermissionsResponses[keyof GetProjectPermissionsResponses];
 
 export type GetDocumentTreeData = {
     body?: never;

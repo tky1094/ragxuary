@@ -10,13 +10,18 @@ import {
 import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+
 import { cn } from '@/shared/lib/utils';
+
+import { type Permission, useProjectPermissions } from '../hooks';
 
 interface TabItem {
   key: string;
   href: string;
   icon: LucideIcon;
   labelKey: string;
+  /** If specified, tab is only shown when user has this permission */
+  requiredPermission?: Permission;
 }
 
 export function ProjectTabs() {
@@ -26,6 +31,8 @@ export function ProjectTabs() {
 
   const locale = params.locale as string;
   const projectSlug = params.projectSlug as string;
+
+  const { hasPermission, isLoading } = useProjectPermissions(projectSlug);
 
   const basePath = `/${locale}/p/${projectSlug}`;
 
@@ -41,6 +48,7 @@ export function ProjectTabs() {
       href: `${basePath}/edit`,
       icon: Pencil,
       labelKey: 'projectTabs.edit',
+      requiredPermission: 'edit',
     },
     {
       key: 'chat',
@@ -53,8 +61,16 @@ export function ProjectTabs() {
       href: `${basePath}/settings`,
       icon: Settings,
       labelKey: 'projectTabs.settings',
+      requiredPermission: 'manage_settings',
     },
   ];
+
+  // Filter tabs based on user permissions
+  const visibleTabs = tabs.filter((tab) => {
+    if (!tab.requiredPermission) return true;
+    if (isLoading) return false; // Hide restricted tabs while loading
+    return hasPermission(tab.requiredPermission);
+  });
 
   const isActive = (href: string) => {
     if (href === basePath) {
@@ -67,7 +83,7 @@ export function ProjectTabs() {
     <nav className="-mx-6 border-border border-b bg-card">
       <div className="px-6">
         <div className="-mb-px flex gap-1">
-          {tabs.map((tab) => {
+          {visibleTabs.map((tab) => {
             const Icon = tab.icon;
             const active = isActive(tab.href);
 

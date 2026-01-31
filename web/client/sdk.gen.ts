@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AddBookmarkData, AddBookmarkErrors, AddBookmarkResponses, AddMemberData, AddMemberErrors, AddMemberResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteDocumentData, DeleteDocumentErrors, DeleteDocumentResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, GetBookmarkStatusData, GetBookmarkStatusErrors, GetBookmarkStatusResponses, GetCurrentUserInfoData, GetCurrentUserInfoResponses, GetDocumentData, GetDocumentErrors, GetDocumentHistoryData, GetDocumentHistoryErrors, GetDocumentHistoryResponses, GetDocumentResponses, GetDocumentTreeData, GetDocumentTreeErrors, GetDocumentTreeResponses, GetProjectActivityData, GetProjectActivityErrors, GetProjectActivityResponses, GetProjectData, GetProjectErrors, GetProjectResponses, HealthCheckData, HealthCheckResponses, ListBookmarksData, ListBookmarksErrors, ListBookmarksResponses, ListMembersData, ListMembersErrors, ListMembersResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PutDocumentData, PutDocumentErrors, PutDocumentResponses, RefreshData, RefreshErrors, RefreshResponses, RegisterData, RegisterErrors, RegisterResponses, RemoveBookmarkData, RemoveBookmarkErrors, RemoveBookmarkResponses, RemoveMemberData, RemoveMemberErrors, RemoveMemberResponses, UpdateMemberRoleData, UpdateMemberRoleErrors, UpdateMemberRoleResponses, UpdateMyProfileData, UpdateMyProfileErrors, UpdateMyProfileResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses } from './types.gen';
+import type { AddBookmarkData, AddBookmarkErrors, AddBookmarkResponses, AddMemberData, AddMemberErrors, AddMemberResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteDocumentData, DeleteDocumentErrors, DeleteDocumentResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, GetBookmarkStatusData, GetBookmarkStatusErrors, GetBookmarkStatusResponses, GetCurrentUserInfoData, GetCurrentUserInfoResponses, GetDocumentData, GetDocumentErrors, GetDocumentHistoryData, GetDocumentHistoryErrors, GetDocumentHistoryResponses, GetDocumentResponses, GetDocumentTreeData, GetDocumentTreeErrors, GetDocumentTreeResponses, GetProjectActivityData, GetProjectActivityErrors, GetProjectActivityResponses, GetProjectData, GetProjectErrors, GetProjectPermissionsData, GetProjectPermissionsErrors, GetProjectPermissionsResponses, GetProjectResponses, HealthCheckData, HealthCheckResponses, ListBookmarksData, ListBookmarksErrors, ListBookmarksResponses, ListMembersData, ListMembersErrors, ListMembersResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PutDocumentData, PutDocumentErrors, PutDocumentResponses, RefreshData, RefreshErrors, RefreshResponses, RegisterData, RegisterErrors, RegisterResponses, RemoveBookmarkData, RemoveBookmarkErrors, RemoveBookmarkResponses, RemoveMemberData, RemoveMemberErrors, RemoveMemberResponses, UpdateMemberRoleData, UpdateMemberRoleErrors, UpdateMemberRoleResponses, UpdateMyProfileData, UpdateMyProfileErrors, UpdateMyProfileResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -299,6 +299,36 @@ export class Projects {
                 'Content-Type': 'application/json',
                 ...options.headers
             }
+        });
+    }
+    
+    /**
+     * Get Project Permissions
+     *
+     * Get the current user's permissions on a project.
+     *
+     * Returns the list of permissions the authenticated user has on the project,
+     * along with their role (owner, admin, editor, viewer, or null for non-members).
+     *
+     * For public projects, non-members will have view permission with null role.
+     *
+     * Args:
+     * slug: The project slug.
+     * current_user: The authenticated user.
+     * project_service: Project service.
+     * member_repo: Project member repository.
+     *
+     * Returns:
+     * User's permissions and role on the project.
+     *
+     * Raises:
+     * HTTPException: If project is not found.
+     */
+    public static getProjectPermissions<ThrowOnError extends boolean = false>(options: Options<GetProjectPermissionsData, ThrowOnError>) {
+        return (options.client ?? client).get<GetProjectPermissionsResponses, GetProjectPermissionsErrors, ThrowOnError>({
+            security: [{ scheme: 'bearer', type: 'http' }],
+            url: '/api/v1/projects/{slug}/permissions',
+            ...options
         });
     }
 }
