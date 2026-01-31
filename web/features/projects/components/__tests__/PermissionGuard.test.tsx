@@ -5,9 +5,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { PermissionGuard } from '../PermissionGuard';
 
-// Mock ForbiddenPage component to avoid next-intl issues
+// Mock ForbiddenPage and NotFoundPage components to avoid next-intl issues
 vi.mock('@/shared/components', () => ({
   ForbiddenPage: () => <div data-testid="forbidden-page">errors.forbidden</div>,
+  NotFoundPage: () => <div data-testid="not-found-page">errors.notFound</div>,
 }));
 
 // Variable to control mock behavior
@@ -15,6 +16,7 @@ let mockPermissions: string[] = ['view', 'edit'];
 let mockRole: string | null = 'editor';
 let mockIsLoading = false;
 let mockError: Error | null = null;
+let mockIsNotFound = false;
 
 // Mock the useProjectPermissions hook
 vi.mock('../../hooks', () => ({
@@ -26,6 +28,7 @@ vi.mock('../../hooks', () => ({
     canManageSettings: mockPermissions.includes('manage_settings'),
     isLoading: mockIsLoading,
     error: mockError,
+    isNotFound: mockIsNotFound,
   })),
 }));
 
@@ -53,6 +56,7 @@ describe('PermissionGuard', () => {
     mockRole = 'editor';
     mockIsLoading = false;
     mockError = null;
+    mockIsNotFound = false;
   });
 
   it('should render children when user has required permission', async () => {
@@ -178,5 +182,45 @@ describe('PermissionGuard', () => {
     });
 
     expect(screen.queryByTestId('protected-content')).not.toBeInTheDocument();
+  });
+
+  it('should render NotFoundPage when project does not exist (404)', async () => {
+    mockIsNotFound = true;
+    mockPermissions = [];
+
+    render(
+      <PermissionGuard projectSlug="non-existent" requiredPermission="view">
+        <div data-testid="protected-content">Protected Content</div>
+      </PermissionGuard>,
+      { wrapper: createWrapper() }
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('not-found-page')).toBeInTheDocument();
+    });
+
+    expect(screen.getByText('errors.notFound')).toBeInTheDocument();
+    expect(screen.queryByTestId('protected-content')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('forbidden-page')).not.toBeInTheDocument();
+  });
+
+  it('should render NotFoundPage instead of ForbiddenPage for 404 errors', async () => {
+    // When isNotFound is true, should show NotFoundPage regardless of other conditions
+    mockIsNotFound = true;
+    mockError = new Error('Project not found');
+
+    render(
+      <PermissionGuard projectSlug="non-existent" requiredPermission="edit">
+        <div data-testid="protected-content">Protected Content</div>
+      </PermissionGuard>,
+      { wrapper: createWrapper() }
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('not-found-page')).toBeInTheDocument();
+    });
+
+    // Should NOT show ForbiddenPage
+    expect(screen.queryByTestId('forbidden-page')).not.toBeInTheDocument();
   });
 });

@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 
 import { getProjectPermissionsOptions } from '@/client/@tanstack/react-query.gen';
+import { type ApiError, isApiError } from '@/shared/lib/api/errors';
 
 /**
  * Permission types that can be checked on a project.
@@ -37,7 +38,9 @@ interface UseProjectPermissionsResult {
   /** Whether the data is still loading */
   isLoading: boolean;
   /** Error if the request failed */
-  error: Error | null;
+  error: ApiError | null;
+  /** True if the error is a 404 Not Found */
+  isNotFound: boolean;
 }
 
 /**
@@ -71,6 +74,13 @@ export function useProjectPermissions(
   const query = useQuery({
     ...getProjectPermissionsOptions({ path: { slug } }),
     enabled: isAuthenticated && !!slug,
+    // Skip retry for 4xx client errors (404, 403, etc.)
+    retry: (failureCount, error) => {
+      if (isApiError(error) && error.isClientError) {
+        return false;
+      }
+      return failureCount < 3;
+    },
   });
 
   const permissions = new Set<Permission>(
@@ -81,6 +91,13 @@ export function useProjectPermissions(
   const hasPermission = (permission: Permission): boolean =>
     permissions.has(permission);
 
+  // Extract ApiError from query error
+  const error = query.error
+    ? isApiError(query.error)
+      ? query.error
+      : null
+    : null;
+
   return {
     permissions,
     role,
@@ -88,6 +105,7 @@ export function useProjectPermissions(
     canEdit: hasPermission('edit'),
     canManageSettings: hasPermission('manage_settings'),
     isLoading: isAuthLoading || query.isPending,
-    error: query.error ? new Error(String(query.error)) : null,
+    error,
+    isNotFound: error?.isNotFound ?? false,
   };
 }
