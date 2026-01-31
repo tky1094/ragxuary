@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 
-import { ForbiddenPage } from '@/shared/components';
+import { ForbiddenPage, NotFoundPage } from '@/shared/components';
 import { Skeleton } from '@/shared/components/ui/skeleton';
 
 import { type Permission, useProjectPermissions } from '../hooks';
@@ -22,6 +22,7 @@ interface PermissionGuardProps {
  * Guard component that checks user permission before rendering children.
  *
  * Shows a loading skeleton while permissions are being fetched.
+ * Shows a 404 Not Found page if the project doesn't exist.
  * Shows a 403 Forbidden page if the user lacks the required permission.
  * Renders children if the user has the required permission.
  *
@@ -38,13 +39,19 @@ export function PermissionGuard({
   children,
   fallback,
 }: PermissionGuardProps) {
-  const { hasPermission, isLoading, error } =
+  const { hasPermission, isLoading, error, isNotFound } =
     useProjectPermissions(projectSlug);
 
   if (isLoading) {
     return fallback ?? <LoadingSkeleton />;
   }
 
+  // Show 404 page if project doesn't exist
+  if (isNotFound) {
+    return <NotFoundPage />;
+  }
+
+  // Show 403 page for other errors or lack of permission
   if (error || !hasPermission(requiredPermission)) {
     return <ForbiddenPage />;
   }

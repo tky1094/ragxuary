@@ -173,7 +173,8 @@
     "noNotificationsDescription": "You're all caught up! New notifications will appear here."
   },
   "errors": {
-    "notFound": "Page not found",
+    "notFound": "Not Found",
+    "notFoundDescription": "The resource you are looking for does not exist or has been removed.",
     "unauthorized": "Authentication required",
     "forbidden": "Access denied",
     "forbiddenDescription": "You don't have permission to view this page. Please contact the project administrator.",

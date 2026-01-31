@@ -173,7 +173,8 @@
     "noNotificationsDescription": "新しい通知はここに表示されます。"
   },
   "errors": {
-    "notFound": "ページが見つかりませんでした",
+    "notFound": "見つかりません",
+    "notFoundDescription": "お探しのリソースは存在しないか、削除された可能性があります。",
     "unauthorized": "認証が必要です",
     "forbidden": "アクセス権限がありません",
     "forbiddenDescription": "このページを表示する権限がありません。プロジェクト管理者にお問い合わせください。",

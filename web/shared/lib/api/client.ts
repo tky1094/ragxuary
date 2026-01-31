@@ -8,6 +8,8 @@
 import { type Client, createClient, createConfig } from '@/client/client';
 import { client } from '@/client/client.gen';
 
+import { ApiError } from './errors';
+
 // Setup 401 error handling interceptor (client-side only)
 if (typeof window !== 'undefined') {
   client.interceptors.response.use(async (response: Response) => {
@@ -18,6 +20,16 @@ if (typeof window !== 'undefined') {
     return response;
   });
 }
+
+// Setup error interceptor to wrap errors with ApiError (preserves HTTP status code)
+client.interceptors.error.use((error, response) => {
+  const message =
+    typeof error === 'object' && error !== null && 'detail' in error
+      ? String((error as { detail: string }).detail)
+      : 'An error occurred';
+
+  return new ApiError(message, response.status, error);
+});
 
 /**
  * Get a server-side API client for direct backend communication.
