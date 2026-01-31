@@ -13,6 +13,7 @@ import {
 } from '@/shared/components/ui/card';
 import { useProjectSuspense } from '../hooks/useProjects';
 import { DeleteProjectDialog } from './DeleteProjectDialog';
+import { PermissionGuard } from './PermissionGuard';
 import { ProjectSettingsForm } from './ProjectSettingsForm';
 import { ProjectSettingsSkeleton } from './ProjectSettingsSkeleton';
 
@@ -66,10 +67,16 @@ export function ProjectSettingsPageContent({
   projectSlug,
 }: ProjectSettingsPageContentProps) {
   return (
-    <ErrorBoundary fallback={<ProjectSettingsError />}>
-      <Suspense fallback={<ProjectSettingsSkeleton />}>
-        <ProjectSettings projectSlug={projectSlug} />
-      </Suspense>
-    </ErrorBoundary>
+    <PermissionGuard
+      projectSlug={projectSlug}
+      requiredPermission="manage_settings"
+      fallback={<ProjectSettingsSkeleton />}
+    >
+      <ErrorBoundary fallback={<ProjectSettingsError />}>
+        <Suspense fallback={<ProjectSettingsSkeleton />}>
+          <ProjectSettings projectSlug={projectSlug} />
+        </Suspense>
+      </ErrorBoundary>
+    </PermissionGuard>
   );
 }

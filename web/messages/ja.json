@@ -176,6 +176,8 @@
     "notFound": "ページが見つかりませんでした",
     "unauthorized": "認証が必要です",
     "forbidden": "アクセス権限がありません",
+    "forbiddenDescription": "このページを表示する権限がありません。プロジェクト管理者にお問い合わせください。",
+    "backToProjects": "プロジェクト一覧に戻る",
     "serverError": "サーバーエラーが発生しました",
     "networkError": "ネットワークエラーが発生しました",
     "validationError": "入力内容に誤りがあります"

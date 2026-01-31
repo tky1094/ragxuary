@@ -51,3 +51,17 @@ class ProjectRead(ProjectBase):
     chat_enabled: bool
     created_at: datetime
     updated_at: datetime
+
+
+class ProjectPermissionsRead(BaseModel):
+    """Schema for reading user permissions on a project.
+
+    Returns the list of permissions the current user has on the project,
+    along with their role (if they are a member or owner).
+    """
+
+    permissions: list[str]
+    role: str | None = Field(
+        None,
+        description="User's role: 'owner', 'admin', 'editor', 'viewer', or null for non-members",
+    )

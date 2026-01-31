@@ -1,4 +1,9 @@
 export {
+  type Permission,
+  type Role,
+  useProjectPermissions,
+} from './useProjectPermissions';
+export {
   useCreateProject,
   useDeleteProject,
   useProject,
