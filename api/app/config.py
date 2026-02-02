@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     # Application
     app_name: str = "ragxuary"
     debug: bool = False
+    enable_auto_migration: bool = True
 
     # Database
     database_url: str = (
