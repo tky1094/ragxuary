@@ -134,3 +134,18 @@ class UserNotFoundError(ProjectMemberServiceError):
     """Raised when the target user does not exist."""
 
     pass
+
+
+# --- Setup Service Exceptions ---
+
+
+class SetupServiceError(ServiceError):
+    """Base exception for setup service errors."""
+
+    pass
+
+
+class SetupAlreadyCompletedError(SetupServiceError):
+    """Raised when setup has already been completed."""
+
+    pass

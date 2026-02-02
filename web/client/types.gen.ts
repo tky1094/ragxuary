@@ -5,6 +5,26 @@ export type ClientOptions = {
 };
 
 /**
+ * AdminCreateRequest
+ *
+ * Schema for admin creation request.
+ */
+export type AdminCreateRequest = {
+    /**
+     * Email
+     */
+    email: string;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Password
+     */
+    password: string;
+};
+
+/**
  * BookmarkStatusRead
  *
  * Schema for bookmark status check response.
@@ -607,6 +627,22 @@ export type RevisionDocumentSummary = {
      * Document Path
      */
     document_path: string | null;
+};
+
+/**
+ * SetupStatusResponse
+ *
+ * Schema for setup status response.
+ */
+export type SetupStatusResponse = {
+    /**
+     * Is Setup Completed
+     */
+    is_setup_completed: boolean;
+    /**
+     * Requires Admin
+     */
+    requires_admin: boolean;
 };
 
 /**
@@ -1557,3 +1593,44 @@ export type AddBookmarkResponses = {
 };
 
 export type AddBookmarkResponse = AddBookmarkResponses[keyof AddBookmarkResponses];
+
+export type GetSetupStatusData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/setup/status';
+};
+
+export type GetSetupStatusResponses = {
+    /**
+     * Successful Response
+     */
+    200: SetupStatusResponse;
+};
+
+export type GetSetupStatusResponse = GetSetupStatusResponses[keyof GetSetupStatusResponses];
+
+export type CreateAdminData = {
+    body: AdminCreateRequest;
+    path?: never;
+    query?: never;
+    url: '/api/v1/setup/admin';
+};
+
+export type CreateAdminErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CreateAdminError = CreateAdminErrors[keyof CreateAdminErrors];
+
+export type CreateAdminResponses = {
+    /**
+     * Successful Response
+     */
+    201: TokenResponse;
+};
+
+export type CreateAdminResponse = CreateAdminResponses[keyof CreateAdminResponses];

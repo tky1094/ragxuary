@@ -9,6 +9,7 @@ from app.api.v1.endpoints import (
     health,
     project_members,
     projects,
+    setup,
     users,
 )
 
@@ -34,3 +35,6 @@ api_router.include_router(project_members.router)
 
 # Include bookmarks endpoints
 api_router.include_router(bookmarks.router)
+
+# Include setup endpoints
+api_router.include_router(setup.router)

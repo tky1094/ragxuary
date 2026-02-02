@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { AddBookmarkData, AddBookmarkErrors, AddBookmarkResponses, AddMemberData, AddMemberErrors, AddMemberResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteDocumentData, DeleteDocumentErrors, DeleteDocumentResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, GetBookmarkStatusData, GetBookmarkStatusErrors, GetBookmarkStatusResponses, GetCurrentUserInfoData, GetCurrentUserInfoResponses, GetDocumentData, GetDocumentErrors, GetDocumentHistoryData, GetDocumentHistoryErrors, GetDocumentHistoryResponses, GetDocumentResponses, GetDocumentTreeData, GetDocumentTreeErrors, GetDocumentTreeResponses, GetProjectActivityData, GetProjectActivityErrors, GetProjectActivityResponses, GetProjectData, GetProjectErrors, GetProjectPermissionsData, GetProjectPermissionsErrors, GetProjectPermissionsResponses, GetProjectResponses, HealthCheckData, HealthCheckResponses, ListBookmarksData, ListBookmarksErrors, ListBookmarksResponses, ListMembersData, ListMembersErrors, ListMembersResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PutDocumentData, PutDocumentErrors, PutDocumentResponses, RefreshData, RefreshErrors, RefreshResponses, RegisterData, RegisterErrors, RegisterResponses, RemoveBookmarkData, RemoveBookmarkErrors, RemoveBookmarkResponses, RemoveMemberData, RemoveMemberErrors, RemoveMemberResponses, UpdateMemberRoleData, UpdateMemberRoleErrors, UpdateMemberRoleResponses, UpdateMyProfileData, UpdateMyProfileErrors, UpdateMyProfileResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses } from './types.gen';
+import type { AddBookmarkData, AddBookmarkErrors, AddBookmarkResponses, AddMemberData, AddMemberErrors, AddMemberResponses, CreateAdminData, CreateAdminErrors, CreateAdminResponses, CreateProjectData, CreateProjectErrors, CreateProjectResponses, DeleteDocumentData, DeleteDocumentErrors, DeleteDocumentResponses, DeleteProjectData, DeleteProjectErrors, DeleteProjectResponses, GetBookmarkStatusData, GetBookmarkStatusErrors, GetBookmarkStatusResponses, GetCurrentUserInfoData, GetCurrentUserInfoResponses, GetDocumentData, GetDocumentErrors, GetDocumentHistoryData, GetDocumentHistoryErrors, GetDocumentHistoryResponses, GetDocumentResponses, GetDocumentTreeData, GetDocumentTreeErrors, GetDocumentTreeResponses, GetProjectActivityData, GetProjectActivityErrors, GetProjectActivityResponses, GetProjectData, GetProjectErrors, GetProjectPermissionsData, GetProjectPermissionsErrors, GetProjectPermissionsResponses, GetProjectResponses, GetSetupStatusData, GetSetupStatusResponses, HealthCheckData, HealthCheckResponses, ListBookmarksData, ListBookmarksErrors, ListBookmarksResponses, ListMembersData, ListMembersErrors, ListMembersResponses, ListProjectsData, ListProjectsErrors, ListProjectsResponses, LoginData, LoginErrors, LoginResponses, LogoutData, LogoutResponses, PutDocumentData, PutDocumentErrors, PutDocumentResponses, RefreshData, RefreshErrors, RefreshResponses, RegisterData, RegisterErrors, RegisterResponses, RemoveBookmarkData, RemoveBookmarkErrors, RemoveBookmarkResponses, RemoveMemberData, RemoveMemberErrors, RemoveMemberResponses, UpdateMemberRoleData, UpdateMemberRoleErrors, UpdateMemberRoleResponses, UpdateMyProfileData, UpdateMyProfileErrors, UpdateMyProfileResponses, UpdateProjectData, UpdateProjectErrors, UpdateProjectResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -674,6 +674,45 @@ export class Bookmarks {
             security: [{ scheme: 'bearer', type: 'http' }],
             url: '/api/v1/projects/{slug}/bookmark',
             ...options
+        });
+    }
+}
+
+export class Setup {
+    /**
+     * Get Setup Status
+     *
+     * Get the setup status.
+     *
+     * Returns:
+     * Setup status indicating if setup is completed and if admin is required.
+     */
+    public static getSetupStatus<ThrowOnError extends boolean = false>(options?: Options<GetSetupStatusData, ThrowOnError>) {
+        return (options?.client ?? client).get<GetSetupStatusResponses, unknown, ThrowOnError>({ url: '/api/v1/setup/status', ...options });
+    }
+    
+    /**
+     * Create Admin
+     *
+     * Create a new admin user.
+     *
+     * Args:
+     * request: The request containing the admin user's email, name, and password.
+     *
+     * Returns:
+     * Access and refresh tokens.
+     *
+     * Raises:
+     * HTTPException: If setup is already completed (403) or email exists (400).
+     */
+    public static createAdmin<ThrowOnError extends boolean = false>(options: Options<CreateAdminData, ThrowOnError>) {
+        return (options.client ?? client).post<CreateAdminResponses, CreateAdminErrors, ThrowOnError>({
+            url: '/api/v1/setup/admin',
+            ...options,
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            }
         });
     }
 }

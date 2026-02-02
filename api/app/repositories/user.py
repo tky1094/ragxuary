@@ -99,3 +99,41 @@ class UserRepository:
         await self.db.commit()
         await self.db.refresh(user)
         return user
+
+    async def admin_exists(self) -> bool:
+        """Check if an admin user exists.
+
+        Returns:
+            True if an admin user exists, False otherwise.
+        """
+        stmt = select(User).where(User.is_admin.is_(True))
+        result = await self.db.execute(stmt)
+        return result.scalar_one_or_none() is not None
+
+    async def create_admin(
+        self,
+        email: str,
+        name: str,
+        password_hash: str,
+    ) -> User:
+        """Create a new admin user.
+
+        Args:
+            email: User's email address.
+            name: User's display name.
+            password_hash: Hashed password.
+
+        Returns:
+            The created admin user.
+        """
+        user = User(
+            email=email,
+            name=name,
+            password_hash=password_hash,
+            auth_provider="local",
+            is_admin=True,
+        )
+        self.db.add(user)
+        await self.db.commit()
+        await self.db.refresh(user)
+        return user
