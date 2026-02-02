@@ -9,9 +9,8 @@ Create Date: 2026-01-29 10:00:00.000000
 from collections.abc import Sequence
 
 import sqlalchemy as sa
-from sqlalchemy.dialects.postgresql import ENUM, UUID
-
 from alembic import op
+from sqlalchemy.dialects.postgresql import ENUM, UUID
 
 # revision identifiers, used by Alembic.
 revision: str = "d4e5f6a7b8c9"
