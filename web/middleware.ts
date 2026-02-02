@@ -7,9 +7,47 @@ import {
   isAdminRoute,
   isProtectedRoute,
   isPublicRoute,
+  isSetupRoute,
 } from './shared/lib/routes';
 
 const intlMiddleware = createMiddleware(routing);
+
+// Cache setup status to reduce API calls
+let setupStatusCache: { isCompleted: boolean; timestamp: number } | null = null;
+const CACHE_TTL = 60 * 1000; // 1 minute cache
+
+/**
+ * Check if setup is completed
+ */
+async function isSetupCompleted(): Promise<boolean> {
+  // Return cached value if still valid
+  if (setupStatusCache && Date.now() - setupStatusCache.timestamp < CACHE_TTL) {
+    return setupStatusCache.isCompleted;
+  }
+
+  try {
+    const apiUrl = process.env.API_URL || 'http://localhost:8000';
+    const response = await fetch(`${apiUrl}/api/v1/setup/status`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      cache: 'no-store',
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setupStatusCache = {
+        isCompleted: data.is_setup_completed,
+        timestamp: Date.now(),
+      };
+      return data.is_setup_completed;
+    }
+  } catch (error) {
+    console.error('Failed to check setup status:', error);
+  }
+
+  // On error, assume setup is completed to allow normal flow
+  return true;
+}
 
 /**
  * Extract the pathname without locale prefix
@@ -70,6 +108,21 @@ export default auth(async function middleware(request) {
   // Get path without locale and current locale
   const pathWithoutLocale = getPathWithoutLocale(pathname);
   const locale = getLocaleFromPath(pathname);
+
+  // Check setup status
+  const setupCompleted = await isSetupCompleted();
+
+  // Redirect to /setup if setup is not completed (except for /setup itself)
+  if (!setupCompleted && !isSetupRoute(pathWithoutLocale)) {
+    const redirectUrl = createLocalizedUrl(request, '/setup', locale);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // Redirect to / if setup is completed and user tries to access /setup
+  if (setupCompleted && isSetupRoute(pathWithoutLocale)) {
+    const redirectUrl = createLocalizedUrl(request, '/', locale);
+    return NextResponse.redirect(redirectUrl);
+  }
 
   // Get session from auth
   const session = request.auth;

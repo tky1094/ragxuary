@@ -11,6 +11,9 @@ export const PROTECTED_ROUTES = ['/', '/projects', '/p', '/settings'];
 // Routes that require admin role
 export const ADMIN_ROUTES = ['/settings/admin'];
 
+// Setup route (accessible only when setup is not completed)
+export const SETUP_ROUTES = ['/setup'];
+
 /**
  * Check if a path matches any route in the list
  * Handles both exact matches and prefix matches (e.g., /projects/123)
@@ -43,4 +46,11 @@ export function isProtectedRoute(path: string): boolean {
  */
 export function isAdminRoute(path: string): boolean {
   return matchesRoute(path, ADMIN_ROUTES);
+}
+
+/**
+ * Check if path is a setup route
+ */
+export function isSetupRoute(path: string): boolean {
+  return matchesRoute(path, SETUP_ROUTES);
 }

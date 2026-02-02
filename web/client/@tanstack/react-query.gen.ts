@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { Auth, Bookmarks, Documents, Health, type Options, ProjectMembers, Projects, Users } from '../sdk.gen';
-import type { AddBookmarkData, AddBookmarkError, AddBookmarkResponse, AddMemberData, AddMemberError, AddMemberResponse, CreateProjectData, CreateProjectError, CreateProjectResponse, DeleteDocumentData, DeleteDocumentError, DeleteDocumentResponse, DeleteProjectData, DeleteProjectError, DeleteProjectResponse, GetBookmarkStatusData, GetBookmarkStatusError, GetBookmarkStatusResponse, GetCurrentUserInfoData, GetCurrentUserInfoResponse, GetDocumentData, GetDocumentError, GetDocumentHistoryData, GetDocumentHistoryError, GetDocumentHistoryResponse, GetDocumentResponse, GetDocumentTreeData, GetDocumentTreeError, GetDocumentTreeResponse, GetProjectActivityData, GetProjectActivityError, GetProjectActivityResponse, GetProjectData, GetProjectError, GetProjectPermissionsData, GetProjectPermissionsError, GetProjectPermissionsResponse, GetProjectResponse, HealthCheckData, HealthCheckResponse, ListBookmarksData, ListBookmarksError, ListBookmarksResponse, ListMembersData, ListMembersError, ListMembersResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, PutDocumentData, PutDocumentError, PutDocumentResponse, RefreshData, RefreshError, RefreshResponse, RegisterData, RegisterError, RegisterResponse, RemoveBookmarkData, RemoveBookmarkError, RemoveBookmarkResponse, RemoveMemberData, RemoveMemberError, RemoveMemberResponse, UpdateMemberRoleData, UpdateMemberRoleError, UpdateMemberRoleResponse, UpdateMyProfileData, UpdateMyProfileError, UpdateMyProfileResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse } from '../types.gen';
+import { Auth, Bookmarks, Documents, Health, type Options, ProjectMembers, Projects, Setup, Users } from '../sdk.gen';
+import type { AddBookmarkData, AddBookmarkError, AddBookmarkResponse, AddMemberData, AddMemberError, AddMemberResponse, CreateAdminData, CreateAdminError, CreateAdminResponse, CreateProjectData, CreateProjectError, CreateProjectResponse, DeleteDocumentData, DeleteDocumentError, DeleteDocumentResponse, DeleteProjectData, DeleteProjectError, DeleteProjectResponse, GetBookmarkStatusData, GetBookmarkStatusError, GetBookmarkStatusResponse, GetCurrentUserInfoData, GetCurrentUserInfoResponse, GetDocumentData, GetDocumentError, GetDocumentHistoryData, GetDocumentHistoryError, GetDocumentHistoryResponse, GetDocumentResponse, GetDocumentTreeData, GetDocumentTreeError, GetDocumentTreeResponse, GetProjectActivityData, GetProjectActivityError, GetProjectActivityResponse, GetProjectData, GetProjectError, GetProjectPermissionsData, GetProjectPermissionsError, GetProjectPermissionsResponse, GetProjectResponse, GetSetupStatusData, GetSetupStatusResponse, HealthCheckData, HealthCheckResponse, ListBookmarksData, ListBookmarksError, ListBookmarksResponse, ListMembersData, ListMembersError, ListMembersResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, PutDocumentData, PutDocumentError, PutDocumentResponse, RefreshData, RefreshError, RefreshResponse, RegisterData, RegisterError, RegisterResponse, RemoveBookmarkData, RemoveBookmarkError, RemoveBookmarkResponse, RemoveMemberData, RemoveMemberError, RemoveMemberResponse, UpdateMemberRoleData, UpdateMemberRoleError, UpdateMemberRoleResponse, UpdateMyProfileData, UpdateMyProfileError, UpdateMyProfileResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -820,6 +820,57 @@ export const addBookmarkMutation = (options?: Partial<Options<AddBookmarkData>>)
     const mutationOptions: UseMutationOptions<AddBookmarkResponse, AddBookmarkError, Options<AddBookmarkData>> = {
         mutationFn: async (fnOptions) => {
             const { data } = await Bookmarks.addBookmark({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getSetupStatusQueryKey = (options?: Options<GetSetupStatusData>) => createQueryKey('getSetupStatus', options);
+
+/**
+ * Get Setup Status
+ *
+ * Get the setup status.
+ *
+ * Returns:
+ * Setup status indicating if setup is completed and if admin is required.
+ */
+export const getSetupStatusOptions = (options?: Options<GetSetupStatusData>) => queryOptions<GetSetupStatusResponse, DefaultError, GetSetupStatusResponse, ReturnType<typeof getSetupStatusQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Setup.getSetupStatus({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getSetupStatusQueryKey(options)
+});
+
+/**
+ * Create Admin
+ *
+ * Create a new admin user.
+ *
+ * Args:
+ * request: The request containing the admin user's email, name, and password.
+ *
+ * Returns:
+ * Access and refresh tokens.
+ *
+ * Raises:
+ * HTTPException: If setup is already completed (403) or email exists (400).
+ */
+export const createAdminMutation = (options?: Partial<Options<CreateAdminData>>): UseMutationOptions<CreateAdminResponse, CreateAdminError, Options<CreateAdminData>> => {
+    const mutationOptions: UseMutationOptions<CreateAdminResponse, CreateAdminError, Options<CreateAdminData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Setup.createAdmin({
                 ...options,
                 ...fnOptions,
                 throwOnError: true

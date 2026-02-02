@@ -197,5 +197,16 @@
     "edit": "Edit",
     "chat": "Chat",
     "settings": "Settings"
+  },
+  "setup": {
+    "title": "Initial Setup",
+    "welcomeTitle": "Welcome to ragxuary",
+    "welcomeDescription": "To use this system, you need to create an administrator account first.",
+    "createAdmin": "Create Administrator",
+    "creating": "Creating...",
+    "setupCompleted": "Setup completed",
+    "setupAlreadyCompleted": "Setup has already been completed",
+    "setupFailed": "Setup failed. Please try again",
+    "emailAlreadyRegistered": "This email address is already registered"
   }
 }
