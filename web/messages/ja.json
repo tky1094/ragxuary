@@ -197,5 +197,16 @@
     "edit": "編集",
     "chat": "チャット",
     "settings": "設定"
+  },
+  "setup": {
+    "title": "初期セットアップ",
+    "welcomeTitle": "ragxuaryへようこそ",
+    "welcomeDescription": "このシステムを使用するには、まず管理者アカウントを作成する必要があります。",
+    "createAdmin": "管理者を作成",
+    "creating": "作成中...",
+    "setupCompleted": "セットアップが完了しました",
+    "setupAlreadyCompleted": "セットアップは既に完了しています",
+    "setupFailed": "セットアップに失敗しました。もう一度お試しください",
+    "emailAlreadyRegistered": "このメールアドレスは既に登録されています"
   }
 }
