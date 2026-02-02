@@ -20,8 +20,11 @@ const CACHE_TTL = 60 * 1000; // 1 minute cache
  * Check if setup is completed
  */
 async function isSetupCompleted(): Promise<boolean> {
-  // Return cached value if still valid
-  if (setupStatusCache && Date.now() - setupStatusCache.timestamp < CACHE_TTL) {
+  // Return cached value if still valid (only cache when setup is completed)
+  if (
+    setupStatusCache?.isCompleted &&
+    Date.now() - setupStatusCache.timestamp < CACHE_TTL
+  ) {
     return setupStatusCache.isCompleted;
   }
 
