@@ -2,22 +2,28 @@
 
 import { useTranslations } from 'next-intl';
 
+import { EmptyProjects } from '@/shared/components';
+
 import { useProjectListSuspense } from '../hooks/useProjects';
 import { ProjectCard } from './ProjectCard';
+
+interface ProjectListProps {
+  onCreateClick?: () => void;
+}
 
 /**
  * Project list component using Suspense.
  * Must be wrapped in a Suspense boundary and data should be prefetched on the server.
  */
-export function ProjectList() {
+export function ProjectList({ onCreateClick }: ProjectListProps) {
   const t = useTranslations('projects');
   const { data: projects } = useProjectListSuspense();
 
   if (!projects || projects.length === 0) {
-    return (
-      <div className="py-8 text-center text-muted-foreground">
-        {t('noProjects')}
-      </div>
+    return onCreateClick ? (
+      <EmptyProjects action={{ type: 'button', onClick: onCreateClick }} />
+    ) : (
+      <EmptyProjects action={{ type: 'link', href: '/projects' }} />
     );
   }
 
