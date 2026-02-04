@@ -2,7 +2,7 @@
 
 import { Bookmark } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/shared/components/ui/button';
 import {
@@ -37,6 +37,16 @@ export function BookmarkButton({
   const removeBookmark = useRemoveBookmark();
 
   const [isAnimating, setIsAnimating] = useState(false);
+  const animationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (animationTimerRef.current) {
+        clearTimeout(animationTimerRef.current);
+      }
+    };
+  }, []);
 
   const isBookmarked = statusData?.is_bookmarked ?? false;
   const isLoading =
@@ -51,7 +61,10 @@ export function BookmarkButton({
 
       // Trigger animation
       setIsAnimating(true);
-      setTimeout(() => setIsAnimating(false), 250);
+      if (animationTimerRef.current) {
+        clearTimeout(animationTimerRef.current);
+      }
+      animationTimerRef.current = setTimeout(() => setIsAnimating(false), 250);
 
       if (isBookmarked) {
         removeBookmark.mutate({ path: { slug: projectSlug } });
