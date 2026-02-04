@@ -45,7 +45,7 @@ export function ProjectsPageContent() {
       </div>
       <ErrorBoundary fallback={<ProjectListError />}>
         <Suspense fallback={<ProjectListSkeleton />}>
-          <ProjectList />
+          <ProjectList onCreateClick={() => setIsDialogOpen(true)} />
         </Suspense>
       </ErrorBoundary>
     </div>
