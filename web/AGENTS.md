@@ -542,6 +542,126 @@ pnpm run openapi-ts
 
 ---
 
+## Data Fetching Pattern
+
+### Overview
+
+Each route should prefetch data in the Server Component using feature-specific prefetch functions. Data is passed to Client Components via HydrationBoundary, not props.
+
+```
+Server Component (page.tsx)
+    ↓
+prefetch function (features/{name}/lib/prefetch.ts)
+    ↓
+getServerClient() (server-side authenticated client)
+    ↓
+QueryClient + HydrationBoundary
+    ↓
+Client Component (useSuspense hooks)
+```
+
+### File Locations
+
+| Item              | Location                              |
+| ----------------- | ------------------------------------- |
+| Prefetch function | `features/{name}/lib/prefetch.ts`     |
+| Server API client | `@/shared/lib/api/client`             |
+| Suspense hooks    | `features/{name}/hooks/`              |
+
+### Implementation
+
+**1. Create prefetch function in feature**
+
+```tsx
+// features/projects/lib/prefetch.ts
+import { QueryClient } from '@tanstack/react-query';
+import { getServerClient } from '@/shared/lib/api/client';
+import { Projects, listProjectsOptions } from '@/client';
+
+export async function prefetchProjectList(
+  skip = 0,
+  limit = 100
+): Promise<QueryClient> {
+  const queryClient = new QueryClient();
+  const client = getServerClient();
+
+  await queryClient.prefetchQuery({
+    ...listProjectsOptions({ query: { skip, limit } }),
+    queryFn: async () => {
+      const { data } = await Projects.listProjects({
+        client,
+        query: { skip, limit },
+        throwOnError: true,
+      });
+      return data;
+    },
+  });
+
+  return queryClient;
+}
+```
+
+**2. Call prefetch in page.tsx (Server Component)**
+
+```tsx
+// app/[locale]/(main)/projects/page.tsx
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { prefetchProjectList } from '@/features/projects';
+
+export default async function ProjectsPage() {
+  const queryClient = await prefetchProjectList();
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <ProjectsPageContent />
+    </HydrationBoundary>
+  );
+}
+```
+
+**3. Use Suspense hooks in Client Component**
+
+```tsx
+// features/projects/components/ProjectList.tsx
+'use client';
+
+import { useProjectListSuspense } from '../hooks/useProjectListSuspense';
+
+export function ProjectList() {
+  // Data is automatically hydrated from server prefetch
+  const { data: projects } = useProjectListSuspense();
+
+  return (
+    <div>
+      {projects.map((project) => (
+        <ProjectCard key={project.id} project={project} />
+      ))}
+    </div>
+  );
+}
+```
+
+### Error Handling
+
+Wrap Client Components with ErrorBoundary and Suspense:
+
+```tsx
+<ErrorBoundary fallback={<ProjectListError />}>
+  <Suspense fallback={<ProjectListSkeleton />}>
+    <ProjectList />
+  </Suspense>
+</ErrorBoundary>
+```
+
+### Key Points
+
+- **Never pass fetched data via props** - use HydrationBoundary + Suspense hooks
+- **Prefetch functions return QueryClient** - not raw data
+- **Use getServerClient() on server** - creates new instance per request
+- **Use global client on client-side** - configured in `hey-api-config.ts`
+
+---
+
 ## Path Aliases
 
 ```tsx
