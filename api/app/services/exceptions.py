@@ -149,3 +149,36 @@ class SetupAlreadyCompletedError(SetupServiceError):
     """Raised when setup has already been completed."""
 
     pass
+
+
+# --- Upload Service Exceptions ---
+
+
+class UploadServiceError(ServiceError):
+    """Base exception for upload service errors."""
+
+    pass
+
+
+class UploadNotFoundError(UploadServiceError):
+    """Raised when upload is not found."""
+
+    pass
+
+
+class FileTooLargeError(UploadServiceError):
+    """Raised when uploaded file exceeds size limit."""
+
+    pass
+
+
+class InvalidFileTypeError(UploadServiceError):
+    """Raised when uploaded file type is not allowed."""
+
+    pass
+
+
+class StorageError(UploadServiceError):
+    """Raised when storage operation fails."""
+
+    pass

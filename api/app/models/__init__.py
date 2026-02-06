@@ -7,6 +7,7 @@ from app.models.project import Project, ProjectVisibility
 from app.models.project_bookmark import ProjectBookmark
 from app.models.project_member import MemberRole, ProjectMember
 from app.models.revision_batch import RevisionBatch
+from app.models.upload import Upload
 from app.models.user import User
 
 __all__ = [
@@ -20,5 +21,6 @@ __all__ = [
     "ProjectMember",
     "ProjectVisibility",
     "RevisionBatch",
+    "Upload",
     "User",
 ]

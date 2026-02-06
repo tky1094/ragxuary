@@ -31,5 +31,20 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7
 
+    # Upload
+    upload_max_file_size: int = 10 * 1024 * 1024  # 10MB
+    upload_allowed_mime_types: list[str] = [
+        "image/png",
+        "image/jpeg",
+        "image/gif",
+        "image/webp",
+    ]
+    upload_storage_path: str = "./storage/uploads"
+    upload_max_dimension: int = 2048
+    upload_jpeg_quality: int = 85
+    upload_webp_quality: int = 85
+    upload_png_compression: int = 9
+    storage_type: str = "local"  # "local" | "s3" (future)
+
 
 settings = Settings()

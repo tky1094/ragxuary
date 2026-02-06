@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from app.models.project_bookmark import ProjectBookmark
     from app.models.project_member import ProjectMember
     from app.models.revision_batch import RevisionBatch
+    from app.models.upload import Upload
     from app.models.user import User
 
 
@@ -64,3 +65,4 @@ class Project(Base):
     bookmarked_by: Mapped[list["ProjectBookmark"]] = relationship(
         back_populates="project"
     )
+    uploads: Mapped[list["Upload"]] = relationship(back_populates="project")
