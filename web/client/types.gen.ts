@@ -25,6 +25,18 @@ export type AdminCreateRequest = {
 };
 
 /**
+ * Body_upload_image
+ */
+export type BodyUploadImage = {
+    /**
+     * File
+     *
+     * Image file to upload
+     */
+    file: Blob | File;
+};
+
+/**
  * BookmarkStatusRead
  *
  * Schema for bookmark status check response.
@@ -663,6 +675,80 @@ export type TokenResponse = {
      * Token Type
      */
     token_type?: string;
+};
+
+/**
+ * UploadCreateResponse
+ *
+ * Schema for upload creation response.
+ */
+export type UploadCreateResponse = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Filename
+     */
+    filename: string;
+    /**
+     * Mime Type
+     */
+    mime_type: string;
+    /**
+     * Size Bytes
+     */
+    size_bytes: number;
+    /**
+     * Url
+     */
+    url: string;
+    /**
+     * Created At
+     */
+    created_at: string;
+};
+
+/**
+ * UploadRead
+ *
+ * Schema for reading an upload.
+ */
+export type UploadRead = {
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * User Id
+     */
+    user_id: string;
+    /**
+     * Project Id
+     */
+    project_id: string | null;
+    /**
+     * Filename
+     */
+    filename: string;
+    /**
+     * Mime Type
+     */
+    mime_type: string;
+    /**
+     * Size Bytes
+     */
+    size_bytes: number;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Url
+     *
+     * URL to access the uploaded file
+     */
+    url: string;
 };
 
 /**
@@ -1634,3 +1720,129 @@ export type CreateAdminResponses = {
 };
 
 export type CreateAdminResponse = CreateAdminResponses[keyof CreateAdminResponses];
+
+export type UploadImageData = {
+    body: BodyUploadImage;
+    path: {
+        /**
+         * Project Id
+         *
+         * Project UUID
+         */
+        project_id: string;
+    };
+    query?: never;
+    url: '/api/v1/projects/{project_id}/uploads';
+};
+
+export type UploadImageErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UploadImageError = UploadImageErrors[keyof UploadImageErrors];
+
+export type UploadImageResponses = {
+    /**
+     * Successful Response
+     */
+    201: UploadCreateResponse;
+};
+
+export type UploadImageResponse = UploadImageResponses[keyof UploadImageResponses];
+
+export type DeleteUploadData = {
+    body?: never;
+    path: {
+        /**
+         * Upload Id
+         *
+         * Upload UUID
+         */
+        upload_id: string;
+    };
+    query?: never;
+    url: '/api/v1/uploads/{upload_id}';
+};
+
+export type DeleteUploadErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type DeleteUploadError = DeleteUploadErrors[keyof DeleteUploadErrors];
+
+export type DeleteUploadResponses = {
+    /**
+     * Successful Response
+     */
+    204: void;
+};
+
+export type DeleteUploadResponse = DeleteUploadResponses[keyof DeleteUploadResponses];
+
+export type GetUploadData = {
+    body?: never;
+    path: {
+        /**
+         * Upload Id
+         *
+         * Upload UUID
+         */
+        upload_id: string;
+    };
+    query?: never;
+    url: '/api/v1/uploads/{upload_id}';
+};
+
+export type GetUploadErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type GetUploadError = GetUploadErrors[keyof GetUploadErrors];
+
+export type GetUploadResponses = {
+    /**
+     * Successful Response
+     */
+    200: UploadRead;
+};
+
+export type GetUploadResponse = GetUploadResponses[keyof GetUploadResponses];
+
+export type ServeFileData = {
+    body?: never;
+    path: {
+        /**
+         * Storage Path
+         *
+         * Storage path of the file
+         */
+        storage_path: string;
+    };
+    query?: never;
+    url: '/api/v1/uploads/file/{storage_path}';
+};
+
+export type ServeFileErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type ServeFileError = ServeFileErrors[keyof ServeFileErrors];
+
+export type ServeFileResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
