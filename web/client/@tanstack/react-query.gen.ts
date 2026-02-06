@@ -3,8 +3,8 @@
 import { type DefaultError, queryOptions, type UseMutationOptions } from '@tanstack/react-query';
 
 import { client } from '../client.gen';
-import { Auth, Bookmarks, Documents, Health, type Options, ProjectMembers, Projects, Setup, Users } from '../sdk.gen';
-import type { AddBookmarkData, AddBookmarkError, AddBookmarkResponse, AddMemberData, AddMemberError, AddMemberResponse, CreateAdminData, CreateAdminError, CreateAdminResponse, CreateProjectData, CreateProjectError, CreateProjectResponse, DeleteDocumentData, DeleteDocumentError, DeleteDocumentResponse, DeleteProjectData, DeleteProjectError, DeleteProjectResponse, GetBookmarkStatusData, GetBookmarkStatusError, GetBookmarkStatusResponse, GetCurrentUserInfoData, GetCurrentUserInfoResponse, GetDocumentData, GetDocumentError, GetDocumentHistoryData, GetDocumentHistoryError, GetDocumentHistoryResponse, GetDocumentResponse, GetDocumentTreeData, GetDocumentTreeError, GetDocumentTreeResponse, GetProjectActivityData, GetProjectActivityError, GetProjectActivityResponse, GetProjectData, GetProjectError, GetProjectPermissionsData, GetProjectPermissionsError, GetProjectPermissionsResponse, GetProjectResponse, GetSetupStatusData, GetSetupStatusResponse, HealthCheckData, HealthCheckResponse, ListBookmarksData, ListBookmarksError, ListBookmarksResponse, ListMembersData, ListMembersError, ListMembersResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, PutDocumentData, PutDocumentError, PutDocumentResponse, RefreshData, RefreshError, RefreshResponse, RegisterData, RegisterError, RegisterResponse, RemoveBookmarkData, RemoveBookmarkError, RemoveBookmarkResponse, RemoveMemberData, RemoveMemberError, RemoveMemberResponse, UpdateMemberRoleData, UpdateMemberRoleError, UpdateMemberRoleResponse, UpdateMyProfileData, UpdateMyProfileError, UpdateMyProfileResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse } from '../types.gen';
+import { Auth, Bookmarks, Documents, Health, type Options, ProjectMembers, Projects, Setup, Uploads, Users } from '../sdk.gen';
+import type { AddBookmarkData, AddBookmarkError, AddBookmarkResponse, AddMemberData, AddMemberError, AddMemberResponse, CreateAdminData, CreateAdminError, CreateAdminResponse, CreateProjectData, CreateProjectError, CreateProjectResponse, DeleteDocumentData, DeleteDocumentError, DeleteDocumentResponse, DeleteProjectData, DeleteProjectError, DeleteProjectResponse, DeleteUploadData, DeleteUploadError, DeleteUploadResponse, GetBookmarkStatusData, GetBookmarkStatusError, GetBookmarkStatusResponse, GetCurrentUserInfoData, GetCurrentUserInfoResponse, GetDocumentData, GetDocumentError, GetDocumentHistoryData, GetDocumentHistoryError, GetDocumentHistoryResponse, GetDocumentResponse, GetDocumentTreeData, GetDocumentTreeError, GetDocumentTreeResponse, GetProjectActivityData, GetProjectActivityError, GetProjectActivityResponse, GetProjectData, GetProjectError, GetProjectPermissionsData, GetProjectPermissionsError, GetProjectPermissionsResponse, GetProjectResponse, GetSetupStatusData, GetSetupStatusResponse, GetUploadData, GetUploadError, GetUploadResponse, HealthCheckData, HealthCheckResponse, ListBookmarksData, ListBookmarksError, ListBookmarksResponse, ListMembersData, ListMembersError, ListMembersResponse, ListProjectsData, ListProjectsError, ListProjectsResponse, LoginData, LoginError, LoginResponse, LogoutData, LogoutResponse, PutDocumentData, PutDocumentError, PutDocumentResponse, RefreshData, RefreshError, RefreshResponse, RegisterData, RegisterError, RegisterResponse, RemoveBookmarkData, RemoveBookmarkError, RemoveBookmarkResponse, RemoveMemberData, RemoveMemberError, RemoveMemberResponse, ServeFileData, ServeFileError, UpdateMemberRoleData, UpdateMemberRoleError, UpdateMemberRoleResponse, UpdateMyProfileData, UpdateMyProfileError, UpdateMyProfileResponse, UpdateProjectData, UpdateProjectError, UpdateProjectResponse, UploadImageData, UploadImageError, UploadImageResponse } from '../types.gen';
 
 export type QueryKey<TOptions extends Options> = [
     Pick<TOptions, 'baseUrl' | 'body' | 'headers' | 'path' | 'query'> & {
@@ -880,3 +880,135 @@ export const createAdminMutation = (options?: Partial<Options<CreateAdminData>>)
     };
     return mutationOptions;
 };
+
+/**
+ * Upload Image
+ *
+ * Upload an image to a project.
+ *
+ * Supported formats: PNG, JPEG, GIF, WebP
+ * Maximum file size: 10MB (configurable)
+ * Images are automatically resized (max 2048px) and compressed.
+ *
+ * Args:
+ * project_id: UUID of the project.
+ * file: Image file to upload.
+ * current_user: The authenticated user.
+ * upload_service: Upload service.
+ * project_repo: Project repository.
+ * member_repo: Project member repository.
+ *
+ * Returns:
+ * Upload metadata including URL.
+ *
+ * Raises:
+ * HTTPException: Various HTTP errors for validation failures.
+ */
+export const uploadImageMutation = (options?: Partial<Options<UploadImageData>>): UseMutationOptions<UploadImageResponse, UploadImageError, Options<UploadImageData>> => {
+    const mutationOptions: UseMutationOptions<UploadImageResponse, UploadImageError, Options<UploadImageData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Uploads.uploadImage({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+/**
+ * Delete Upload
+ *
+ * Delete an upload.
+ *
+ * Only the uploader can delete their uploads.
+ *
+ * Args:
+ * upload_id: UUID of the upload to delete.
+ * current_user: The authenticated user.
+ * upload_service: Upload service.
+ *
+ * Raises:
+ * HTTPException: If upload not found or permission denied.
+ */
+export const deleteUploadMutation = (options?: Partial<Options<DeleteUploadData>>): UseMutationOptions<DeleteUploadResponse, DeleteUploadError, Options<DeleteUploadData>> => {
+    const mutationOptions: UseMutationOptions<DeleteUploadResponse, DeleteUploadError, Options<DeleteUploadData>> = {
+        mutationFn: async (fnOptions) => {
+            const { data } = await Uploads.deleteUpload({
+                ...options,
+                ...fnOptions,
+                throwOnError: true
+            });
+            return data;
+        }
+    };
+    return mutationOptions;
+};
+
+export const getUploadQueryKey = (options: Options<GetUploadData>) => createQueryKey('getUpload', options);
+
+/**
+ * Get Upload
+ *
+ * Get upload metadata by ID.
+ *
+ * Args:
+ * upload_id: UUID of the upload.
+ * current_user: The authenticated user.
+ * upload_service: Upload service.
+ * project_repo: Project repository.
+ * member_repo: Project member repository.
+ *
+ * Returns:
+ * Upload metadata.
+ *
+ * Raises:
+ * HTTPException: If upload not found or access denied.
+ */
+export const getUploadOptions = (options: Options<GetUploadData>) => queryOptions<GetUploadResponse, GetUploadError, GetUploadResponse, ReturnType<typeof getUploadQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Uploads.getUpload({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: getUploadQueryKey(options)
+});
+
+export const serveFileQueryKey = (options: Options<ServeFileData>) => createQueryKey('serveFile', options);
+
+/**
+ * Serve File
+ *
+ * Serve uploaded file content.
+ *
+ * Note: In production, this should be handled by a CDN or reverse proxy
+ * for better performance.
+ *
+ * Args:
+ * storage_path: Storage path of the file.
+ * upload_service: Upload service.
+ *
+ * Returns:
+ * File content as HTTP response.
+ *
+ * Raises:
+ * HTTPException: If file not found.
+ */
+export const serveFileOptions = (options: Options<ServeFileData>) => queryOptions<unknown, ServeFileError, unknown, ReturnType<typeof serveFileQueryKey>>({
+    queryFn: async ({ queryKey, signal }) => {
+        const { data } = await Uploads.serveFile({
+            ...options,
+            ...queryKey[0],
+            signal,
+            throwOnError: true
+        });
+        return data;
+    },
+    queryKey: serveFileQueryKey(options)
+});
