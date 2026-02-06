@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from app.models.project_bookmark import ProjectBookmark
     from app.models.project_member import ProjectMember
     from app.models.revision_batch import RevisionBatch
+    from app.models.upload import Upload
 
 
 class User(Base):
@@ -52,3 +53,4 @@ class User(Base):
         back_populates="user"
     )
     bookmarks: Mapped[list["ProjectBookmark"]] = relationship(back_populates="user")
+    uploads: Mapped[list["Upload"]] = relationship(back_populates="user")

@@ -10,6 +10,7 @@ from app.api.v1.endpoints import (
     project_members,
     projects,
     setup,
+    uploads,
     users,
 )
 
@@ -38,3 +39,6 @@ api_router.include_router(bookmarks.router)
 
 # Include setup endpoints
 api_router.include_router(setup.router)
+
+# Include uploads endpoints
+api_router.include_router(uploads.router)
