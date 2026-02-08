@@ -14,6 +14,13 @@ vi.mock('next-intl', () => ({
       name: 'Project Name',
       slug: 'Slug',
       description: 'Description',
+      visibility: 'Visibility',
+      public: 'Public',
+      private: 'Private',
+      privateDescription: 'Only members can access',
+      publicDescription: 'Anyone can view',
+      slugHint:
+        'Used in URLs (e.g., /p/{slug}). Cannot be changed after creation.',
       createProject: 'Create Project',
       creating: 'Creating...',
       nameRequired: 'Project name is required',
@@ -64,6 +71,7 @@ describe('CreateProjectForm', () => {
     expect(screen.getByLabelText('Project Name')).toBeInTheDocument();
     expect(screen.getByLabelText('Slug')).toBeInTheDocument();
     expect(screen.getByLabelText('Description')).toBeInTheDocument();
+    expect(screen.getByText('Visibility')).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'Create Project' })
     ).toBeInTheDocument();
@@ -90,6 +98,7 @@ describe('CreateProjectForm', () => {
     const submitButton = screen.getByRole('button', { name: 'Create Project' });
 
     await user.type(nameInput, 'Test Project');
+    await user.clear(slugInput);
     await user.type(slugInput, 'Invalid Slug!');
     await user.click(submitButton);
 
@@ -114,12 +123,11 @@ describe('CreateProjectForm', () => {
     renderWithProviders(<CreateProjectForm onSuccess={onSuccess} />);
 
     const nameInput = screen.getByLabelText('Project Name');
-    const slugInput = screen.getByLabelText('Slug');
     const descriptionInput = screen.getByLabelText('Description');
     const submitButton = screen.getByRole('button', { name: 'Create Project' });
 
     await user.type(nameInput, 'Test Project');
-    await user.type(slugInput, 'test-project');
+    // Slug is auto-generated from name as "test-project"
     await user.type(descriptionInput, 'A test project');
     await user.click(submitButton);
 
@@ -129,6 +137,7 @@ describe('CreateProjectForm', () => {
           name: 'Test Project',
           slug: 'test-project',
           description: 'A test project',
+          visibility: 'private',
         },
       });
     });
@@ -169,16 +178,69 @@ describe('CreateProjectForm', () => {
     renderWithProviders(<CreateProjectForm />);
 
     const nameInput = screen.getByLabelText('Project Name');
-    const slugInput = screen.getByLabelText('Slug');
     const submitButton = screen.getByRole('button', { name: 'Create Project' });
 
     await user.type(nameInput, 'Test Project');
-    await user.type(slugInput, 'test-project');
+    // Slug is auto-generated from name
     await user.click(submitButton);
 
     await waitFor(() => {
       expect(nameInput).toHaveValue('');
-      expect(slugInput).toHaveValue('');
+      expect(screen.getByLabelText('Slug')).toHaveValue('');
     });
+  });
+
+  it('should auto-generate slug from name', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<CreateProjectForm />);
+
+    const nameInput = screen.getByLabelText('Project Name');
+    await user.type(nameInput, 'My Test Project');
+
+    const slugInput = screen.getByLabelText('Slug');
+    expect(slugInput).toHaveValue('my-test-project');
+  });
+
+  it('should not overwrite slug when user has manually edited it', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<CreateProjectForm />);
+
+    const nameInput = screen.getByLabelText('Project Name');
+    const slugInput = screen.getByLabelText('Slug');
+
+    await user.type(nameInput, 'First');
+    expect(slugInput).toHaveValue('first');
+
+    await user.clear(slugInput);
+    await user.type(slugInput, 'custom-slug');
+
+    await user.clear(nameInput);
+    await user.type(nameInput, 'Second Name');
+    expect(slugInput).toHaveValue('custom-slug');
+  });
+
+  it('should display slug hint description', () => {
+    renderWithProviders(<CreateProjectForm />);
+
+    expect(
+      screen.getByText(
+        'Used in URLs (e.g., /p/{slug}). Cannot be changed after creation.'
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('should display visibility choice cards', () => {
+    renderWithProviders(<CreateProjectForm />);
+
+    expect(screen.getByText('Visibility')).toBeInTheDocument();
+    expect(screen.getByText('Only members can access')).toBeInTheDocument();
+    expect(screen.getByText('Anyone can view')).toBeInTheDocument();
+  });
+
+  it('should render description as textarea', () => {
+    renderWithProviders(<CreateProjectForm />);
+
+    const descriptionField = screen.getByLabelText('Description');
+    expect(descriptionField.tagName).toBe('TEXTAREA');
   });
 });
