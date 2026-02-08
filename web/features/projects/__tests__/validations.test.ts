@@ -18,6 +18,7 @@ describe('createProjectSchema', () => {
         name: '',
         slug: 'valid-slug',
         description: '',
+        visibility: 'private',
       });
 
       expect(result.success).toBe(false);
@@ -31,6 +32,7 @@ describe('createProjectSchema', () => {
         name: 'My Project',
         slug: 'my-project',
         description: '',
+        visibility: 'private',
       });
 
       expect(result.success).toBe(true);
@@ -43,6 +45,7 @@ describe('createProjectSchema', () => {
         name: 'My Project',
         slug: '',
         description: '',
+        visibility: 'private',
       });
 
       expect(result.success).toBe(false);
@@ -56,6 +59,7 @@ describe('createProjectSchema', () => {
         name: 'My Project',
         slug: 'My-Project',
         description: '',
+        visibility: 'private',
       });
 
       expect(result.success).toBe(false);
@@ -71,6 +75,7 @@ describe('createProjectSchema', () => {
         name: 'My Project',
         slug: 'my project',
         description: '',
+        visibility: 'private',
       });
 
       expect(result.success).toBe(false);
@@ -86,6 +91,7 @@ describe('createProjectSchema', () => {
         name: 'My Project',
         slug: 'my_project!',
         description: '',
+        visibility: 'private',
       });
 
       expect(result.success).toBe(false);
@@ -101,6 +107,7 @@ describe('createProjectSchema', () => {
         name: 'My Project',
         slug: 'my-project',
         description: '',
+        visibility: 'private',
       });
 
       expect(result.success).toBe(true);
@@ -111,6 +118,7 @@ describe('createProjectSchema', () => {
         name: 'My Project',
         slug: 'project-123',
         description: '',
+        visibility: 'private',
       });
 
       expect(result.success).toBe(true);
@@ -121,6 +129,7 @@ describe('createProjectSchema', () => {
         name: 'My Project',
         slug: '123-456',
         description: '',
+        visibility: 'private',
       });
 
       expect(result.success).toBe(true);
@@ -133,6 +142,7 @@ describe('createProjectSchema', () => {
         name: 'My Project',
         slug: 'my-project',
         description: '',
+        visibility: 'private',
       });
 
       expect(result.success).toBe(true);
@@ -143,6 +153,7 @@ describe('createProjectSchema', () => {
         name: 'My Project',
         slug: 'my-project',
         description: 'This is a project description',
+        visibility: 'private',
       });
 
       expect(result.success).toBe(true);
