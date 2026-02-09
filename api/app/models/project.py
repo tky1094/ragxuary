@@ -39,7 +39,8 @@ class Project(Base):
     name: Mapped[str] = mapped_column(String(200))
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     visibility: Mapped[ProjectVisibility] = mapped_column(
-        Enum(ProjectVisibility), default=ProjectVisibility.PRIVATE
+        Enum(ProjectVisibility, values_callable=lambda x: [e.value for e in x]),
+        default=ProjectVisibility.PRIVATE,
     )
     owner_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE")

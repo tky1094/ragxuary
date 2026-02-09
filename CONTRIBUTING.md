@@ -35,14 +35,19 @@ Thank you for your interest in contributing to ragxuary! This guide will help yo
    alembic upgrade head
    ```
 
-4. **Set up the frontend**
+4. **Create the test database**
+   ```bash
+   docker exec postgres psql -U ragxuary -c "CREATE DATABASE ragxuary_test;"
+   ```
+
+5. **Set up the frontend**
    ```bash
    cd web
    corepack enable
    pnpm install
    ```
 
-5. **Create environment files**
+6. **Create environment files**
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
@@ -172,6 +177,8 @@ test: Add unit tests for auth service (#25)
 | Critical business logic | 80% | 90%+ |
 
 ### Running Tests
+
+Backend tests run against PostgreSQL (requires `ragxuary_test` database — see Initial Setup step 4).
 
 **Backend:**
 ```bash
