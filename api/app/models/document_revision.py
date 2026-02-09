@@ -39,7 +39,9 @@ class DocumentRevision(Base):
     document_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("documents.id", ondelete="CASCADE")
     )
-    change_type: Mapped[ChangeType] = mapped_column(Enum(ChangeType))
+    change_type: Mapped[ChangeType] = mapped_column(
+        Enum(ChangeType, values_callable=lambda x: [e.value for e in x])
+    )
     title: Mapped[str] = mapped_column(String(200))
     content: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
