@@ -65,7 +65,7 @@ export function CodeBlock({ children, className, ...props }: CodeBlockProps) {
   // Block code with language label and copy button
   return (
     <>
-      <div className="flex items-center justify-between rounded-t-lg border-b border-white/10 bg-[#161b22] px-4 py-2 text-neutral-400 text-xs">
+      <div className="flex items-center justify-between rounded-t-lg border-white/10 border-b bg-[#161b22] px-4 py-2 text-neutral-400 text-xs">
         <span>{language}</span>
         <button
           type="button"

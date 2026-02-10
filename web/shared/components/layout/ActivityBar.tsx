@@ -93,7 +93,7 @@ function ActivityBarItem({
           {/* Active indicator bar */}
           <span
             className={cn(
-              'absolute left-0 top-1/2 h-6 w-0.5 -translate-y-1/2 rounded-r-sm bg-activity-bar-indicator transition-opacity',
+              'absolute top-1/2 left-0 h-6 w-0.5 -translate-y-1/2 rounded-r-sm bg-activity-bar-indicator transition-opacity',
               isActive ? 'opacity-100' : 'opacity-0'
             )}
           />
@@ -104,7 +104,7 @@ function ActivityBarItem({
         side="right"
         sideOffset={8}
         hideArrow
-        className="border-0 bg-activity-bar-tooltip px-2 py-1 text-xs text-activity-bar-tooltip-foreground"
+        className="border-0 bg-activity-bar-tooltip px-2 py-1 text-activity-bar-tooltip-foreground text-xs"
       >
         {t(item.labelKey)}
       </TooltipContent>
@@ -141,7 +141,7 @@ function UserMenu({ locale }: { locale: string }) {
             >
               <Avatar size="default" className="cursor-pointer rounded-md">
                 <AvatarImage src={undefined} alt={user?.name || 'User'} />
-                <AvatarFallback className="bg-activity-bar-foreground text-activity-bar text-xs font-medium rounded-md">
+                <AvatarFallback className="rounded-md bg-activity-bar-foreground font-medium text-activity-bar text-xs">
                   {initials}
                 </AvatarFallback>
               </Avatar>
@@ -152,7 +152,7 @@ function UserMenu({ locale }: { locale: string }) {
           side="right"
           sideOffset={8}
           hideArrow
-          className="border-0 bg-activity-bar-tooltip px-2 py-1 text-xs text-activity-bar-tooltip-foreground"
+          className="border-0 bg-activity-bar-tooltip px-2 py-1 text-activity-bar-tooltip-foreground text-xs"
         >
           {tNav('account')}
         </TooltipContent>
@@ -163,7 +163,7 @@ function UserMenu({ locale }: { locale: string }) {
         sideOffset={12}
         className="w-64 border-activity-bar-border bg-activity-bar p-0"
       >
-        <div className="border-b border-activity-bar-border p-3">
+        <div className="border-activity-bar-border border-b p-3">
           <p className="truncate font-medium text-activity-bar-foreground-active text-sm">
             {user?.name || 'User'}
           </p>
@@ -200,7 +200,7 @@ export function ActivityBar() {
 
   return (
     <TooltipProvider delayDuration={200}>
-      <aside className="fixed left-0 top-0 z-50 flex h-screen w-12 flex-col border-r border-activity-bar-border bg-activity-bar select-none">
+      <aside className="fixed top-0 left-0 z-50 flex h-screen w-12 select-none flex-col border-activity-bar-border border-r bg-activity-bar">
         {/* Top navigation items */}
         <nav className="flex flex-1 flex-col items-center pt-3">
           {topNavItems.map((item) => (
