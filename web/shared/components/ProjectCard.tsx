@@ -70,7 +70,7 @@ export function ProjectCard({
     <Card
       className={cn(
         'group rounded-md border-border/60 bg-card/80 shadow-none transition-all duration-200',
-        'hover:border-border hover:bg-card hover:shadow-sm py-1.5',
+        'py-1.5 hover:border-border hover:bg-card hover:shadow-sm',
         className
       )}
     >

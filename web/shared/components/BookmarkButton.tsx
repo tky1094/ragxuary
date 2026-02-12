@@ -88,7 +88,7 @@ export function BookmarkButton({
       aria-label={isBookmarked ? t('removeBookmark') : t('addBookmark')}
       className={cn(
         'transition-all duration-150',
-        isLoading && 'opacity-50 pointer-events-none',
+        isLoading && 'pointer-events-none opacity-50',
         isAnimating && 'animate-bookmark-pop',
         className
       )}
@@ -98,7 +98,7 @@ export function BookmarkButton({
           iconSize,
           'transition-colors duration-200',
           isBookmarked
-            ? 'fill-[var(--bookmark-active)] text-[var(--bookmark-active)]'
+            ? 'fill-(--bookmark-active) text-(--bookmark-active)'
             : 'text-muted-foreground hover:text-foreground'
         )}
         strokeWidth={isBookmarked ? 2 : 1.5}

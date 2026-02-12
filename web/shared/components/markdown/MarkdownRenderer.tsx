@@ -42,7 +42,7 @@ export function MarkdownRenderer({
   return (
     <div
       className={cn(
-        'prose max-w-none dark:prose-invert',
+        'prose dark:prose-invert max-w-none',
         // Reset prose <pre> styles to avoid conflict with highlight.js
         'prose-pre:bg-transparent prose-pre:p-0',
         // Remove decorative backticks added by Typography plugin
