@@ -24,6 +24,16 @@ describe('MarkdownRenderer', () => {
 
     const heading = screen.getByRole('heading', { level: 2 });
     expect(heading).toHaveAttribute('id', 'my-heading');
+    expect(heading.textContent).toContain('My Heading');
+  });
+
+  it('should render anchor link before heading text', () => {
+    const { container } = render(<MarkdownRenderer content="## My Heading" />);
+
+    const anchorLink = container.querySelector('.anchor-link');
+    expect(anchorLink).toBeInTheDocument();
+    expect(anchorLink).toHaveAttribute('href', '#my-heading');
+    expect(anchorLink?.textContent).toBe('#');
   });
 
   it('should render GFM tables', () => {
