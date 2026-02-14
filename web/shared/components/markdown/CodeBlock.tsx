@@ -52,7 +52,7 @@ export function CodeBlock({ children, className, ...props }: CodeBlockProps) {
     return (
       <code
         className={cn(
-          'rounded bg-muted px-1.5 py-0.5 font-mono text-sm',
+          'rounded bg-muted px-1.5 py-0.5 font-mono text-foreground text-sm',
           className
         )}
         {...props}
