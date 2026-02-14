@@ -1,7 +1,11 @@
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
-import { useTranslations } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
+import { Suspense } from 'react';
+
 import { auth } from '@/auth';
+import { DocsContent, DocsContentSkeleton } from '@/features/docs';
+import { prefetchDocument } from '@/features/docs/lib/prefetch';
 
 interface DocPageProps {
   params: Promise<{
@@ -21,30 +25,13 @@ export default async function DocPage({ params }: DocPageProps) {
   }
 
   const path = docPath.join('/');
-
-  return <DocContent projectSlug={projectSlug} path={path} />;
-}
-
-function DocContent({
-  projectSlug,
-  path,
-}: {
-  projectSlug: string;
-  path: string;
-}) {
-  const t = useTranslations();
+  const queryClient = await prefetchDocument(projectSlug, path);
 
   return (
-    <div>
-      <nav className="mb-4 text-muted-foreground text-sm">
-        {projectSlug} / {path}
-      </nav>
-      <article className="prose max-w-none">
-        <h1>
-          {t('docs.title')}: {path}
-        </h1>
-        {/* TODO: Display document content */}
-      </article>
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Suspense fallback={<DocsContentSkeleton />}>
+        <DocsContent slug={projectSlug} path={path} />
+      </Suspense>
+    </HydrationBoundary>
   );
 }
