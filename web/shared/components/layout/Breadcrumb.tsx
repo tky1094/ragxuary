@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { Fragment, useMemo } from 'react';
 import { Link } from '@/i18n/routing';
 import {
+  BreadcrumbEllipsis,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
@@ -13,6 +14,8 @@ import {
   Breadcrumb as BreadcrumbRoot,
   BreadcrumbSeparator,
 } from '@/shared/components/ui/breadcrumb';
+
+const MAX_VISIBLE_SEGMENTS = 4;
 
 interface BreadcrumbSegment {
   label: string;
@@ -76,33 +79,33 @@ export function Breadcrumb() {
     return result;
   }, [pathname, locale, t]);
 
+  const shouldCollapse = segments.length > MAX_VISIBLE_SEGMENTS;
+  const visibleSegments = shouldCollapse
+    ? [...segments.slice(0, 2), ...segments.slice(-1)]
+    : segments;
+
   return (
     <BreadcrumbRoot>
       <BreadcrumbList>
-        {segments.map((segment, index) => (
-          <Fragment key={`${index}-${segment.href}`}>
-            {index > 0 && <BreadcrumbSeparator />}
-            <BreadcrumbItem>
-              {segment.isLast ? (
-                <BreadcrumbPage
-                  className={index === 0 ? 'font-bold font-serif text-lg' : ''}
-                >
-                  {index === 0 && (
-                    <Image
-                      src="/icon.svg"
-                      alt=""
-                      width={32}
-                      height={32}
-                      className="mr-1.5 inline-block align-middle dark:invert"
-                    />
-                  )}
-                  {segment.label}
-                </BreadcrumbPage>
-              ) : (
-                <BreadcrumbLink asChild>
-                  <Link
-                    href={segment.href}
-                    className={`inline-flex items-center ${index === 0 ? 'font-bold font-serif text-foreground text-lg' : ''}`}
+        {visibleSegments.map((segment, index) => {
+          const showEllipsis = shouldCollapse && index === 2;
+          return (
+            <Fragment key={`${index}-${segment.href}`}>
+              {index > 0 && <BreadcrumbSeparator />}
+              {showEllipsis && (
+                <>
+                  <BreadcrumbItem>
+                    <BreadcrumbEllipsis />
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                </>
+              )}
+              <BreadcrumbItem>
+                {segment.isLast ? (
+                  <BreadcrumbPage
+                    className={
+                      index === 0 ? 'font-bold font-serif text-lg' : ''
+                    }
                   >
                     {index === 0 && (
                       <Image
@@ -110,16 +113,34 @@ export function Breadcrumb() {
                         alt=""
                         width={32}
                         height={32}
-                        className="mr-1.5 dark:invert"
+                        className="mr-1.5 inline-block align-middle dark:invert"
                       />
                     )}
                     {segment.label}
-                  </Link>
-                </BreadcrumbLink>
-              )}
-            </BreadcrumbItem>
-          </Fragment>
-        ))}
+                  </BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink asChild>
+                    <Link
+                      href={segment.href}
+                      className={`inline-flex items-center ${index === 0 ? 'font-bold font-serif text-foreground text-lg' : ''}`}
+                    >
+                      {index === 0 && (
+                        <Image
+                          src="/icon.svg"
+                          alt=""
+                          width={32}
+                          height={32}
+                          className="mr-1.5 dark:invert"
+                        />
+                      )}
+                      {segment.label}
+                    </Link>
+                  </BreadcrumbLink>
+                )}
+              </BreadcrumbItem>
+            </Fragment>
+          );
+        })}
       </BreadcrumbList>
     </BreadcrumbRoot>
   );
