@@ -1,16 +1,21 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { MarkdownRenderer } from '@/shared/components/markdown/MarkdownRenderer';
 
 describe('MarkdownRenderer', () => {
-  beforeAll(() => {
+  beforeAll(async () => {
     // CodeBlock uses navigator.clipboard which is unavailable in jsdom
     Object.defineProperty(navigator, 'clipboard', {
       value: { writeText: vi.fn().mockResolvedValue(undefined) },
       configurable: true,
     });
-  });
+
+    // Warm up Shiki highlighter (WASM init can be slow in CI)
+    render(<MarkdownRenderer content="warm" />);
+    await screen.findByText('warm');
+    cleanup();
+  }, 30_000);
 
   it('should render basic markdown text', async () => {
     render(<MarkdownRenderer content="Hello **world**" />);
