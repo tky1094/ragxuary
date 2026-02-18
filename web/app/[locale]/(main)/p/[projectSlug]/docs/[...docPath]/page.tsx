@@ -1,11 +1,11 @@
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import { redirect } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
 import { auth } from '@/auth';
+import { Documents } from '@/client';
 import { DocsContent, DocsContentSkeleton } from '@/features/docs';
-import { prefetchDocument } from '@/features/docs/lib/prefetch';
+import { getServerClient } from '@/shared/lib/api/client';
 
 interface DocPageProps {
   params: Promise<{
@@ -25,13 +25,27 @@ export default async function DocPage({ params }: DocPageProps) {
   }
 
   const path = docPath.join('/');
-  const queryClient = await prefetchDocument(projectSlug, path);
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense fallback={<DocsContentSkeleton />}>
-        <DocsContent slug={projectSlug} path={path} />
-      </Suspense>
-    </HydrationBoundary>
+    <Suspense fallback={<DocsContentSkeleton />}>
+      <DocsContentLoader slug={projectSlug} path={path} />
+    </Suspense>
   );
+}
+
+async function DocsContentLoader({
+  slug,
+  path,
+}: {
+  slug: string;
+  path: string;
+}) {
+  const client = getServerClient();
+  const { data: document } = await Documents.getDocument({
+    client,
+    path: { slug, path },
+    throwOnError: true,
+  });
+
+  return <DocsContent document={document} />;
 }

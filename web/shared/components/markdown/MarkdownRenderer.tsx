@@ -1,43 +1,27 @@
-'use client';
-
-import rehypeShiki from '@shikijs/rehype';
-import type { Components } from 'react-markdown';
-import { MarkdownHooks } from 'react-markdown';
-import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import rehypeSlug from 'rehype-slug';
-import remarkGfm from 'remark-gfm';
-
+import { processMarkdown } from '@/shared/lib/markdown/process-markdown';
 import type { MarkdownRendererProps } from '@/shared/lib/markdown/types';
 import { cn } from '@/shared/lib/utils';
 
-import { CodeBlock } from './CodeBlock';
-
-const defaultComponents: Partial<Components> = {
-  code: CodeBlock,
-};
+import { CodeBlockActions } from './CodeBlockActions';
 
 /**
- * Shared Markdown renderer built on react-markdown.
+ * Server Component Markdown renderer using unified pipeline.
  *
  * Features:
  * - GitHub Flavored Markdown (tables, task lists, strikethrough)
- * - Syntax highlighting via Shiki (github-light / github-dark)
+ * - Syntax highlighting via Shiki (everforest-light / everforest-dark)
  * - Heading anchors with auto-link
- * - Copy-to-clipboard for code blocks
+ * - Copy-to-clipboard for code blocks (via CodeBlockActions client component)
  * - Dark mode support (prose-invert)
  *
- * Customizable via `componentOverrides` for feature-specific needs
- * (e.g., citation links in RAG chat).
+ * Shiki highlighting runs on the server — no WASM or grammar bundles
+ * are shipped to the client.
  */
-export function MarkdownRenderer({
+export async function MarkdownRenderer({
   content,
   className,
-  componentOverrides,
-}: MarkdownRendererProps) {
-  const components: Partial<Components> = {
-    ...defaultComponents,
-    ...componentOverrides,
-  };
+}: Omit<MarkdownRendererProps, 'componentOverrides'>) {
+  const html = await processMarkdown(content);
 
   return (
     <div
@@ -45,8 +29,11 @@ export function MarkdownRenderer({
         'prose dark:prose-invert max-w-none',
         // Style prose <pre> as a bordered container for Shiki code blocks
         'prose-pre:overflow-hidden prose-pre:rounded-lg prose-pre:border prose-pre:border-border prose-pre:bg-transparent prose-pre:p-0',
-        // Remove decorative backticks added by Typography plugin
+        // Inline code styling
         'prose-code:before:content-none prose-code:after:content-none',
+        'prose-code:rounded prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:font-mono prose-code:text-sm',
+        // Exclude code inside pre (Shiki code blocks) from inline styling
+        'prose-pre:prose-code:bg-transparent prose-pre:prose-code:p-0',
         // Heading anchor links: hidden by default, visible on heading hover
         '[&_:is(h1,h2,h3,h4,h5,h6)]:relative',
         '[&_.anchor-link]:absolute [&_.anchor-link]:right-full [&_.anchor-link]:pr-1 [&_.anchor-link]:opacity-0 [&_.anchor-link]:transition-opacity [&_.anchor-link]:duration-150',
@@ -55,39 +42,9 @@ export function MarkdownRenderer({
         className
       )}
     >
-      <MarkdownHooks
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[
-          rehypeSlug,
-          [
-            rehypeAutolinkHeadings,
-            {
-              behavior: 'prepend',
-              properties: {
-                className: ['anchor-link'],
-                ariaHidden: true,
-                tabIndex: -1,
-              },
-              content: { type: 'text', value: '#' },
-            },
-          ],
-          [
-            rehypeShiki,
-            {
-              themes: {
-                light: 'everforest-light',
-                dark: 'everforest-dark',
-              },
-              defaultColor: false,
-              defaultLanguage: 'text',
-              addLanguageClass: true,
-            },
-          ],
-        ]}
-        components={components}
-      >
-        {content}
-      </MarkdownHooks>
+      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: HTML is generated server-side by unified pipeline with sanitized markdown */}
+      <div dangerouslySetInnerHTML={{ __html: html }} />
+      <CodeBlockActions />
     </div>
   );
 }

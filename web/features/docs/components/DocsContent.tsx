@@ -1,56 +1,31 @@
-'use client';
-
-import { useTranslations } from 'next-intl';
-import { useEffect, useMemo } from 'react';
+import { getTranslations } from 'next-intl/server';
 
 import { MarkdownRenderer } from '@/shared/components/markdown';
-import { extractHeadings } from '@/shared/lib/markdown/extract-headings';
-import type { Heading } from '@/shared/lib/markdown/types';
 import { cn } from '@/shared/lib/utils';
 
-import { useDocumentSuspense } from '../hooks/useDocument';
-
 export interface DocsContentProps {
-  /** Project slug */
-  slug: string;
-  /** Document path */
-  path: string;
+  /** Document data fetched on the server */
+  document: {
+    title: string;
+    content: string | null;
+    updated_at: string;
+  };
   /** Additional CSS class names */
   className?: string;
-  /** Callback when headings are extracted (for TOC in #124) */
-  onHeadingsExtracted?: (headings: Heading[]) => void;
 }
 
 /**
- * Main documentation content viewer.
- * Fetches a document and renders it with MarkdownRenderer.
- * Extracts headings for table-of-contents integration.
+ * Main documentation content viewer (Server Component).
+ * Receives pre-fetched document data and renders it with MarkdownRenderer.
  */
-export function DocsContent({
-  slug,
-  path,
-  className,
-  onHeadingsExtracted,
-}: DocsContentProps) {
-  const t = useTranslations('docs');
-  const { data: document } = useDocumentSuspense(slug, path);
+export async function DocsContent({ document, className }: DocsContentProps) {
+  const t = await getTranslations('docs');
 
-  const headings = useMemo(() => {
-    if (!document.content) return [];
-    return extractHeadings(document.content);
-  }, [document.content]);
-
-  useEffect(() => {
-    onHeadingsExtracted?.(headings);
-  }, [headings, onHeadingsExtracted]);
-
-  const lastUpdated = useMemo(() => {
-    return new Intl.DateTimeFormat('default', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }).format(new Date(document.updated_at));
-  }, [document.updated_at]);
+  const lastUpdated = new Intl.DateTimeFormat('default', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(new Date(document.updated_at));
 
   return (
     <article
@@ -70,7 +45,7 @@ export function DocsContent({
       {document.content ? (
         <MarkdownRenderer
           content={document.content}
-          className="prose-lg prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-headings:font-serif prose-headings:tracking-tight"
+          className="prose-lg prose-headings:font-serif prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-headings:tracking-tight"
         />
       ) : (
         <div className="py-12 text-center text-muted-foreground">
