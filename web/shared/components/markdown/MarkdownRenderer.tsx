@@ -1,9 +1,9 @@
 'use client';
 
+import rehypeShiki from '@shikijs/rehype';
 import type { Components } from 'react-markdown';
-import ReactMarkdown from 'react-markdown';
+import { MarkdownHooks } from 'react-markdown';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
-import rehypeHighlight from 'rehype-highlight';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 
@@ -21,7 +21,7 @@ const defaultComponents: Partial<Components> = {
  *
  * Features:
  * - GitHub Flavored Markdown (tables, task lists, strikethrough)
- * - Syntax highlighting via highlight.js
+ * - Syntax highlighting via Shiki (github-light / github-dark)
  * - Heading anchors with auto-link
  * - Copy-to-clipboard for code blocks
  * - Dark mode support (prose-invert)
@@ -43,8 +43,8 @@ export function MarkdownRenderer({
     <div
       className={cn(
         'prose dark:prose-invert max-w-none',
-        // Reset prose <pre> styles to avoid conflict with highlight.js
-        'prose-pre:bg-transparent prose-pre:p-0',
+        // Style prose <pre> as a bordered container for Shiki code blocks
+        'prose-pre:overflow-hidden prose-pre:rounded-lg prose-pre:border prose-pre:border-border prose-pre:bg-transparent prose-pre:p-0',
         // Remove decorative backticks added by Typography plugin
         'prose-code:before:content-none prose-code:after:content-none',
         // Heading anchor links: hidden by default, visible on heading hover
@@ -55,7 +55,7 @@ export function MarkdownRenderer({
         className
       )}
     >
-      <ReactMarkdown
+      <MarkdownHooks
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[
           rehypeSlug,
@@ -71,12 +71,23 @@ export function MarkdownRenderer({
               content: { type: 'text', value: '#' },
             },
           ],
-          rehypeHighlight,
+          [
+            rehypeShiki,
+            {
+              themes: {
+                light: 'everforest-light',
+                dark: 'everforest-dark',
+              },
+              defaultColor: false,
+              defaultLanguage: 'text',
+              addLanguageClass: true,
+            },
+          ],
         ]}
         components={components}
       >
         {content}
-      </ReactMarkdown>
+      </MarkdownHooks>
     </div>
   );
 }

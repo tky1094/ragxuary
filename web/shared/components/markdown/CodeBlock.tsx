@@ -17,9 +17,8 @@ type CodeBlockProps = ComponentPropsWithoutRef<'code'>;
  * Code block component used as a react-markdown `code` override.
  *
  * - Inline code: renders a styled `<code>` element.
- * - Block code (has `language-*` className): renders with a language label
- *   and copy-to-clipboard button. Syntax highlighting is applied by
- *   rehype-highlight via CSS classes.
+ * - Block code: renders with a language label and copy-to-clipboard button.
+ *   Detected by `language-*` className or Shiki-processed React element children.
  */
 export function CodeBlock({ children, className, ...props }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
@@ -33,8 +32,8 @@ export function CodeBlock({ children, className, ...props }: CodeBlockProps) {
     };
   }, []);
 
-  const isBlock = /language-(\w+)/.test(className ?? '');
   const language = className?.match(/language-(\w+)/)?.[1] ?? '';
+  const isBlock = !!language || hasElementChildren(children);
 
   const handleCopy = useCallback(async () => {
     const text = extractTextContent(children);
@@ -65,12 +64,12 @@ export function CodeBlock({ children, className, ...props }: CodeBlockProps) {
   // Block code with language label and copy button
   return (
     <>
-      <div className="flex items-center justify-between rounded-t-lg border-white/10 border-b bg-[#161b22] px-4 py-2 text-neutral-400 text-xs">
+      <div className="flex items-center justify-between rounded-t-lg border-border border-b bg-muted px-4 py-2 text-muted-foreground text-xs">
         <span>{language}</span>
         <button
           type="button"
           onClick={handleCopy}
-          className="flex items-center gap-1 transition-colors hover:text-neutral-200"
+          className="flex items-center gap-1 transition-colors hover:text-foreground"
           aria-label={copied ? 'Copied' : 'Copy code'}
         >
           {copied ? (
@@ -80,11 +79,24 @@ export function CodeBlock({ children, className, ...props }: CodeBlockProps) {
           )}
         </button>
       </div>
-      <code className={cn('!rounded-t-none', className)} {...props}>
+      <code className={cn('block rounded-t-none! p-4', className)} {...props}>
         {children}
       </code>
     </>
   );
+}
+
+/**
+ * Check if children contain React elements (e.g. Shiki span output),
+ * indicating this is a block code element even without a language class.
+ */
+function hasElementChildren(children: React.ReactNode): boolean {
+  if (Array.isArray(children)) {
+    return children.some(
+      (child) => typeof child === 'object' && child !== null
+    );
+  }
+  return typeof children === 'object' && children !== null;
 }
 
 /**
