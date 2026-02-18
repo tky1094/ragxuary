@@ -1,2 +1,2 @@
-export { CodeBlock } from './CodeBlock';
+export { CodeBlockActions } from './CodeBlockActions';
 export { MarkdownRenderer } from './MarkdownRenderer';
