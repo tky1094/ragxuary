@@ -115,7 +115,11 @@
     "search": "Search Documents",
     "tableOfContents": "Table of Contents",
     "lastUpdated": "Last Updated",
-    "noDocs": "No documents found"
+    "noDocs": "No documents found",
+    "sidebar": {
+      "expand": "Expand",
+      "collapse": "Collapse"
+    }
   },
   "chat": {
     "title": "AI Chat",
