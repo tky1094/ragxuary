@@ -14,6 +14,8 @@ import { DocsSidebarItem } from './DocsSidebarItem';
 export interface DocsSidebarProps {
   /** Project slug for fetching document tree and URL construction */
   slug: string;
+  /** Project name displayed as sidebar header */
+  projectName?: string;
   /** Additional CSS class names */
   className?: string;
 }
@@ -54,10 +56,16 @@ function buildInitialExpandedPaths(
   return expanded;
 }
 
-export function DocsSidebar({ slug, className }: DocsSidebarProps) {
+export function DocsSidebar({
+  slug,
+  projectName,
+  className,
+}: DocsSidebarProps) {
   const t = useTranslations('docs');
   const params = useParams();
   const pathname = usePathname();
+
+  const headerTitle = projectName ?? t('title');
 
   const locale = params.locale as string;
   const docsBasePath = `/${locale}/p/${slug}/docs/`;
@@ -95,11 +103,11 @@ export function DocsSidebar({ slug, className }: DocsSidebarProps) {
 
   if (!tree || tree.length === 0) {
     return (
-      <nav className={cn('px-3 py-4', className)} aria-label={t('title')}>
+      <nav className={cn('px-3 py-4', className)} aria-label={headerTitle}>
         <div className="mb-3 flex items-center gap-2 px-2">
           <BookText className="h-4 w-4 text-muted-foreground" />
           <span className="font-semibold text-foreground text-sm">
-            {t('title')}
+            {headerTitle}
           </span>
         </div>
         <p className="px-2 text-muted-foreground text-sm">{t('noDocs')}</p>
@@ -108,11 +116,11 @@ export function DocsSidebar({ slug, className }: DocsSidebarProps) {
   }
 
   return (
-    <nav className={cn('px-3 py-4', className)} aria-label={t('title')}>
+    <nav className={cn('px-3 py-4', className)} aria-label={headerTitle}>
       <div className="mb-3 flex items-center gap-2 px-2">
         <BookText className="h-4 w-4 text-muted-foreground" />
         <span className="font-semibold text-foreground text-sm">
-          {t('title')}
+          {headerTitle}
         </span>
       </div>
       <div role="tree">

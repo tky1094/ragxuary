@@ -64,7 +64,12 @@ describe('DocsSidebar', () => {
     vi.clearAllMocks();
   });
 
-  it('should render the sidebar header', () => {
+  it('should render project name as sidebar header when provided', () => {
+    render(<DocsSidebar slug="test-project" projectName="My Project" />);
+    expect(screen.getByText('My Project')).toBeInTheDocument();
+  });
+
+  it('should fall back to translation when projectName is not provided', () => {
     render(<DocsSidebar slug="test-project" />);
     expect(screen.getByText('Documentation')).toBeInTheDocument();
   });
@@ -75,9 +80,9 @@ describe('DocsSidebar', () => {
   });
 
   it('should have aria-label on nav', () => {
-    render(<DocsSidebar slug="test-project" />);
+    render(<DocsSidebar slug="test-project" projectName="My Project" />);
     expect(
-      screen.getByRole('navigation', { name: 'Documentation' })
+      screen.getByRole('navigation', { name: 'My Project' })
     ).toBeInTheDocument();
   });
 
