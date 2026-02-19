@@ -16,10 +16,12 @@ interface DocPageProps {
 }
 
 export default async function DocPage({ params }: DocPageProps) {
-  const { locale, projectSlug, docPath } = await params;
+  const [{ locale, projectSlug, docPath }, session] = await Promise.all([
+    params,
+    auth(),
+  ]);
   setRequestLocale(locale);
 
-  const session = await auth();
   if (!session) {
     redirect(`/${locale}/login`);
   }

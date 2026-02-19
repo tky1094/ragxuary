@@ -11,10 +11,9 @@ interface ProjectsPageProps {
 }
 
 export default async function ProjectsPage({ params }: ProjectsPageProps) {
-  const { locale } = await params;
+  const [{ locale }, session] = await Promise.all([params, auth()]);
   setRequestLocale(locale);
 
-  const session = await auth();
   if (!session) {
     redirect(`/${locale}/login`);
   }
