@@ -14,10 +14,12 @@ interface ConversationPageProps {
 export default async function ConversationPage({
   params,
 }: ConversationPageProps) {
-  const { locale, projectSlug, conversationId } = await params;
+  const [{ locale, projectSlug, conversationId }, session] = await Promise.all([
+    params,
+    auth(),
+  ]);
   setRequestLocale(locale);
 
-  const session = await auth();
   if (!session) {
     redirect(`/${locale}/login`);
   }

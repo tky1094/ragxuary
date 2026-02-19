@@ -12,10 +12,12 @@ interface EditDocPageProps {
 }
 
 export default async function EditDocPage({ params }: EditDocPageProps) {
-  const { locale, projectSlug, docPath } = await params;
+  const [{ locale, projectSlug, docPath }, session] = await Promise.all([
+    params,
+    auth(),
+  ]);
   setRequestLocale(locale);
 
-  const session = await auth();
   if (!session) {
     redirect(`/${locale}/login`);
   }
