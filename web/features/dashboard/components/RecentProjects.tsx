@@ -2,9 +2,8 @@
 
 import { useTranslations } from 'next-intl';
 
-import { ProjectCard } from '@/features/projects/components/ProjectCard';
-import { useProjectListSuspense } from '@/features/projects/hooks/useProjects';
-import { EmptyProjects } from '@/shared/components';
+import { EmptyProjects, ProjectCard } from '@/shared/components';
+import { useProjectListSuspense } from '@/shared/hooks';
 
 /**
  * Recent projects list component using Suspense.
