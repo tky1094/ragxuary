@@ -37,14 +37,8 @@ export function useProjectList(skip = 0, limit = 100) {
   };
 }
 
-/**
- * Suspense-enabled hook for fetching the list of projects.
- * Use with React Suspense and server-side prefetching via HydrationBoundary.
- * Data must be prefetched on the server, otherwise this will suspend indefinitely.
- */
-export function useProjectListSuspense(skip = 0, limit = 100) {
-  return useSuspenseQuery(listProjectsOptions({ query: { skip, limit } }));
-}
+// Re-export from shared (used by multiple features)
+export { useProjectListSuspense } from '@/shared/hooks';
 
 /**
  * Hook for fetching a single project by slug.
