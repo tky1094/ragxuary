@@ -115,7 +115,11 @@
     "search": "ドキュメント検索",
     "tableOfContents": "目次",
     "lastUpdated": "最終更新",
-    "noDocs": "ドキュメントがありません"
+    "noDocs": "ドキュメントがありません",
+    "sidebar": {
+      "expand": "展開",
+      "collapse": "折りたたむ"
+    }
   },
   "chat": {
     "title": "AIチャット",
