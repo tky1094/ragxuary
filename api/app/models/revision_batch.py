@@ -40,7 +40,9 @@ class RevisionBatch(Base):
     # Relationships
     project: Mapped["Project"] = relationship(back_populates="revision_batches")
     user: Mapped["User | None"] = relationship(back_populates="revision_batches")
-    revisions: Mapped[list["DocumentRevision"]] = relationship(back_populates="batch")
+    revisions: Mapped[list["DocumentRevision"]] = relationship(
+        back_populates="batch", passive_deletes=True
+    )
 
     __table_args__ = (
         Index("revision_batches_project_idx", "project_id", "created_at"),

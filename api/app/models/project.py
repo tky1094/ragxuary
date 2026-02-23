@@ -58,12 +58,18 @@ class Project(Base):
 
     # Relationships
     owner: Mapped["User"] = relationship(back_populates="projects")
-    documents: Mapped[list["Document"]] = relationship(back_populates="project")
+    documents: Mapped[list["Document"]] = relationship(
+        back_populates="project", passive_deletes=True
+    )
     revision_batches: Mapped[list["RevisionBatch"]] = relationship(
-        back_populates="project"
+        back_populates="project", passive_deletes=True
     )
-    members: Mapped[list["ProjectMember"]] = relationship(back_populates="project")
+    members: Mapped[list["ProjectMember"]] = relationship(
+        back_populates="project", passive_deletes=True
+    )
     bookmarked_by: Mapped[list["ProjectBookmark"]] = relationship(
-        back_populates="project"
+        back_populates="project", passive_deletes=True
     )
-    uploads: Mapped[list["Upload"]] = relationship(back_populates="project")
+    uploads: Mapped[list["Upload"]] = relationship(
+        back_populates="project", passive_deletes=True
+    )

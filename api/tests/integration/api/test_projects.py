@@ -472,6 +472,42 @@ class TestDeleteProject:
             )
         assert get_response.status_code == 404
 
+    async def test_delete_project_with_documents(
+        self,
+        client: AsyncClient,
+        auth_headers: dict[str, str],
+        test_project_data: dict[str, Any],
+    ) -> None:
+        """Test deleting a project that has related documents succeeds."""
+        with patch(
+            "app.api.deps.is_token_blacklisted",
+            new_callable=AsyncMock,
+            return_value=False,
+        ):
+            # Create project
+            await client.post(
+                "/api/v1/projects", json=test_project_data, headers=auth_headers
+            )
+
+            # Create documents
+            await client.put(
+                "/api/v1/projects/test-project/docs/getting-started",
+                json={"title": "Getting Started", "content": "# Hello"},
+                headers=auth_headers,
+            )
+            await client.put(
+                "/api/v1/projects/test-project/docs/guide",
+                json={"title": "Guide", "content": "# Guide"},
+                headers=auth_headers,
+            )
+
+            # Delete project with related documents
+            response = await client.delete(
+                "/api/v1/projects/test-project", headers=auth_headers
+            )
+
+        assert response.status_code == 204
+
     async def test_delete_project_not_found(
         self, client: AsyncClient, auth_headers: dict[str, str]
     ) -> None:
