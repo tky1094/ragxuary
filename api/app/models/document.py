@@ -64,6 +64,7 @@ class Document(Base):
     children: Mapped[list["Document"]] = relationship(
         back_populates="parent",
         foreign_keys=[parent_id],
+        passive_deletes=True,
     )
     revisions: Mapped[list["DocumentRevision"]] = relationship(
         back_populates="document",
