@@ -7,6 +7,8 @@ import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import { unified } from 'unified';
 
+import { SHIKI_CONFIG } from './highlighter';
+
 /**
  * Process markdown to HTML on the server using unified pipeline.
  *
@@ -31,13 +33,10 @@ export async function processMarkdown(content: string): Promise<string> {
       content: { type: 'text', value: '#' },
     })
     .use(rehypeShiki, {
-      themes: {
-        light: 'everforest-light',
-        dark: 'everforest-dark',
-      },
-      defaultColor: false,
-      defaultLanguage: 'text',
-      addLanguageClass: true,
+      themes: SHIKI_CONFIG.themes,
+      defaultColor: SHIKI_CONFIG.defaultColor,
+      defaultLanguage: SHIKI_CONFIG.defaultLanguage,
+      addLanguageClass: SHIKI_CONFIG.addLanguageClass,
     })
     .use(rehypeStringify)
     .process(content);
