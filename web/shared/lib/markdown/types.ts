@@ -14,6 +14,19 @@ export interface Heading {
 }
 
 /**
+ * Options for the processMarkdown pipeline.
+ */
+export interface ProcessMarkdownOptions {
+  /**
+   * Whether to generate heading IDs and anchor links.
+   * When true, adds rehype-slug (heading IDs) and rehype-autolink-headings (# links).
+   * Useful for docs viewer; disable for chat and editor preview.
+   * @default true
+   */
+  anchorLinks?: boolean;
+}
+
+/**
  * Props for the MarkdownRenderer component.
  */
 export interface MarkdownRendererProps {
