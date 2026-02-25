@@ -1,3 +1,4 @@
+import type { ShikiTransformer } from 'shiki';
 import { codeToHtml } from 'shiki';
 
 import { buildCodeOptions } from './highlighter';
@@ -10,11 +11,16 @@ import { buildCodeOptions } from './highlighter';
  *
  * @param code - The source code text
  * @param lang - Language identifier (e.g. 'typescript', 'python')
+ * @param transformers - Optional Shiki transformers (diff, highlight, etc.)
  * @returns HTML string with Shiki-highlighted code
  */
 export async function highlightCode(
   code: string,
-  lang = 'text'
+  lang = 'text',
+  transformers?: ShikiTransformer[]
 ): Promise<string> {
-  return codeToHtml(code, buildCodeOptions(lang));
+  return codeToHtml(
+    code,
+    buildCodeOptions(lang, transformers ? { transformers } : undefined)
+  );
 }
