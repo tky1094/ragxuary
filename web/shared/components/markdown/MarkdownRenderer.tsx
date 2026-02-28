@@ -3,6 +3,7 @@ import type { MarkdownRendererProps } from '@/shared/lib/markdown/types';
 import { cn } from '@/shared/lib/utils';
 
 import { CodeBlockActions } from './CodeBlockActions';
+import { MermaidRenderer } from './MermaidRenderer';
 
 /**
  * Server Component Markdown renderer using unified pipeline.
@@ -45,6 +46,7 @@ export async function MarkdownRenderer({
       {/* biome-ignore lint/security/noDangerouslySetInnerHtml: HTML is generated server-side by unified pipeline with sanitized markdown */}
       <div dangerouslySetInnerHTML={{ __html: html }} />
       <CodeBlockActions />
+      <MermaidRenderer />
     </div>
   );
 }

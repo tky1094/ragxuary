@@ -63,6 +63,32 @@ describe('processMarkdown', () => {
     const html = await processMarkdown('');
     expect(html).toBe('');
   });
+
+  it('should omit anchor links when anchorLinks is false', async () => {
+    const html = await processMarkdown('## My Heading', {
+      anchorLinks: false,
+    });
+    expect(html).not.toContain('id="my-heading"');
+    expect(html).not.toContain('class="anchor-link"');
+    expect(html).toContain('My Heading');
+  });
+
+  it('should still highlight code when anchorLinks is false', async () => {
+    const html = await processMarkdown('```javascript\nconst x = 1;\n```', {
+      anchorLinks: false,
+    });
+    expect(html).toContain('class="shiki');
+    expect(html).toContain('const');
+  });
+
+  it('should render mermaid code block as data-mermaid container', async () => {
+    const html = await processMarkdown(
+      '```mermaid\nflowchart TB\n  A-->B\n```'
+    );
+    expect(html).toContain('data-mermaid');
+    expect(html).toContain('mermaid-container');
+    expect(html).not.toContain('class="shiki');
+  });
 });
 
 describe('MarkdownRenderer', () => {

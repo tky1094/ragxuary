@@ -666,6 +666,77 @@ echo "サービスが起動しました！"
 """,
     ),
     (
+        "examples/diagrams",
+        "ダイアグラム",
+        False,
+        """\
+# Mermaid ダイアグラム
+
+ragxuary では、Markdown 内で Mermaid ダイアグラムを使用できます。
+`mermaid` 言語識別子を付けたコードブロックで記述します。
+
+## システム構成図
+
+```mermaid
+flowchart TB
+  subgraph フロントエンド
+    Web[Next.js ウェブアプリ]
+  end
+  subgraph バックエンド
+    API[FastAPI サーバー]
+    Worker[バックグラウンドワーカー]
+  end
+  subgraph ストレージ
+    DB[(PostgreSQL)]
+    Redis[(Redis)]
+  end
+
+  Web --> API
+  API --> DB
+  API --> Redis
+  Worker --> DB
+  Worker --> Redis
+```
+
+## 認証フロー
+
+```mermaid
+flowchart LR
+  User[ユーザー] -->|POST /auth/login| API
+  API -->|資格情報を検証| DB[(データベース)]
+  DB -->|ユーザー情報| API
+  API -->|JWT トークン| User
+  User -->|Bearer トークン| ProtectedAPI[保護されたエンドポイント]
+```
+
+## ドキュメントのライフサイクル
+
+```mermaid
+flowchart TB
+  Create[ドキュメント作成] --> Draft[下書き]
+  Draft -->|編集| Draft
+  Draft -->|保存| Published[公開済み]
+  Published -->|編集| NewRevision[新しいリビジョン]
+  NewRevision -->|保存| Published
+  Published -->|削除| Archived[アーカイブ]
+```
+
+## 通常のコードブロック
+
+Mermaid 以外のコードブロックは通常通りハイライトされます：
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+```
+""",
+    ),
+    (
         "examples/advanced-usage",
         "応用的な使い方",
         False,
