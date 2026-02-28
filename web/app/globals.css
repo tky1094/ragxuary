@@ -184,6 +184,36 @@
   background-color: oklch(0.5 0.08 80 / 0.2);
 }
 
+/* Mermaid diagram container */
+.mermaid-container {
+  overflow-x: auto;
+  margin: 1rem 0;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background-color: var(--card);
+}
+
+.mermaid-container .mermaid-source {
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.mermaid-container .mermaid-diagram {
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.mermaid-container .mermaid-diagram svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.mermaid-container.mermaid-error {
+  border-color: var(--destructive);
+}
+
 /* Shiki line numbers via CSS counter */
 code[data-line-numbers] {
   counter-reset: line;

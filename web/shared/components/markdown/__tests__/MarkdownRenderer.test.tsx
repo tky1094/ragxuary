@@ -80,6 +80,15 @@ describe('processMarkdown', () => {
     expect(html).toContain('class="shiki');
     expect(html).toContain('const');
   });
+
+  it('should render mermaid code block as data-mermaid container', async () => {
+    const html = await processMarkdown(
+      '```mermaid\nflowchart TB\n  A-->B\n```'
+    );
+    expect(html).toContain('data-mermaid');
+    expect(html).toContain('mermaid-container');
+    expect(html).not.toContain('class="shiki');
+  });
 });
 
 describe('MarkdownRenderer', () => {

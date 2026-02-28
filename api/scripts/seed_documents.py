@@ -666,6 +666,77 @@ echo "Services are running!"
 """,
     ),
     (
+        "examples/diagrams",
+        "Diagrams",
+        False,
+        """\
+# Diagrams with Mermaid
+
+ragxuary supports Mermaid diagrams in Markdown. Use fenced code blocks with
+the `mermaid` language identifier.
+
+## System Architecture
+
+```mermaid
+flowchart TB
+  subgraph Frontend
+    Web[Next.js Web App]
+  end
+  subgraph Backend
+    API[FastAPI Server]
+    Worker[Background Worker]
+  end
+  subgraph Storage
+    DB[(PostgreSQL)]
+    Redis[(Redis)]
+  end
+
+  Web --> API
+  API --> DB
+  API --> Redis
+  Worker --> DB
+  Worker --> Redis
+```
+
+## Authentication Flow
+
+```mermaid
+flowchart LR
+  User -->|POST /auth/login| API
+  API -->|Verify credentials| DB[(Database)]
+  DB -->|User record| API
+  API -->|JWT tokens| User
+  User -->|Bearer token| ProtectedAPI[Protected Endpoint]
+```
+
+## Document Lifecycle
+
+```mermaid
+flowchart TB
+  Create[Create Document] --> Draft[Draft]
+  Draft -->|Edit| Draft
+  Draft -->|Save| Published[Published]
+  Published -->|Edit| NewRevision[New Revision]
+  NewRevision -->|Save| Published
+  Published -->|Delete| Archived[Archived]
+```
+
+## Non-Mermaid Code Block
+
+Regular code blocks are still highlighted normally:
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+```
+""",
+    ),
+    (
         "examples/advanced-usage",
         "Advanced Usage",
         False,

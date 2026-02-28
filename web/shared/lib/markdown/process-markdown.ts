@@ -8,6 +8,7 @@ import remarkRehype from 'remark-rehype';
 import { unified } from 'unified';
 
 import { SHIKI_CONFIG } from './highlighter';
+import { rehypeMermaidCodeBlock } from './rehype-mermaid-code-block';
 import type { ProcessMarkdownOptions } from './types';
 
 /**
@@ -37,6 +38,7 @@ export async function processMarkdown(
         .use(remarkParse)
         .use(remarkGfm)
         .use(remarkRehype)
+        .use(rehypeMermaidCodeBlock)
         .use(rehypeSlug)
         .use(rehypeAutolinkHeadings, {
           behavior: 'prepend' as const,
@@ -53,6 +55,7 @@ export async function processMarkdown(
         .use(remarkParse)
         .use(remarkGfm)
         .use(remarkRehype)
+        .use(rehypeMermaidCodeBlock)
         .use(rehypeShiki, shikiOptions)
         .use(rehypeStringify)
   ).process(content);

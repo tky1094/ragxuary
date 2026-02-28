@@ -6,6 +6,7 @@ import { highlightMarkdownAction } from '@/shared/lib/markdown/actions';
 import { cn } from '@/shared/lib/utils';
 
 import { CodeBlockActions } from './CodeBlockActions';
+import { MermaidRenderer } from './MermaidRenderer';
 
 interface MarkdownRendererClientProps {
   /** Raw markdown content */
@@ -78,6 +79,7 @@ export function MarkdownRendererClient({
       {/* biome-ignore lint/security/noDangerouslySetInnerHtml: HTML is generated server-side by unified pipeline */}
       <div dangerouslySetInnerHTML={{ __html: highlightedHtml }} />
       <CodeBlockActions />
+      <MermaidRenderer />
     </div>
   );
 }
