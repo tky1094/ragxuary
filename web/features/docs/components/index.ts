@@ -8,3 +8,5 @@ export type { DocsSidebarItemProps } from './DocsSidebarItem';
 export { DocsSidebarItem } from './DocsSidebarItem';
 export type { DocsSidebarSkeletonProps } from './DocsSidebarSkeleton';
 export { DocsSidebarSkeleton } from './DocsSidebarSkeleton';
+export type { TableOfContentsProps } from './TableOfContents';
+export { TableOfContents } from './TableOfContents';
