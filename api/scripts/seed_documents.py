@@ -29,11 +29,7 @@ API_PREFIX = "/api/v1"
 # Sample document tree structure
 # Each entry: (path, title, is_folder, content)
 SAMPLE_DOCUMENTS: list[tuple[str, str, bool, str | None]] = [
-    # --- Top-level folders ---
-    ("guides", "Guides", True, None),
-    ("api-reference", "API Reference", True, None),
-    ("examples", "Examples", True, None),
-    # --- Root document ---
+    # --- Root document (should appear first in sidebar) ---
     (
         "introduction",
         "Introduction",
@@ -68,6 +64,10 @@ ragxuary is a documentation tool that combines:
 - [API Reference](./api-reference/overview) - REST API documentation
 """,
     ),
+    # --- Top-level folders ---
+    ("guides", "Guides", True, None),
+    ("api-reference", "API Reference", True, None),
+    ("examples", "Examples", True, None),
     # --- Guides ---
     (
         "guides/getting-started",
