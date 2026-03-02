@@ -9,6 +9,7 @@ import type { DocumentTreeNode } from '@/client/types.gen';
 import { cn } from '@/shared/lib/utils';
 
 import { useDocumentTreeSuspense } from '../hooks';
+import { useSidebarPersistence } from '../hooks/useSidebarPersistence';
 import { DocsSidebarItem } from './DocsSidebarItem';
 
 export interface DocsSidebarProps {
@@ -74,10 +75,19 @@ export function DocsSidebar({
     : undefined;
 
   const { data: tree } = useDocumentTreeSuspense(slug);
+  const { load, save } = useSidebarPersistence(slug);
 
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(() =>
     buildInitialExpandedPaths(tree, currentPath)
   );
+
+  // Restore persisted state on mount
+  useEffect(() => {
+    const persisted = load();
+    if (persisted.size > 0) {
+      setExpandedPaths((prev) => new Set([...prev, ...persisted]));
+    }
+  }, [load]);
 
   // Expand ancestor folders when navigating to a new document
   useEffect(() => {
@@ -89,17 +99,21 @@ export function DocsSidebar({
     });
   }, [currentPath, tree]);
 
-  const handleToggle = useCallback((path: string) => {
-    setExpandedPaths((prev) => {
-      const next = new Set(prev);
-      if (next.has(path)) {
-        next.delete(path);
-      } else {
-        next.add(path);
-      }
-      return next;
-    });
-  }, []);
+  const handleToggle = useCallback(
+    (path: string) => {
+      setExpandedPaths((prev) => {
+        const next = new Set(prev);
+        if (next.has(path)) {
+          next.delete(path);
+        } else {
+          next.add(path);
+        }
+        save(next);
+        return next;
+      });
+    },
+    [save]
+  );
 
   if (!tree || tree.length === 0) {
     return (

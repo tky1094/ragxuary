@@ -1,12 +1,18 @@
+export type { DocsBreadcrumbProps } from './DocsBreadcrumb';
+export { DocsBreadcrumb } from './DocsBreadcrumb';
 export type { DocsContentProps } from './DocsContent';
 export { DocsContent } from './DocsContent';
 export type { DocsContentSkeletonProps } from './DocsContentSkeleton';
 export { DocsContentSkeleton } from './DocsContentSkeleton';
+export type { DocsPaginationProps } from './DocsPagination';
+export { DocsPagination } from './DocsPagination';
 export type { DocsSidebarProps } from './DocsSidebar';
 export { DocsSidebar } from './DocsSidebar';
 export type { DocsSidebarItemProps } from './DocsSidebarItem';
 export { DocsSidebarItem } from './DocsSidebarItem';
 export type { DocsSidebarSkeletonProps } from './DocsSidebarSkeleton';
 export { DocsSidebarSkeleton } from './DocsSidebarSkeleton';
+export type { MobileSidebarToggleProps } from './MobileSidebarToggle';
+export { MobileSidebarToggle } from './MobileSidebarToggle';
 export type { TableOfContentsProps } from './TableOfContents';
 export { TableOfContents } from './TableOfContents';

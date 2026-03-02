@@ -6,6 +6,7 @@ import { Projects } from '@/client';
 import {
   DocsSidebar,
   DocsSidebarSkeleton,
+  MobileSidebarToggle,
   prefetchDocumentTree,
 } from '@/features/docs';
 import { getServerClient } from '@/shared/lib/api/client';
@@ -35,15 +36,29 @@ export default async function DocsLayout({
   ]);
 
   return (
-    <div className="flex gap-0">
-      <aside className="sticky top-16 h-[calc(100vh-4rem)] w-64 shrink-0 overflow-y-auto border-border border-r">
-        <HydrationBoundary state={dehydrate(queryClient)}>
-          <Suspense fallback={<DocsSidebarSkeleton />}>
-            <DocsSidebar slug={projectSlug} projectName={project.name} />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <div className="-mx-6">
+        {/* Mobile sidebar toggle bar */}
+        <div className="sticky top-16 z-30 flex h-12 items-center border-border border-b bg-background px-4 xl:hidden">
+          <Suspense fallback={null}>
+            <MobileSidebarToggle>
+              <DocsSidebar slug={projectSlug} projectName={project.name} />
+            </MobileSidebarToggle>
           </Suspense>
-        </HydrationBoundary>
-      </aside>
-      <main className="min-w-0 flex-1">{children}</main>
-    </div>
+        </div>
+
+        <div className="flex gap-0">
+          {/* Desktop sidebar */}
+          <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 overflow-y-auto border-border border-r xl:block">
+            <Suspense fallback={<DocsSidebarSkeleton />}>
+              <DocsSidebar slug={projectSlug} projectName={project.name} />
+            </Suspense>
+          </aside>
+
+          {/* Main content area (page renders Content + TOC here) */}
+          <main className="min-w-0 flex-1">{children}</main>
+        </div>
+      </div>
+    </HydrationBoundary>
   );
 }
