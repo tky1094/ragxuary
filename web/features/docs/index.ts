@@ -18,6 +18,7 @@ export {
   DocsSidebar,
   DocsSidebarSkeleton,
   MobileSidebarToggle,
+  ScrollToTop,
   TableOfContents,
 } from './components';
 

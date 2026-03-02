@@ -8,6 +8,7 @@ import {
   DocsSidebarSkeleton,
   MobileSidebarToggle,
   prefetchDocumentTree,
+  ScrollToTop,
 } from '@/features/docs';
 import { getServerClient } from '@/shared/lib/api/client';
 
@@ -37,6 +38,7 @@ export default async function DocsLayout({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      <ScrollToTop />
       <div className="-mx-6 -my-8">
         {/* Mobile sidebar toggle bar */}
         <div className="sticky top-16 z-30 flex h-12 items-center border-border border-b bg-background px-4 xl:hidden">

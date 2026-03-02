@@ -14,5 +14,6 @@ export type { DocsSidebarSkeletonProps } from './DocsSidebarSkeleton';
 export { DocsSidebarSkeleton } from './DocsSidebarSkeleton';
 export type { MobileSidebarToggleProps } from './MobileSidebarToggle';
 export { MobileSidebarToggle } from './MobileSidebarToggle';
+export { ScrollToTop } from './ScrollToTop';
 export type { TableOfContentsProps } from './TableOfContents';
 export { TableOfContents } from './TableOfContents';
