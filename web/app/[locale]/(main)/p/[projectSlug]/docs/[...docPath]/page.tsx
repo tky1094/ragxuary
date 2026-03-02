@@ -4,8 +4,15 @@ import { Suspense } from 'react';
 
 import { auth } from '@/auth';
 import { Documents } from '@/client';
-import { DocsContent, DocsContentSkeleton } from '@/features/docs';
+import {
+  DocsBreadcrumb,
+  DocsContent,
+  DocsContentSkeleton,
+  DocsPagination,
+  TableOfContents,
+} from '@/features/docs';
 import { getServerClient } from '@/shared/lib/api/client';
+import { extractHeadings } from '@/shared/lib/markdown';
 
 interface DocPageProps {
   params: Promise<{
@@ -49,5 +56,40 @@ async function DocsContentLoader({
     throwOnError: true,
   });
 
-  return <DocsContent document={document} />;
+  const headings = document.content ? extractHeadings(document.content) : [];
+
+  return (
+    <div className="flex gap-0">
+      {/* Content area */}
+      <div className="min-w-0 flex-1">
+        {/* Breadcrumb */}
+        <div className="border-border border-b px-6 py-3 xl:px-8">
+          <Suspense fallback={null}>
+            <DocsBreadcrumb
+              slug={slug}
+              currentPath={path}
+              documentTitle={document.title}
+            />
+          </Suspense>
+        </div>
+
+        {/* Document content */}
+        <DocsContent document={document} />
+
+        {/* Prev/Next pagination */}
+        <div className="px-6 pb-8 sm:px-8">
+          <Suspense fallback={null}>
+            <DocsPagination currentPath={path} slug={slug} />
+          </Suspense>
+        </div>
+      </div>
+
+      {/* Desktop TOC */}
+      {headings.length > 0 && (
+        <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-60 shrink-0 overflow-y-auto border-border border-l px-4 py-8 xl:block">
+          <TableOfContents headings={headings} />
+        </aside>
+      )}
+    </div>
+  );
 }

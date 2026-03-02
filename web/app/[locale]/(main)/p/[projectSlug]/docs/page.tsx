@@ -1,5 +1,10 @@
-import { useTranslations } from 'next-intl';
-import { setRequestLocale } from 'next-intl/server';
+import { FileText } from 'lucide-react';
+import { redirect } from 'next/navigation';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+
+import { Documents } from '@/client';
+import { findFirstDocument } from '@/features/docs/lib/tree-utils';
+import { getServerClient } from '@/shared/lib/api/client';
 
 interface ProjectDocsPageProps {
   params: Promise<{
@@ -14,19 +19,30 @@ export default async function ProjectDocsPage({
   const { locale, projectSlug } = await params;
   setRequestLocale(locale);
 
-  return <ProjectDocsContent projectSlug={projectSlug} />;
-}
+  const client = getServerClient();
+  const { data: tree } = await Documents.getDocumentTree({
+    client,
+    path: { slug: projectSlug },
+    throwOnError: true,
+  });
 
-function ProjectDocsContent({ projectSlug }: { projectSlug: string }) {
-  const t = useTranslations();
+  const firstDoc = findFirstDocument(tree);
+
+  if (firstDoc) {
+    redirect(`/${locale}/p/${projectSlug}/docs/${firstDoc.path}`);
+  }
+
+  const t = await getTranslations('docs.empty');
 
   return (
-    <div>
-      <h1 className="font-bold text-3xl">
-        {projectSlug} {t('docs.title')}
-      </h1>
-      <p className="mt-4 text-muted-foreground">{t('docs.noDocs')}</p>
-      {/* TODO: Implement document list */}
+    <div className="flex flex-col items-center justify-center px-6 py-24 text-center">
+      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+        <FileText className="h-8 w-8 text-muted-foreground" />
+      </div>
+      <h2 className="font-semibold text-foreground text-xl">{t('title')}</h2>
+      <p className="mt-2 max-w-sm text-muted-foreground text-sm">
+        {t('description')}
+      </p>
     </div>
   );
 }

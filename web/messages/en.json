@@ -119,7 +119,17 @@
     "noDocs": "No documents found",
     "sidebar": {
       "expand": "Expand",
-      "collapse": "Collapse"
+      "collapse": "Collapse",
+      "toggle": "Toggle sidebar"
+    },
+    "pagination": {
+      "label": "Document navigation",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "empty": {
+      "title": "No documents yet",
+      "description": "This project doesn't have any documents. Go to the editor to create your first document."
     }
   },
   "chat": {
