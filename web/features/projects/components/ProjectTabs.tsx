@@ -2,6 +2,7 @@
 
 import {
   FileText,
+  History,
   type LucideIcon,
   MessageSquare,
   Pencil,
@@ -55,6 +56,12 @@ export function ProjectTabs() {
       href: `${basePath}/chat`,
       icon: MessageSquare,
       labelKey: 'projectTabs.chat',
+    },
+    {
+      key: 'activity',
+      href: `${basePath}/activity`,
+      icon: History,
+      labelKey: 'projectTabs.activity',
     },
     {
       key: 'settings',

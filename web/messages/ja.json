@@ -214,7 +214,26 @@
     "docs": "ドキュメント",
     "edit": "編集",
     "chat": "チャット",
+    "activity": "アクティビティ",
     "settings": "設定"
+  },
+  "activity": {
+    "title": "アクティビティ",
+    "empty": {
+      "title": "アクティビティがありません",
+      "description": "このプロジェクトのドキュメントの変更がここに表示されます。"
+    },
+    "error": "アクティビティの読み込みに失敗しました",
+    "changeType": {
+      "create": "作成",
+      "update": "更新",
+      "delete": "削除",
+      "rename": "名前変更"
+    },
+    "showMore": "さらに{count}件表示",
+    "showLess": "折りたたむ",
+    "unknownUser": "不明なユーザー",
+    "documentsChanged": "{count}件のドキュメントが変更されました"
   },
   "setup": {
     "title": "初期セットアップ",
