@@ -214,7 +214,26 @@
     "docs": "Docs",
     "edit": "Edit",
     "chat": "Chat",
+    "activity": "Activity",
     "settings": "Settings"
+  },
+  "activity": {
+    "title": "Activity",
+    "empty": {
+      "title": "No activity yet",
+      "description": "Changes to documents in this project will appear here."
+    },
+    "error": "Failed to load activity",
+    "changeType": {
+      "create": "Created",
+      "update": "Updated",
+      "delete": "Deleted",
+      "rename": "Renamed"
+    },
+    "showMore": "Show {count} more",
+    "showLess": "Show less",
+    "unknownUser": "Unknown user",
+    "documentsChanged": "{count} {count, plural, one {document} other {documents}} changed"
   },
   "setup": {
     "title": "Initial Setup",
